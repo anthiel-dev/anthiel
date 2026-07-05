@@ -12,7 +12,7 @@ export function PageLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="mx-auto flex max-w-3xl flex-col pt-32 pb-16" data-reveal="true">
       <HomeHeader nav={isHome ? undefined : <HomeNavLinks revealStaggerStart={1} />} />
-      <main className="flex flex-col px-10">
+      <main className="flex flex-col sm:px-10 px-6">
         {children}
         {isHome ? <HomeNav /> : null}
       </main>
