@@ -1,215 +1,120 @@
-Welcome to your new TanStack Start app!
+# Anthiel landing
 
-# Getting Started
+Marketing site for Anthiel — home, team, portfolio, and FAQ pages. Built with TanStack Start (Vite + React), statically prerendered at build time.
 
-To run this application:
+## Requirements
+
+- [Bun](https://bun.sh) 1.3+
+
+## Local development
+
+From the monorepo root:
 
 ```bash
 bun install
-bun --bun run dev
+bun run dev --filter=landing
 ```
 
-# Building For Production
+Or from this directory:
 
-This app uses TanStack Start's built-in **static prerendering (SSG)**. At build time, routes are rendered to static HTML in `dist/client/`.
+```bash
+bun install
+bun run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Production build
 
 ```bash
 bun run build
 ```
 
-Deploy the `dist/client/` directory to any static host (Cloudflare Pages, Netlify, Vercel, S3, etc.).
+This prerenders every route to static HTML. Deployable output lives in:
 
-To preview the production build locally:
+```text
+apps/landing/dist/client/
+```
+
+Preview the production build locally:
 
 ```bash
 bun run preview
 ```
 
-## Testing
+## Deploy
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+The site is a **static export** — upload `dist/client/` to any static host. No Node server is required in production.
+
+### Vercel (recommended)
+
+1. Import the GitHub repo in [Vercel](https://vercel.com).
+2. Set **Root Directory** to `apps/landing`.
+3. Use these settings:
+
+| Setting          | Value                               |
+| ---------------- | ----------------------------------- |
+| Framework Preset | Other                               |
+| Install Command  | `bun install` (runs from repo root) |
+| Build Command    | `bun run build`                     |
+| Output Directory | `dist/client`                       |
+
+4. Deploy. Vercel will rebuild on every push to the connected branch.
+
+If install must run from the monorepo root explicitly:
 
 ```bash
-bun --bun run test
+cd ../.. && bun install && cd apps/landing && bun run build
 ```
 
-## Styling
+### Netlify
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+1. Connect the repo in [Netlify](https://netlify.com).
+2. **Base directory:** `apps/landing`
+3. **Build command:** `bun run build`
+4. **Publish directory:** `dist/client`
 
-### Removing Tailwind CSS
+### Cloudflare Pages
 
-If you prefer not to use Tailwind CSS:
+1. Connect the repo in [Cloudflare Pages](https://pages.cloudflare.com).
+2. **Root directory:** `apps/landing`
+3. **Build command:** `bun run build`
+4. **Build output directory:** `dist/client`
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `bun install @tailwindcss/vite tailwindcss -D`
+### Manual / S3 / any static host
 
-## Static Site Generation
-
-Prerendering is configured in `vite.config.ts`:
-
-```ts
-tanstackStart({
-  prerender: {
-    enabled: true,
-    crawlLinks: true,
-    autoStaticPathsDiscovery: true,
-  },
-});
+```bash
+cd apps/landing
+bun run build
 ```
 
-New static routes are discovered automatically from the file router. Links between pages are crawled at build time so every reachable page is pre-rendered.
+Upload the contents of `dist/client/` to your bucket or CDN. Configure the host to serve `index.html` for unknown paths (SPA fallback) — prerendered routes (`/`, `/team`, `/built`, `/faq`) are emitted as folders with `index.html`, so direct links work without extra config on most hosts.
 
-## Routing
+## Routes
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+| Path     | Page          |
+| -------- | ------------- |
+| `/`      | Home          |
+| `/team`  | Team          |
+| `/built` | Portfolio     |
+| `/faq`   | More about us |
 
-### Adding A Route
+New file-based routes under `src/routes/` are discovered automatically and prerendered when linked from existing pages.
 
-To add a new route to your application just add a new file in the `./src/routes` directory.
+## Assets
 
-TanStack will automatically generate the content of the route file for you.
+- Team photo: `public/team.png` (~2 MB). A tiny blur placeholder is generated at `public/team-placeholder.png`. After replacing the team image, regenerate the placeholder:
 
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
+```bash
+sips -z 24 42 public/team.png --out public/team-placeholder.png
 ```
 
-Then anywhere in your JSX you can use it like so:
+## Scripts
 
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "My App" },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-});
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from "@tanstack/react-start";
-
-const getServerTime = createServerFn({
-  method: "GET",
-}).handler(async () => {
-  return new Date().toISOString();
-});
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState("");
-
-  useEffect(() => {
-    getServerTime().then(setTime);
-  }, []);
-
-  return <div>Server time: {time}</div>;
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-import { json } from "@tanstack/react-start";
-
-export const Route = createFileRoute("/api/hello")({
-  server: {
-    handlers: {
-      GET: () => json({ message: "Hello, World!" }),
-    },
-  },
-});
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/people")({
-  loader: async () => {
-    const response = await fetch("https://swapi.dev/api/people");
-    return response.json();
-  },
-  component: PeopleComponent,
-});
-
-function PeopleComponent() {
-  const data = Route.useLoaderData();
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  );
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+| Command                   | Description                             |
+| ------------------------- | --------------------------------------- |
+| `bun run dev`             | Dev server on port 3000                 |
+| `bun run build`           | Prerender static site to `dist/client/` |
+| `bun run preview`         | Serve production build locally          |
+| `bun run test`            | Run Vitest                              |
+| `bun run generate-routes` | Regenerate TanStack Router route tree   |
