@@ -10,7 +10,8 @@ export const app = new Elysia()
       origin: env.CORS_ORIGIN,
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true,
-      allowedHeaders: ["Content-Type", "Authorization"],
+      allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+      exposeHeaders: ["Set-Cookie"],
     }),
   )
   .use(betterAuthPlugin)
@@ -25,6 +26,16 @@ export const app = new Elysia()
     }),
     {
       auth: true,
+    },
+  )
+  .get(
+    "/admin/health",
+    () => ({
+      ok: true,
+      scope: "admin",
+    }),
+    {
+      admin: true,
     },
   );
 

@@ -3,8 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "auth:generate": "DATABASE_URL=${DATABASE_URL:-postgresql://user:pass@localhost/db} BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-dev-secret-at-least-32-characters-long!!} bunx --bun @better-auth/cli generate --config ./src/core/auth.ts --output ./src/database/schema/auth.schema.ts --yes",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "bun run src/database/seed.ts",
     "db:studio": "drizzle-kit studio",
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
@@ -14,12 +16,13 @@
     "@elysiajs/cors": "^1.3.3",
     "@neondatabase/serverless": "^1.0.1",
     "@t3-oss/env-core": "^0.13.8",
-    "better-auth": "^1.3.4",
+    "better-auth": "^1.6.23",
     "drizzle-orm": "^0.44.2",
     "elysia": "^1.3.3",
     "zod": "^4.0.5"
   },
   "devDependencies": {
+    "@better-auth/cli": "^1.4.21",
     "@types/bun": "latest",
     "dotenv": "^17.0.1",
     "drizzle-kit": "^0.31.4",

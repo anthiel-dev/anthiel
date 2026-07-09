@@ -1,6 +1,6 @@
 {
-  "id": "6c7ba6e5-2a3f-4be5-a53f-5d3a85276891",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "c15e5acd-41c0-4bee-bc4e-ff7a43128785",
+  "prevId": "6c7ba6e5-2a3f-4be5-a53f-5d3a85276891",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -172,6 +172,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "impersonated_by": {
+          "name": "impersonated_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -270,6 +276,31 @@
         "display_username": {
           "name": "display_username",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banned": {
+          "name": "banned",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "ban_reason": {
+          "name": "ban_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ban_expires": {
+          "name": "ban_expires",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         }

@@ -16,6 +16,17 @@ export {
   CardPanel,
   CardTitle,
 } from "./components/card.tsx";
+export {
+  Field,
+  FieldControl,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldItem,
+  FieldLabel,
+  FieldPrimitive,
+  FieldValidity,
+} from "./components/field.tsx";
 export { Input, InputPrimitive, type InputProps } from "./components/input.tsx";
 export { Label } from "./components/label.tsx";
 export { Separator, SeparatorPrimitive } from "./components/separator.tsx";
