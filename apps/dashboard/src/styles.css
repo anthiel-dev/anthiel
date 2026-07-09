@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "@anthiel/ui/styles.css";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+@source "../../../packages/ui/src";

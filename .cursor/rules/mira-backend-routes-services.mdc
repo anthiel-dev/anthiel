@@ -1,0 +1,36 @@
+---
+description: Mira Elysia routes vs services — validation, Result, layering.
+globs: apps/backend/**/routes/**/*.ts,apps/backend/**/services/**/*.ts
+alwaysApply: false
+---
+
+# Routes and services (`apps/backend`)
+
+## Routes (`modules/*/routes/*.route.ts`)
+
+- Export a **factory**: `(deps) => new Elysia({ prefix: "/…", name: "…" })` so `app.ts` can inject `db` and shared deps.
+- **Validate** with Zod from **`contracts/`** for `query`, `params`, `body`, and (when useful) **`response`** — single source of truth with services.
+- **Thin handlers**: call one service method, **`return unwrap(await service.fn(…))`** (`unwrap` from `@/lib/result`) so **`ApiError`** hits global `onError`.
+- **No** Drizzle, raw SQL, or domain rules beyond HTTP shaping; use **`({ log })`** from context for handler-level logs if needed.
+
+## Services (`modules/*/services/*.service.ts`)
+
+- **Constructor / deps object**: accept `AppDb` and other ports; no global singletons.
+- Return **`Promise<Result<T, ApiError>>`**: success with **`ok`**, failures with **`err(ApiError.\*)`**; wrap DB I/O with **`tryDb`** from `@/database/helpers` (or **`tryCatchWithError(fn, dbError)`** for non-DB async).
+- **No** `Elysia`, `Request`, `status`, cookies, or route-specific types; operate on domain inputs/outputs only.
+- **Co-locate** private helpers as `private` methods; keep public API aligned with what routes need.
+
+## Database query helpers (`@/database/helpers`)
+
+- **List endpoints** — `paginate` + `resolveOrderBy` + `ilikeContains`; caller owns `where`, relations, and per-module `sortColumnMap`.
+- **DB I/O** — prefer **`tryDb(fn)`** over raw **`tryCatchWithError(fn, dbError)`**.
+- **PATCH** — **`requireNonEmptyPatch(data)`** before update; returns 422 when body has no defined fields.
+- **Mutations** — prefer **`.returning()`** + **`NotFound`** on empty row over pre-fetch **`checkExists`** unless the loaded row is needed for side effects.
+- **Shared wire schemas** — e.g. **`messageResponseSchema`** from `@/lib/validators/common`.
+
+## Avoid
+
+- Duplicating validation in routes with `t.Object` (or ad-hoc checks) when Zod contracts already exist.
+- **`as any`** on `query` / `body` — fix the contract or handler types instead.
+- Catching errors in routes and swallowing them — use `Result` + `unwrap` or rethrow after logging.
+- Copy-pasting **`ilikeContains`**, count+findMany pagination blocks, or **`definedEntries`** patch logic into new services.

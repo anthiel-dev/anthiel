@@ -1,0 +1,31 @@
+---
+description: OpenAPI + Orval regeneration when web, online-order, or desktop calls backend APIs.
+globs: apps/web/**/*.ts,apps/web/**/*.tsx,apps/online-order/**/*.ts,apps/online-order/**/*.tsx,apps/desktop/**/*.ts,apps/desktop/**/*.tsx,apps/backend/**/routes/**/*.ts,packages/api-types/**/*.ts
+alwaysApply: false
+---
+
+# Frontend ↔ backend API (Mira)
+
+When a new API is introduced or if there's an update in backend, run Orval regeneration for each client that uses the API.
+
+## Commands
+
+From **`apps/web`** or **`apps/online-order`** (React Query hooks + functions + models):
+
+```bash
+bun run api:generate
+```
+
+From **`apps/desktop`** (fetch functions + models only):
+
+```bash
+bun run api:generate
+```
+
+Both refresh **`packages/api-types/openapi.json`** (backend must be reachable unless `OPENAPI_URL` is set) and run Orval. Generated output is gitignored — do not hand-edit.
+
+## Consumption
+
+**Web / online-order:** import **`useQuery` / `useMutation`** and helpers from **`@/generated/api`**; types from **`@/generated/api/model`**.
+
+**Desktop:** import async API functions from **`@/generated/api`** (e.g. `getTables`, `createPosBillAtTable`); types from **`@/generated/api/model`**. Wire outlet context via **`setSelectedOutletId`** in **`@/lib/selected-outlet`** before calls that need **`X-Selected-Outlet`**.

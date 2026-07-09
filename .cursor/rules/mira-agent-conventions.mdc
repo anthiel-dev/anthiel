@@ -1,0 +1,51 @@
+---
+description: Monorepo-wide tooling, code style, and agent behavior for the Mira project
+alwaysApply: true
+---
+
+# Mira agent conventions
+
+## Tooling
+
+- Package manager: **Bun** (`bun install`, `bun run <script>`, `bunx`). See `use-bun-instead-of-node-vite-npm-pnpm.mdc` when editing package manifests.
+- Lint: `bun run lint` (oxlint). Format: `bun run format` (oxfmt).
+- Typecheck: `bun run typecheck` from root or per app.
+- Project map and commands: **`AGENTS.md`** at repo root.
+
+## Code changes
+
+- Minimize scope — smallest correct diff; do not change unrelated code.
+- Match existing conventions in the file and feature you touch.
+- Named exports; function declarations for components (`function Foo()`).
+- Use `type` for type-only exports.
+- Comments only for non-obvious business logic — not on every line.
+
+## Git
+
+- **Do not commit** unless the user explicitly asks.
+- **Do not push** unless the user explicitly asks.
+- Follow git safety: no force push to main, no `--no-verify`, no amending pushed commits.
+
+## App-specific patterns
+
+Load automatically via glob rules — do not guess:
+
+- `apps/desktop` → `mira-desktop-feature-patterns.mdc`
+- `apps/web` → `mira-frontend-feature-patterns.mdc`, `mira-frontend-api-integration.mdc`
+- `apps/online-order` → `mira-frontend-feature-patterns.mdc`, `mira-frontend-api-integration.mdc`
+- `apps/backend` → `backend-modular-structure.mdc`
+- `apps/mobile` → `mira-mobile-feature-patterns.mdc`
+
+Skills in `.cursor/skills/` for deep task workflows (E2E, TanStack DB, transitions).
+
+## Golden paths (quick)
+
+| Area | First step |
+|------|------------|
+| Desktop feature | `@apps/desktop/src/features/orders/` or `tables/` + `mira-desktop-feature-patterns.mdc` |
+| Web feature | `@apps/web/src/features/catalog/products/` + `mira-frontend-feature-patterns.mdc` |
+| Online order feature | `@apps/online-order/src/features/` + `mira-frontend-feature-patterns.mdc` |
+| Backend module | `@apps/backend/src/modules/customers/` + `backend-modular-structure.mdc` |
+| Mobile feature | `@apps/mobile/src/features/home/` + `mira-mobile-feature-patterns.mdc` |
+| E2E | `bun run e2e` + `e2e-desktop` skill |
+| Stale `.cursor/plans/` | Read banner — treat as historical; trust `AGENTS.md` and live code |

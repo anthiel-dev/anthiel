@@ -1,0 +1,57 @@
+---
+description: Mira backend modular layout—Elysia modules under src/modules with contracts, routes, services (canonical example: customers).
+globs: apps/backend/**/*.ts
+alwaysApply: false
+---
+
+# Backend modular structure (`apps/backend`)
+
+Stack: **Elysia** route plugins + Zod **contracts** + **services** returning **`Result`**. Canonical minimal layout: **`src/modules/customers/`**.
+
+## Golden paths
+
+| Task | Do this |
+|------|---------|
+| New domain module | Copy `src/modules/customers/` → **`mira-backend-modular`** skill |
+| New route/handler in existing module | Match `customers.route.ts` + contract schemas → **`mira-backend-routes-services`** rule/skill |
+| Refactor existing list/mutation service | **`mira-backend-service-refactor`** skill; reference post-migration **`modules/users/`** |
+| Schema change | Drizzle migration in `src/database/migrations/` + `bun run db:migrate` |
+| After API surface change | Regenerate clients: `cd apps/web && bun run api:generate`, `cd apps/online-order && bun run api:generate`, and `cd apps/desktop && bun run api:generate` |
+
+## Repo layers
+
+- **`src/app.ts`** — Composes **`Elysia`**, CORS, errors, **`.use(domainRoutes(db))`**. **`export type App`** for **`@mira/api-types`** / OpenAPI.
+- **`src/modules/<domain>/`** — Vertical slice (primary place for feature code).
+- **`src/core/`** — Auth, config, **plugins**, **middlewares** (e.g. `organizationPlugin`, `requiredAuthPlugin`).
+- **`src/database/`** — Drizzle client, **`schema/*.schema.ts`**, **`helpers/`** (query/pagination/patch utilities), barrel **`schema/index.ts`**.
+- **`src/lib/`** — **`result`** (`unwrap`, `ok`, `err`), **`errors`** (`ApiError`), **validators**, logger.
+- **`src/shared/`** — Optional cross-cutting utilities; domain rules stay under **`src/modules/<domain>/`**.
+
+## Per-module layout (reference: `modules/customers/`)
+
+```
+modules/customers/
+  contracts/request.contract.ts
+  contracts/response.contract.ts
+  routes/customers.route.ts
+  services/customers.service.ts
+  index.ts
+```
+
+- **`contracts/`** — Zod schemas for **`query`**, **`params`**, **`body`**, **`response`**; same shapes services use (avoid drift).
+- **`routes/<domain>.route.ts`** — **`export const customersRoutes = (db: AppDb) => new Elysia({ prefix: "/customers", name: "customers", tags: ["Customers"] })`** (adjust prefix/name/tags). **`.use`** core plugins; validate with contract schemas; **`return unwrap(await service.method(...))`**.
+- **`services/<domain>.service.ts`** — **`Promise<Result<T, ApiError>>`**; inject **`{ db }`**; no Elysia **`Context`** or **`Response`** types in public methods.
+- **`index.ts`** — Barrel: export **`customersRoutes`**, **`CustomersService`**, and shared **types** from contracts when needed.
+
+**Larger domains** (e.g. organization): same structure with **multiple** **`services/*.service.ts`** and one or more **`routes/*.route.ts`** if needed — still Elysia + contracts, no separate framework.
+
+**Optional by domain**: **`types.ts`**, **`constants/`**, **`integrations/<vendor>/`**, **`webhooks/`**, module-local **`shared/`**, **`hooks.ts`**.
+
+**Consistency**
+
+- Imports: **`@/…`**. Prefer another module’s **`index.ts`** exports over deep paths into its **`services/`**.
+- **OpenAPI**: keep **`tags`**, **`detail`**, and **`.model`/`response`** aligned with the served spec.
+
+## Deeper detail
+
+- Handler vs service patterns: **`mira-backend-routes-services`** (`.cursor/rules/mira-backend-routes-services.mdc`) and **`@mira-backend-routes-services`**.

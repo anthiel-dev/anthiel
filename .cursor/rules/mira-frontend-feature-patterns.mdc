@@ -1,0 +1,52 @@
+---
+description: Frontend feature module structure and conventions for apps/web and apps/online-order
+globs: apps/web/src/features/**/*.ts,apps/web/src/features/**/*.tsx,apps/web/src/routes/backoffice/**/*.tsx,apps/online-order/src/features/**/*.ts,apps/online-order/src/features/**/*.tsx,apps/online-order/src/routes/**/*.tsx
+alwaysApply: false
+---
+
+# Frontend feature patterns
+
+## Directory structure
+
+Features live in `apps/web/src/features/<feature-name>/` or `apps/online-order/src/features/<feature-name>/`. Every feature follows one of two variants:
+
+**Generated API** (OpenAPI endpoints exist): `components/`, `validators/`, page file, `index.ts`. Hooks and types come from `@/generated/api`.
+
+## Golden paths
+
+| Task | Do this |
+|------|---------|
+| New CRUD backoffice page | Copy `features/catalog/products/` → **`mira-frontend-feature`** skill |
+| Data table page | **`mira-data-table`** skill |
+| Backend route added/changed | `cd apps/web && bun run api:generate` or `cd apps/online-order && bun run api:generate` — then import from `@/generated/api` |
+| Manual / non-OpenAPI integration | **`mira-frontend-api-integration`** skill |
+
+## Page structure
+
+```
+<Page>
+  <Page.Header />
+  <Page.Content>
+    <Page.Title title="..." description="..." actions={[...]} />
+    <Card>
+      <DataTable table={table} loading={isLoading}>
+        <DataTableToolbar table={table} />
+      </DataTable>
+    </Card>
+  </Page.Content>
+  <FormDrawerOrDialog />
+</Page>
+```
+
+Call `useBreadcrumb([...])` at the top of every page. Use `nuqs` (`useQueryState`) for URL-synced search/filter/sort state. Debounce search with `useDebouncedValue`.
+
+## Code style
+
+- Named exports only, no default exports
+- Function declarations (`function Foo()` not `const Foo = () =>`)
+- `type` keyword for type-only exports
+- `toast.success` / `toast.error` via `sonner`
+- TanStack Table via `useReactTable` + `createColumnHelper<T>()`
+- `<DataTableColumnHeader>` for sortable column headers
+- `DropdownMenu` for row actions
+- `lucide-react` for icons
