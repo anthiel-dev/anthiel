@@ -1,0 +1,16 @@
+{
+  "name": "@anthiel/api-types",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./openapi.json": "./openapi.json"
+  },
+  "scripts": {
+    "fetch-openapi": "bun run --cwd ../../apps/backend openapi:generate",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}

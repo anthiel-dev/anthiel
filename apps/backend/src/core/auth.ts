@@ -5,7 +5,7 @@ import { admin as adminPlugin, username } from "better-auth/plugins";
 import { db } from "../database";
 import * as schema from "../database/schema";
 import { env } from "../env";
-import { ac, roles } from "../modules/rbac";
+import { ROLE } from "../modules/rbac/catalog";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -18,13 +18,20 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  user: {
+    additionalFields: {
+      roleId: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+    },
+  },
   plugins: [
     username(),
     adminPlugin({
-      ac,
-      roles,
-      defaultRole: "user",
-      adminRoles: ["admin"],
+      defaultRole: ROLE.client,
+      adminRoles: [ROLE.admin],
     }),
   ],
 });

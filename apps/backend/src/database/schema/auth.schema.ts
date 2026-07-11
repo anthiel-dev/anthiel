@@ -1,6 +1,8 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
 
+import { roles } from "./rbac.schema";
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -13,7 +15,9 @@ export const user = pgTable("user", {
     .notNull(),
   username: text("username").unique(),
   displayUsername: text("display_username"),
+  /** Synced with `roles.key` for better-auth admin plugin compatibility. */
   role: text("role"),
+  roleId: text("role_id").references(() => roles.id, { onDelete: "set null" }),
   banned: boolean("banned").default(false),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
@@ -78,9 +82,13 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const userRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(user, ({ many, one }) => ({
   sessions: many(session),
   accounts: many(account),
+  assignedRole: one(roles, {
+    fields: [user.roleId],
+    references: [roles.id],
+  }),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({

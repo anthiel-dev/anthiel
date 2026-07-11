@@ -11,7 +11,12 @@ import { Link, useRouterState } from "@tanstack/react-router";
 
 export type NavItem = {
   title: string;
-  to: "/dashboard" | "/dashboard/invoices" | "/dashboard/roles" | "/dashboard/permissions";
+  to:
+    | "/dashboard"
+    | "/dashboard/invoices"
+    | "/dashboard/users"
+    | "/dashboard/roles"
+    | "/dashboard/permissions";
   icon: LucideIcon;
 };
 

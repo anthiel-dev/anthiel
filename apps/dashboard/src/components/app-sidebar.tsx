@@ -17,6 +17,7 @@ import {
   KeyRoundIcon,
   LayoutDashboardIcon,
   ShieldIcon,
+  UsersIcon,
 } from "lucide-react";
 
 import { NavSection } from "#components/nav-section";
@@ -36,6 +37,11 @@ const platformItems = [
 ];
 
 const manageItems = [
+  {
+    title: "Users",
+    to: "/dashboard/users" as const,
+    icon: UsersIcon,
+  },
   {
     title: "Roles",
     to: "/dashboard/roles" as const,
@@ -68,7 +74,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">Anthiel</span>
-                <span className="truncate text-xs">Dashboard</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>

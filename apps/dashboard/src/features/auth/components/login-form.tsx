@@ -4,6 +4,7 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { useState, type ComponentProps, type FormEvent } from "react";
 
 import { authClient } from "#/lib/auth-client";
+import { invalidateSessionCache } from "#/lib/auth-session";
 
 type LoginFormProps = ComponentProps<"div"> & {
   redirectTo?: string;
@@ -32,6 +33,8 @@ export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
       setError(result.error.message ?? "Unable to sign in");
       return;
     }
+
+    invalidateSessionCache();
 
     if (redirectTo?.startsWith("/") && !redirectTo.startsWith("//")) {
       await navigate({ href: redirectTo });

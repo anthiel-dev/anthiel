@@ -9,11 +9,13 @@
     "db:seed": "bun run src/database/seed.ts",
     "db:studio": "drizzle-kit studio",
     "dev": "bun run --watch src/index.ts",
+    "openapi:generate": "bun run src/scripts/export-openapi.ts",
     "start": "bun run src/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.3.3",
+    "@elysiajs/openapi": "^1.4.15",
     "@neondatabase/serverless": "^1.0.1",
     "@t3-oss/env-core": "^0.13.8",
     "better-auth": "^1.6.23",
@@ -26,6 +28,7 @@
     "@types/bun": "latest",
     "dotenv": "^17.0.1",
     "drizzle-kit": "^0.31.4",
+    "openapi-types": "^12.1.3",
     "typescript": "^6.0.2"
   }
 }

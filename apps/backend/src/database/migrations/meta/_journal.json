@@ -15,6 +15,13 @@
       "when": 1783613273049,
       "tag": "0001_smiling_rage",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783767162294,
+      "tag": "0002_bizarre_spitfire",
+      "breakpoints": true
     }
   ]
 }

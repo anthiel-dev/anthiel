@@ -27,6 +27,14 @@ export {
   FieldPrimitive,
   FieldValidity,
 } from "./components/field.tsx";
+export {
+  Frame,
+  FrameDescription,
+  FrameFooter,
+  FrameHeader,
+  FramePanel,
+  FrameTitle,
+} from "./components/frame.tsx";
 export { Input, InputPrimitive, type InputProps } from "./components/input.tsx";
 export { Label } from "./components/label.tsx";
 export { Separator, SeparatorPrimitive } from "./components/separator.tsx";

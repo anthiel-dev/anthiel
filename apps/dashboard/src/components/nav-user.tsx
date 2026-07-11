@@ -18,6 +18,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ChevronsUpDownIcon, LogOutIcon } from "lucide-react";
 
 import { authClient } from "#/lib/auth-client";
+import { invalidateSessionCache } from "#/lib/auth-session";
 
 export function NavUser({
   user,
@@ -39,6 +40,7 @@ export function NavUser({
 
   async function handleSignOut() {
     await authClient.signOut();
+    invalidateSessionCache();
     await navigate({ to: "/dashboard/auth/login" });
   }
 
