@@ -49,6 +49,13 @@ export function createUserColumns({
       cell: ({ row }) => <span className="font-medium text-foreground">{row.original.name}</span>,
     },
     {
+      accessorKey: "username",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Username" />,
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">{row.original.username ?? "—"}</span>
+      ),
+    },
+    {
       accessorKey: "email",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
       cell: ({ row }) => <span className="text-muted-foreground">{row.original.email}</span>,

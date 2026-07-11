@@ -13,6 +13,12 @@ export type CreateUserBodyThree = {
    */
   name: string;
   /**
+   * @minLength 3
+   * @maxLength 32
+   * @pattern ^[a-zA-Z0-9._-]+$
+   */
+  username: string;
+  /**
    * @maxLength 320
    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
    */

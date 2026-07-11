@@ -25,6 +25,7 @@ import type { UserRecord } from "../types";
 
 export type UserFormValues = {
   name: string;
+  username: string;
   email: string;
   password?: string;
   roleId: string;
@@ -59,6 +60,7 @@ export function UserFormDrawer({
   onSubmit,
 }: UserFormDrawerProps) {
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [roleId, setRoleId] = useState("");
@@ -66,6 +68,7 @@ export function UserFormDrawer({
   useEffect(() => {
     if (!open) return;
     setName(mode === "edit" ? (user?.name ?? "") : "");
+    setUsername(mode === "edit" ? (user?.username ?? "") : "");
     setEmail(mode === "edit" ? (user?.email ?? "") : "");
     setPassword("");
     setRoleId(mode === "edit" ? getInitialRoleId(user) : "");
@@ -75,6 +78,7 @@ export function UserFormDrawer({
     event.preventDefault();
     onSubmit({
       name: name.trim(),
+      username: username.trim(),
       email: email.trim(),
       password: mode === "create" ? password : undefined,
       roleId,
@@ -105,6 +109,20 @@ export function UserFormDrawer({
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   autoComplete="name"
+                  required
+                  nativeInput
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor={`${mode}-user-username`}>Username</FieldLabel>
+                <Input
+                  id={`${mode}-user-username`}
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                  autoComplete="username"
+                  minLength={3}
+                  maxLength={32}
+                  pattern="[a-zA-Z0-9._-]+"
                   required
                   nativeInput
                 />
@@ -226,6 +244,7 @@ export function UserDetailDrawer({
           {user ? (
             <dl>
               <DetailRow label="Name" value={user.name} />
+              <DetailRow label="Username" value={user.username ?? "—"} />
               <DetailRow label="Email" value={user.email} />
               <DetailRow label="Role" value={getRoleName(user)} />
               <div className="grid gap-1 border-b py-4">

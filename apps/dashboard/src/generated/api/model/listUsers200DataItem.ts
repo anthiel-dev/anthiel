@@ -11,6 +11,8 @@ import type { ListUsers200DataItemStatus } from "./listUsers200DataItemStatus.ts
 export type ListUsers200DataItem = {
   id: string;
   name: string;
+  /** @nullable */
+  username: string | null;
   email: string;
   emailVerified: boolean;
   /** @nullable */

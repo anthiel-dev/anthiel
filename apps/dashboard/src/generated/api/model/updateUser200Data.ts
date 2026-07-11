@@ -11,6 +11,8 @@ import type { UpdateUser200DataStatus } from "./updateUser200DataStatus.ts";
 export type UpdateUser200Data = {
   id: string;
   name: string;
+  /** @nullable */
+  username: string | null;
   email: string;
   emailVerified: boolean;
   /** @nullable */

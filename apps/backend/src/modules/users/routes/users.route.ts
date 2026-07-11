@@ -68,6 +68,9 @@ export const usersRoutes = (db: AppDb) => {
           if (result.error === "email_taken") {
             return status(409, { error: "Email is already in use" });
           }
+          if (result.error === "username_taken") {
+            return status(409, { error: "Username is already in use" });
+          }
           return status(500, { error: "Created user could not be loaded" });
         }
 
@@ -102,6 +105,9 @@ export const usersRoutes = (db: AppDb) => {
           }
           if (result.error === "cannot_remove_last_admin") {
             return status(409, { error: "The last admin cannot be demoted" });
+          }
+          if (result.error === "username_taken") {
+            return status(409, { error: "Username is already in use" });
           }
           return status(409, { error: "Email is already in use" });
         }

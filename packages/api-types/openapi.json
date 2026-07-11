@@ -365,6 +365,10 @@
                           "name": {
                             "type": "string"
                           },
+                          "username": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "email": {
                             "type": "string"
                           },
@@ -414,6 +418,7 @@
                         "required": [
                           "id",
                           "name",
+                          "username",
                           "email",
                           "emailVerified",
                           "image",
@@ -451,6 +456,12 @@
                     "minLength": 1,
                     "maxLength": 100
                   },
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
+                    "pattern": "^[a-zA-Z0-9._-]+$"
+                  },
                   "email": {
                     "type": "string",
                     "maxLength": 320,
@@ -467,7 +478,7 @@
                     "minLength": 1
                   }
                 },
-                "required": ["name", "email", "password", "roleId"],
+                "required": ["name", "username", "email", "password", "roleId"],
                 "additionalProperties": false
               }
             },
@@ -480,6 +491,12 @@
                     "minLength": 1,
                     "maxLength": 100
                   },
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
+                    "pattern": "^[a-zA-Z0-9._-]+$"
+                  },
                   "email": {
                     "type": "string",
                     "maxLength": 320,
@@ -496,7 +513,7 @@
                     "minLength": 1
                   }
                 },
-                "required": ["name", "email", "password", "roleId"],
+                "required": ["name", "username", "email", "password", "roleId"],
                 "additionalProperties": false
               }
             },
@@ -509,6 +526,12 @@
                     "minLength": 1,
                     "maxLength": 100
                   },
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
+                    "pattern": "^[a-zA-Z0-9._-]+$"
+                  },
                   "email": {
                     "type": "string",
                     "maxLength": 320,
@@ -525,7 +548,7 @@
                     "minLength": 1
                   }
                 },
-                "required": ["name", "email", "password", "roleId"],
+                "required": ["name", "username", "email", "password", "roleId"],
                 "additionalProperties": false
               }
             }
@@ -546,6 +569,10 @@
                           "type": "string"
                         },
                         "name": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "nullable": true,
                           "type": "string"
                         },
                         "email": {
@@ -597,6 +624,7 @@
                       "required": [
                         "id",
                         "name",
+                        "username",
                         "email",
                         "emailVerified",
                         "image",
@@ -702,6 +730,10 @@
                         "name": {
                           "type": "string"
                         },
+                        "username": {
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "email": {
                           "type": "string"
                         },
@@ -751,6 +783,7 @@
                       "required": [
                         "id",
                         "name",
+                        "username",
                         "email",
                         "emailVerified",
                         "image",
@@ -815,6 +848,12 @@
                     "minLength": 1,
                     "maxLength": 100
                   },
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
+                    "pattern": "^[a-zA-Z0-9._-]+$"
+                  },
                   "email": {
                     "type": "string",
                     "maxLength": 320,
@@ -843,6 +882,12 @@
                     "minLength": 1,
                     "maxLength": 100
                   },
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
+                    "pattern": "^[a-zA-Z0-9._-]+$"
+                  },
                   "email": {
                     "type": "string",
                     "maxLength": 320,
@@ -870,6 +915,12 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 100
+                  },
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
+                    "pattern": "^[a-zA-Z0-9._-]+$"
                   },
                   "email": {
                     "type": "string",
@@ -907,6 +958,10 @@
                           "type": "string"
                         },
                         "name": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "nullable": true,
                           "type": "string"
                         },
                         "email": {
@@ -958,6 +1013,7 @@
                       "required": [
                         "id",
                         "name",
+                        "username",
                         "email",
                         "emailVerified",
                         "image",

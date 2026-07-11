@@ -33,6 +33,7 @@ import type {
   DeleteUser200,
   DeleteUser403,
   DeleteUser404,
+  DeleteUser409,
   GetAdminHealth200,
   GetMe200,
   GetRoleById200,
@@ -579,7 +580,7 @@ export type listUsersResponseSuccess = listUsersResponse200 & {
 export type listUsersResponse = listUsersResponseSuccess;
 
 export const getListUsersUrl = () => {
-  return `http://localhost:3002/users/`;
+  return `http://localhost:3002/users`;
 };
 
 /**
@@ -593,7 +594,7 @@ export const listUsers = async (options?: RequestInit): Promise<listUsersRespons
 };
 
 export const getListUsersQueryKey = () => {
-  return [`http://localhost:3002/users/`] as const;
+  return [`http://localhost:3002/users`] as const;
 };
 
 export const getListUsersQueryOptions = <
@@ -711,7 +712,7 @@ export type createUserResponseError = (
 export type createUserResponse = createUserResponseSuccess | createUserResponseError;
 
 export const getCreateUserUrl = () => {
-  return `http://localhost:3002/users/`;
+  return `http://localhost:3002/users`;
 };
 
 /**
@@ -1058,10 +1059,19 @@ export type deleteUserResponse404 = {
   status: 404;
 };
 
+export type deleteUserResponse409 = {
+  data: DeleteUser409;
+  status: 409;
+};
+
 export type deleteUserResponseSuccess = deleteUserResponse200 & {
   headers: Headers;
 };
-export type deleteUserResponseError = (deleteUserResponse403 | deleteUserResponse404) & {
+export type deleteUserResponseError = (
+  | deleteUserResponse403
+  | deleteUserResponse404
+  | deleteUserResponse409
+) & {
   headers: Headers;
 };
 
@@ -1085,7 +1095,7 @@ export const deleteUser = async (
 };
 
 export const getDeleteUserMutationOptions = <
-  TError = DeleteUser403 | DeleteUser404,
+  TError = DeleteUser403 | DeleteUser404 | DeleteUser409,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -1121,12 +1131,15 @@ export const getDeleteUserMutationOptions = <
 
 export type DeleteUserMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUser>>>;
 
-export type DeleteUserMutationError = DeleteUser403 | DeleteUser404;
+export type DeleteUserMutationError = DeleteUser403 | DeleteUser404 | DeleteUser409;
 
 /**
  * @summary Delete user
  */
-export const useDeleteUser = <TError = DeleteUser403 | DeleteUser404, TContext = unknown>(
+export const useDeleteUser = <
+  TError = DeleteUser403 | DeleteUser404 | DeleteUser409,
+  TContext = unknown,
+>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof deleteUser>>,

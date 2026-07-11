@@ -9,6 +9,7 @@ export const userRoleSchema = z.object({
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
+  username: z.string().nullable(),
   email: z.string(),
   emailVerified: z.boolean(),
   image: z.string().nullable(),

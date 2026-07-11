@@ -11,6 +11,8 @@ import type { GetUserById200DataStatus } from "./getUserById200DataStatus.ts";
 export type GetUserById200Data = {
   id: string;
   name: string;
+  /** @nullable */
+  username: string | null;
   email: string;
   emailVerified: boolean;
   /** @nullable */

@@ -11,6 +11,8 @@ import type { CreateUser201DataStatus } from "./createUser201DataStatus.ts";
 export type CreateUser201Data = {
   id: string;
   name: string;
+  /** @nullable */
+  username: string | null;
   email: string;
   emailVerified: boolean;
   /** @nullable */

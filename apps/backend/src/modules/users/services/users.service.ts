@@ -17,7 +17,8 @@ type UserMutationError =
   | "cannot_remove_last_admin"
   | "email_taken"
   | "role_not_found"
-  | "user_not_found";
+  | "user_not_found"
+  | "username_taken";
 
 type UserMutationResult = { data: UserDto } | { error: UserMutationError };
 
@@ -46,17 +47,27 @@ export class UsersService {
     const role = await this.findRoleById(input.roleId);
     if (!role) return { error: "role_not_found" };
 
-    const existingUser = await this.deps.db.query.user.findFirst({
+    const existingEmail = await this.deps.db.query.user.findFirst({
       where: eq(userTable.email, input.email),
       columns: { id: true },
     });
-    if (existingUser) return { error: "email_taken" };
+    if (existingEmail) return { error: "email_taken" };
+
+    const existingUsername = await this.deps.db.query.user.findFirst({
+      where: eq(userTable.username, input.username),
+      columns: { id: true },
+    });
+    if (existingUsername) return { error: "username_taken" };
 
     const created = await auth.api.createUser({
       body: {
         email: input.email,
         password: input.password,
         name: input.name,
+        data: {
+          username: input.username,
+          displayUsername: input.username,
+        },
       },
     });
 
@@ -65,6 +76,8 @@ export class UsersService {
       .set({
         role: role.key,
         roleId: role.id,
+        username: input.username,
+        displayUsername: input.username,
       })
       .where(eq(userTable.id, created.user.id));
 
@@ -101,6 +114,14 @@ export class UsersService {
       if (emailOwner) return { error: "email_taken" };
     }
 
+    if (input.username) {
+      const usernameOwner = await this.deps.db.query.user.findFirst({
+        where: and(eq(userTable.username, input.username), ne(userTable.id, id)),
+        columns: { id: true },
+      });
+      if (usernameOwner) return { error: "username_taken" };
+    }
+
     if (input.password) {
       await auth.api.setUserPassword({
         body: {
@@ -112,14 +133,20 @@ export class UsersService {
     }
 
     const changes: {
+      displayUsername?: string;
       email?: string;
       name?: string;
       role?: string;
       roleId?: string;
+      username?: string;
     } = {};
 
     if (input.name !== undefined) changes.name = input.name;
     if (input.email !== undefined) changes.email = input.email;
+    if (input.username !== undefined) {
+      changes.username = input.username;
+      changes.displayUsername = input.username;
+    }
     if (role) {
       changes.role = role.key;
       changes.roleId = role.id;
@@ -180,6 +207,7 @@ export class UsersService {
     return {
       id: row.id,
       name: row.name,
+      username: row.username,
       email: row.email,
       emailVerified: row.emailVerified,
       image: row.image,

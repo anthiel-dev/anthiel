@@ -1,4 +1,13 @@
 import { Button } from "@anthiel/ui";
+import {
+  AlertDialog,
+  AlertDialogClose,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogPopup,
+  AlertDialogTitle,
+} from "@anthiel/ui/components/alert-dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   getCoreRowModel,
@@ -56,7 +65,9 @@ export function UsersPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserRecord | null>(null);
+  const [userToDelete, setUserToDelete] = useState<UserRecord | null>(null);
 
   const usersQuery = useListUsers();
   const rolesQuery = useListRoles();
@@ -71,7 +82,7 @@ export function UsersPage() {
     [rows],
   );
   const fuse = useMemo(
-    () => createFuzzySearcher(searchableRows, ["name", "email", "roleName"]),
+    () => createFuzzySearcher(searchableRows, ["name", "username", "email", "roleName"]),
     [searchableRows],
   );
   const filteredRows = useMemo(
@@ -100,6 +111,8 @@ export function UsersPage() {
     mutation: {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: getListUsersQueryKey() });
+        setDeleteOpen(false);
+        setUserToDelete(null);
       },
     },
   });
@@ -114,9 +127,9 @@ export function UsersPage() {
     setEditOpen(true);
   }
 
-  function confirmDelete(user: UserRecord) {
-    if (!window.confirm(`Delete ${user.name}? This action cannot be undone.`)) return;
-    deleteMutation.mutate({ id: user.id });
+  function openDelete(user: UserRecord) {
+    setUserToDelete(user);
+    setDeleteOpen(true);
   }
 
   const columns = useMemo(
@@ -124,7 +137,7 @@ export function UsersPage() {
       createUserColumns({
         onDetail: openDetail,
         onEdit: openEdit,
-        onDelete: confirmDelete,
+        onDelete: openDelete,
       }),
     [],
   );
@@ -184,6 +197,7 @@ export function UsersPage() {
           createMutation.mutate({
             data: {
               name: values.name,
+              username: values.username,
               email: values.email,
               password: values.password,
               roleId: values.roleId,
@@ -212,6 +226,7 @@ export function UsersPage() {
             id: selectedUser.id,
             data: {
               name: values.name,
+              username: values.username,
               email: values.email,
               roleId: values.roleId,
             },
@@ -232,6 +247,41 @@ export function UsersPage() {
             : null
         }
       />
+
+      <AlertDialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          setDeleteOpen(open);
+          if (!open) setUserToDelete(null);
+        }}
+      >
+        <AlertDialogPopup>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete user?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete{" "}
+              <span className="font-medium text-foreground">
+                {userToDelete?.name ?? "this user"}
+              </span>
+              . This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogClose render={<Button variant="outline" />}>Cancel</AlertDialogClose>
+            <Button
+              variant="destructive"
+              loading={deleteMutation.isPending}
+              disabled={!userToDelete}
+              onClick={() => {
+                if (!userToDelete) return;
+                deleteMutation.mutate({ id: userToDelete.id });
+              }}
+            >
+              Delete
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogPopup>
+      </AlertDialog>
     </div>
   );
 }

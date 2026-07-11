@@ -19,6 +19,7 @@ export * from "./createUserBodyTwo.ts";
 export * from "./deleteUser200.ts";
 export * from "./deleteUser403.ts";
 export * from "./deleteUser404.ts";
+export * from "./deleteUser409.ts";
 export * from "./getAdminHealth200.ts";
 export * from "./getMe200.ts";
 export * from "./getMe200User.ts";
