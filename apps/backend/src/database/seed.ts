@@ -6,7 +6,7 @@ import { db } from "./client";
 import { user } from "./schema";
 
 const ADMIN_EMAIL = "admin@anthiel.com";
-const ADMIN_USERNAME = "admin@anthiel.com";
+const ADMIN_USERNAME = "anthiel";
 const ADMIN_PASSWORD = "12345678";
 const ADMIN_NAME = "Anthiel Admin";
 
