@@ -6,6 +6,11 @@ export const userRoleSchema = z.object({
   name: z.string(),
 });
 
+export const userBusinessSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -15,6 +20,8 @@ export const userSchema = z.object({
   image: z.string().nullable(),
   roleId: z.string().nullable(),
   role: userRoleSchema.nullable(),
+  businessId: z.string().nullable(),
+  business: userBusinessSchema.nullable(),
   status: z.enum(["active", "banned"]),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),

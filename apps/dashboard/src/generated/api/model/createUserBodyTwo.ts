@@ -30,4 +30,9 @@ export type CreateUserBodyTwo = {
   password: string;
   /** @minLength 1 */
   roleId: string;
+  /**
+   * @minLength 1
+   * @nullable
+   */
+  businessId?: string | null;
 };

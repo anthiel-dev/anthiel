@@ -23,6 +23,17 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import type {
+  CreateBusiness201,
+  CreateBusiness500,
+  CreateBusinessBodyOne,
+  CreateBusinessBodyThree,
+  CreateBusinessBodyTwo,
+  CreateInvoice201,
+  CreateInvoice404,
+  CreateInvoice500,
+  CreateInvoiceBodyOne,
+  CreateInvoiceBodyThree,
+  CreateInvoiceBodyTwo,
   CreateUser201,
   CreateUser404,
   CreateUser409,
@@ -30,21 +41,47 @@ import type {
   CreateUserBodyOne,
   CreateUserBodyThree,
   CreateUserBodyTwo,
+  DeleteBusiness200,
+  DeleteBusiness404,
+  DeleteBusiness409,
+  DeleteInvoice200,
+  DeleteInvoice404,
+  DeleteInvoice409,
   DeleteUser200,
   DeleteUser403,
   DeleteUser404,
   DeleteUser409,
   GetAdminHealth200,
+  GetBusinessById200,
+  GetBusinessById404,
+  GetInvoiceById200,
+  GetInvoiceById404,
   GetMe200,
+  GetPublicInvoiceByToken200,
+  GetPublicInvoiceByToken404,
   GetRoleById200,
   GetRoleById404,
   GetServiceRoot200,
   GetUserById200,
   GetUserById404,
+  ListBusinesses200,
+  ListInvoices200,
+  ListInvoicesParams,
   ListPermissions200,
   ListResources200,
   ListRoles200,
   ListUsers200,
+  UpdateBusiness200,
+  UpdateBusiness404,
+  UpdateBusinessBodyOne,
+  UpdateBusinessBodyThree,
+  UpdateBusinessBodyTwo,
+  UpdateInvoice200,
+  UpdateInvoice404,
+  UpdateInvoice409,
+  UpdateInvoiceBodyOne,
+  UpdateInvoiceBodyThree,
+  UpdateInvoiceBodyTwo,
   UpdateUser200,
   UpdateUser404,
   UpdateUser409,
@@ -1152,6 +1189,1340 @@ export const useDeleteUser = <
   queryClient?: QueryClient,
 ): UseMutationResult<Awaited<ReturnType<typeof deleteUser>>, TError, { id: string }, TContext> => {
   return useMutation(getDeleteUserMutationOptions(options), queryClient);
+};
+
+export type listBusinessesResponse200 = {
+  data: ListBusinesses200;
+  status: 200;
+};
+
+export type listBusinessesResponseSuccess = listBusinessesResponse200 & {
+  headers: Headers;
+};
+
+export type listBusinessesResponse = listBusinessesResponseSuccess;
+
+export const getListBusinessesUrl = () => {
+  return `http://localhost:3002/businesses`;
+};
+
+/**
+ * @summary List businesses
+ */
+export const listBusinesses = async (options?: RequestInit): Promise<listBusinessesResponse> => {
+  return apiFetch<listBusinessesResponse>(getListBusinessesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListBusinessesQueryKey = () => {
+  return [`http://localhost:3002/businesses`] as const;
+};
+
+export const getListBusinessesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listBusinesses>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listBusinesses>>, TError, TData>>;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListBusinessesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listBusinesses>>> = ({ signal }) =>
+    listBusinesses({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listBusinesses>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListBusinessesQueryResult = NonNullable<Awaited<ReturnType<typeof listBusinesses>>>;
+export type ListBusinessesQueryError = unknown;
+
+export function useListBusinesses<
+  TData = Awaited<ReturnType<typeof listBusinesses>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listBusinesses>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listBusinesses>>,
+          TError,
+          Awaited<ReturnType<typeof listBusinesses>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListBusinesses<
+  TData = Awaited<ReturnType<typeof listBusinesses>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listBusinesses>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listBusinesses>>,
+          TError,
+          Awaited<ReturnType<typeof listBusinesses>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListBusinesses<
+  TData = Awaited<ReturnType<typeof listBusinesses>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listBusinesses>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List businesses
+ */
+
+export function useListBusinesses<
+  TData = Awaited<ReturnType<typeof listBusinesses>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listBusinesses>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListBusinessesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createBusinessResponse201 = {
+  data: CreateBusiness201;
+  status: 201;
+};
+
+export type createBusinessResponse500 = {
+  data: CreateBusiness500;
+  status: 500;
+};
+
+export type createBusinessResponseSuccess = createBusinessResponse201 & {
+  headers: Headers;
+};
+export type createBusinessResponseError = createBusinessResponse500 & {
+  headers: Headers;
+};
+
+export type createBusinessResponse = createBusinessResponseSuccess | createBusinessResponseError;
+
+export const getCreateBusinessUrl = () => {
+  return `http://localhost:3002/businesses`;
+};
+
+/**
+ * @summary Create business
+ */
+export const createBusiness = async (
+  createBusinessBody: CreateBusinessBodyOne | CreateBusinessBodyTwo | CreateBusinessBodyThree,
+  options?: RequestInit,
+): Promise<createBusinessResponse> => {
+  return apiFetch<createBusinessResponse>(getCreateBusinessUrl(), {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(createBusinessBody),
+  });
+};
+
+export const getCreateBusinessMutationOptions = <
+  TError = CreateBusiness500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createBusiness>>,
+    TError,
+    { data: CreateBusinessBodyOne | CreateBusinessBodyTwo | CreateBusinessBodyThree },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createBusiness>>,
+  TError,
+  { data: CreateBusinessBodyOne | CreateBusinessBodyTwo | CreateBusinessBodyThree },
+  TContext
+> => {
+  const mutationKey = ["createBusiness"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createBusiness>>,
+    { data: CreateBusinessBodyOne | CreateBusinessBodyTwo | CreateBusinessBodyThree }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createBusiness(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateBusinessMutationResult = NonNullable<Awaited<ReturnType<typeof createBusiness>>>;
+export type CreateBusinessMutationBody =
+  | CreateBusinessBodyOne
+  | CreateBusinessBodyTwo
+  | CreateBusinessBodyThree;
+export type CreateBusinessMutationError = CreateBusiness500;
+
+/**
+ * @summary Create business
+ */
+export const useCreateBusiness = <TError = CreateBusiness500, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createBusiness>>,
+      TError,
+      { data: CreateBusinessBodyOne | CreateBusinessBodyTwo | CreateBusinessBodyThree },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createBusiness>>,
+  TError,
+  { data: CreateBusinessBodyOne | CreateBusinessBodyTwo | CreateBusinessBodyThree },
+  TContext
+> => {
+  return useMutation(getCreateBusinessMutationOptions(options), queryClient);
+};
+
+export type getBusinessByIdResponse200 = {
+  data: GetBusinessById200;
+  status: 200;
+};
+
+export type getBusinessByIdResponse404 = {
+  data: GetBusinessById404;
+  status: 404;
+};
+
+export type getBusinessByIdResponseSuccess = getBusinessByIdResponse200 & {
+  headers: Headers;
+};
+export type getBusinessByIdResponseError = getBusinessByIdResponse404 & {
+  headers: Headers;
+};
+
+export type getBusinessByIdResponse = getBusinessByIdResponseSuccess | getBusinessByIdResponseError;
+
+export const getGetBusinessByIdUrl = (id: string) => {
+  return `http://localhost:3002/businesses/${id}`;
+};
+
+/**
+ * @summary Get business by id
+ */
+export const getBusinessById = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getBusinessByIdResponse> => {
+  return apiFetch<getBusinessByIdResponse>(getGetBusinessByIdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetBusinessByIdQueryKey = (id: string) => {
+  return [`http://localhost:3002/businesses/${id}`] as const;
+};
+
+export const getGetBusinessByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBusinessById>>,
+  TError = GetBusinessById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getBusinessById>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetBusinessByIdQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBusinessById>>> = ({ signal }) =>
+    getBusinessById(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getBusinessById>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type GetBusinessByIdQueryResult = NonNullable<Awaited<ReturnType<typeof getBusinessById>>>;
+export type GetBusinessByIdQueryError = GetBusinessById404;
+
+export function useGetBusinessById<
+  TData = Awaited<ReturnType<typeof getBusinessById>>,
+  TError = GetBusinessById404,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getBusinessById>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getBusinessById>>,
+          TError,
+          Awaited<ReturnType<typeof getBusinessById>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetBusinessById<
+  TData = Awaited<ReturnType<typeof getBusinessById>>,
+  TError = GetBusinessById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getBusinessById>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getBusinessById>>,
+          TError,
+          Awaited<ReturnType<typeof getBusinessById>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetBusinessById<
+  TData = Awaited<ReturnType<typeof getBusinessById>>,
+  TError = GetBusinessById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getBusinessById>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get business by id
+ */
+
+export function useGetBusinessById<
+  TData = Awaited<ReturnType<typeof getBusinessById>>,
+  TError = GetBusinessById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getBusinessById>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetBusinessByIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type updateBusinessResponse200 = {
+  data: UpdateBusiness200;
+  status: 200;
+};
+
+export type updateBusinessResponse404 = {
+  data: UpdateBusiness404;
+  status: 404;
+};
+
+export type updateBusinessResponseSuccess = updateBusinessResponse200 & {
+  headers: Headers;
+};
+export type updateBusinessResponseError = updateBusinessResponse404 & {
+  headers: Headers;
+};
+
+export type updateBusinessResponse = updateBusinessResponseSuccess | updateBusinessResponseError;
+
+export const getUpdateBusinessUrl = (id: string) => {
+  return `http://localhost:3002/businesses/${id}`;
+};
+
+/**
+ * @summary Update business
+ */
+export const updateBusiness = async (
+  id: string,
+  updateBusinessBody: UpdateBusinessBodyOne | UpdateBusinessBodyTwo | UpdateBusinessBodyThree,
+  options?: RequestInit,
+): Promise<updateBusinessResponse> => {
+  return apiFetch<updateBusinessResponse>(getUpdateBusinessUrl(id), {
+    ...options,
+    method: "PATCH",
+    body: JSON.stringify(updateBusinessBody),
+  });
+};
+
+export const getUpdateBusinessMutationOptions = <
+  TError = UpdateBusiness404,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateBusiness>>,
+    TError,
+    { id: string; data: UpdateBusinessBodyOne | UpdateBusinessBodyTwo | UpdateBusinessBodyThree },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateBusiness>>,
+  TError,
+  { id: string; data: UpdateBusinessBodyOne | UpdateBusinessBodyTwo | UpdateBusinessBodyThree },
+  TContext
+> => {
+  const mutationKey = ["updateBusiness"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateBusiness>>,
+    { id: string; data: UpdateBusinessBodyOne | UpdateBusinessBodyTwo | UpdateBusinessBodyThree }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateBusiness(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateBusinessMutationResult = NonNullable<Awaited<ReturnType<typeof updateBusiness>>>;
+export type UpdateBusinessMutationBody =
+  | UpdateBusinessBodyOne
+  | UpdateBusinessBodyTwo
+  | UpdateBusinessBodyThree;
+export type UpdateBusinessMutationError = UpdateBusiness404;
+
+/**
+ * @summary Update business
+ */
+export const useUpdateBusiness = <TError = UpdateBusiness404, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateBusiness>>,
+      TError,
+      { id: string; data: UpdateBusinessBodyOne | UpdateBusinessBodyTwo | UpdateBusinessBodyThree },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateBusiness>>,
+  TError,
+  { id: string; data: UpdateBusinessBodyOne | UpdateBusinessBodyTwo | UpdateBusinessBodyThree },
+  TContext
+> => {
+  return useMutation(getUpdateBusinessMutationOptions(options), queryClient);
+};
+
+export type deleteBusinessResponse200 = {
+  data: DeleteBusiness200;
+  status: 200;
+};
+
+export type deleteBusinessResponse404 = {
+  data: DeleteBusiness404;
+  status: 404;
+};
+
+export type deleteBusinessResponse409 = {
+  data: DeleteBusiness409;
+  status: 409;
+};
+
+export type deleteBusinessResponseSuccess = deleteBusinessResponse200 & {
+  headers: Headers;
+};
+export type deleteBusinessResponseError = (
+  | deleteBusinessResponse404
+  | deleteBusinessResponse409
+) & {
+  headers: Headers;
+};
+
+export type deleteBusinessResponse = deleteBusinessResponseSuccess | deleteBusinessResponseError;
+
+export const getDeleteBusinessUrl = (id: string) => {
+  return `http://localhost:3002/businesses/${id}`;
+};
+
+/**
+ * @summary Delete business
+ */
+export const deleteBusiness = async (
+  id: string,
+  options?: RequestInit,
+): Promise<deleteBusinessResponse> => {
+  return apiFetch<deleteBusinessResponse>(getDeleteBusinessUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteBusinessMutationOptions = <
+  TError = DeleteBusiness404 | DeleteBusiness409,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteBusiness>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteBusiness>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteBusiness"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteBusiness>>, { id: string }> = (
+    props,
+  ) => {
+    const { id } = props ?? {};
+
+    return deleteBusiness(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteBusinessMutationResult = NonNullable<Awaited<ReturnType<typeof deleteBusiness>>>;
+
+export type DeleteBusinessMutationError = DeleteBusiness404 | DeleteBusiness409;
+
+/**
+ * @summary Delete business
+ */
+export const useDeleteBusiness = <
+  TError = DeleteBusiness404 | DeleteBusiness409,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteBusiness>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteBusiness>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(getDeleteBusinessMutationOptions(options), queryClient);
+};
+
+export type getPublicInvoiceByTokenResponse200 = {
+  data: GetPublicInvoiceByToken200;
+  status: 200;
+};
+
+export type getPublicInvoiceByTokenResponse404 = {
+  data: GetPublicInvoiceByToken404;
+  status: 404;
+};
+
+export type getPublicInvoiceByTokenResponseSuccess = getPublicInvoiceByTokenResponse200 & {
+  headers: Headers;
+};
+export type getPublicInvoiceByTokenResponseError = getPublicInvoiceByTokenResponse404 & {
+  headers: Headers;
+};
+
+export type getPublicInvoiceByTokenResponse =
+  | getPublicInvoiceByTokenResponseSuccess
+  | getPublicInvoiceByTokenResponseError;
+
+export const getGetPublicInvoiceByTokenUrl = (token: string) => {
+  return `http://localhost:3002/invoices/public/${token}`;
+};
+
+/**
+ * @summary Get public invoice by share token
+ */
+export const getPublicInvoiceByToken = async (
+  token: string,
+  options?: RequestInit,
+): Promise<getPublicInvoiceByTokenResponse> => {
+  return apiFetch<getPublicInvoiceByTokenResponse>(getGetPublicInvoiceByTokenUrl(token), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPublicInvoiceByTokenQueryKey = (token: string) => {
+  return [`http://localhost:3002/invoices/public/${token}`] as const;
+};
+
+export const getGetPublicInvoiceByTokenQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+  TError = GetPublicInvoiceByToken404,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPublicInvoiceByTokenQueryKey(token);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicInvoiceByToken>>> = ({
+    signal,
+  }) => getPublicInvoiceByToken(token, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: token !== null && token !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type GetPublicInvoiceByTokenQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPublicInvoiceByToken>>
+>;
+export type GetPublicInvoiceByTokenQueryError = GetPublicInvoiceByToken404;
+
+export function useGetPublicInvoiceByToken<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+  TError = GetPublicInvoiceByToken404,
+>(
+  token: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+          TError,
+          Awaited<ReturnType<typeof getPublicInvoiceByToken>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPublicInvoiceByToken<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+  TError = GetPublicInvoiceByToken404,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+          TError,
+          Awaited<ReturnType<typeof getPublicInvoiceByToken>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPublicInvoiceByToken<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+  TError = GetPublicInvoiceByToken404,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get public invoice by share token
+ */
+
+export function useGetPublicInvoiceByToken<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+  TError = GetPublicInvoiceByToken404,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetPublicInvoiceByTokenQueryOptions(token, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type listInvoicesResponse200 = {
+  data: ListInvoices200;
+  status: 200;
+};
+
+export type listInvoicesResponseSuccess = listInvoicesResponse200 & {
+  headers: Headers;
+};
+
+export type listInvoicesResponse = listInvoicesResponseSuccess;
+
+export const getListInvoicesUrl = (params?: ListInvoicesParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `http://localhost:3002/invoices?${stringifiedParams}`
+    : `http://localhost:3002/invoices`;
+};
+
+/**
+ * @summary List invoices
+ */
+export const listInvoices = async (
+  params?: ListInvoicesParams,
+  options?: RequestInit,
+): Promise<listInvoicesResponse> => {
+  return apiFetch<listInvoicesResponse>(getListInvoicesUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListInvoicesQueryKey = (params?: ListInvoicesParams) => {
+  return [`http://localhost:3002/invoices`, ...(params ? [params] : [])] as const;
+};
+
+export const getListInvoicesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInvoices>>,
+  TError = unknown,
+>(
+  params?: ListInvoicesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listInvoices>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInvoicesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInvoices>>> = ({ signal }) =>
+    listInvoices(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInvoices>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInvoicesQueryResult = NonNullable<Awaited<ReturnType<typeof listInvoices>>>;
+export type ListInvoicesQueryError = unknown;
+
+export function useListInvoices<TData = Awaited<ReturnType<typeof listInvoices>>, TError = unknown>(
+  params: undefined | ListInvoicesParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listInvoices>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInvoices>>,
+          TError,
+          Awaited<ReturnType<typeof listInvoices>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInvoices<TData = Awaited<ReturnType<typeof listInvoices>>, TError = unknown>(
+  params?: ListInvoicesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listInvoices>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInvoices>>,
+          TError,
+          Awaited<ReturnType<typeof listInvoices>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInvoices<TData = Awaited<ReturnType<typeof listInvoices>>, TError = unknown>(
+  params?: ListInvoicesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listInvoices>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List invoices
+ */
+
+export function useListInvoices<TData = Awaited<ReturnType<typeof listInvoices>>, TError = unknown>(
+  params?: ListInvoicesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listInvoices>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInvoicesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createInvoiceResponse201 = {
+  data: CreateInvoice201;
+  status: 201;
+};
+
+export type createInvoiceResponse404 = {
+  data: CreateInvoice404;
+  status: 404;
+};
+
+export type createInvoiceResponse500 = {
+  data: CreateInvoice500;
+  status: 500;
+};
+
+export type createInvoiceResponseSuccess = createInvoiceResponse201 & {
+  headers: Headers;
+};
+export type createInvoiceResponseError = (createInvoiceResponse404 | createInvoiceResponse500) & {
+  headers: Headers;
+};
+
+export type createInvoiceResponse = createInvoiceResponseSuccess | createInvoiceResponseError;
+
+export const getCreateInvoiceUrl = () => {
+  return `http://localhost:3002/invoices`;
+};
+
+/**
+ * @summary Create invoice
+ */
+export const createInvoice = async (
+  createInvoiceBody: CreateInvoiceBodyOne | CreateInvoiceBodyTwo | CreateInvoiceBodyThree,
+  options?: RequestInit,
+): Promise<createInvoiceResponse> => {
+  return apiFetch<createInvoiceResponse>(getCreateInvoiceUrl(), {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(createInvoiceBody),
+  });
+};
+
+export const getCreateInvoiceMutationOptions = <
+  TError = CreateInvoice404 | CreateInvoice500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createInvoice>>,
+    TError,
+    { data: CreateInvoiceBodyOne | CreateInvoiceBodyTwo | CreateInvoiceBodyThree },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createInvoice>>,
+  TError,
+  { data: CreateInvoiceBodyOne | CreateInvoiceBodyTwo | CreateInvoiceBodyThree },
+  TContext
+> => {
+  const mutationKey = ["createInvoice"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createInvoice>>,
+    { data: CreateInvoiceBodyOne | CreateInvoiceBodyTwo | CreateInvoiceBodyThree }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createInvoice(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateInvoiceMutationResult = NonNullable<Awaited<ReturnType<typeof createInvoice>>>;
+export type CreateInvoiceMutationBody =
+  | CreateInvoiceBodyOne
+  | CreateInvoiceBodyTwo
+  | CreateInvoiceBodyThree;
+export type CreateInvoiceMutationError = CreateInvoice404 | CreateInvoice500;
+
+/**
+ * @summary Create invoice
+ */
+export const useCreateInvoice = <TError = CreateInvoice404 | CreateInvoice500, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createInvoice>>,
+      TError,
+      { data: CreateInvoiceBodyOne | CreateInvoiceBodyTwo | CreateInvoiceBodyThree },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createInvoice>>,
+  TError,
+  { data: CreateInvoiceBodyOne | CreateInvoiceBodyTwo | CreateInvoiceBodyThree },
+  TContext
+> => {
+  return useMutation(getCreateInvoiceMutationOptions(options), queryClient);
+};
+
+export type getInvoiceByIdResponse200 = {
+  data: GetInvoiceById200;
+  status: 200;
+};
+
+export type getInvoiceByIdResponse404 = {
+  data: GetInvoiceById404;
+  status: 404;
+};
+
+export type getInvoiceByIdResponseSuccess = getInvoiceByIdResponse200 & {
+  headers: Headers;
+};
+export type getInvoiceByIdResponseError = getInvoiceByIdResponse404 & {
+  headers: Headers;
+};
+
+export type getInvoiceByIdResponse = getInvoiceByIdResponseSuccess | getInvoiceByIdResponseError;
+
+export const getGetInvoiceByIdUrl = (id: string) => {
+  return `http://localhost:3002/invoices/${id}`;
+};
+
+/**
+ * @summary Get invoice by id
+ */
+export const getInvoiceById = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getInvoiceByIdResponse> => {
+  return apiFetch<getInvoiceByIdResponse>(getGetInvoiceByIdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetInvoiceByIdQueryKey = (id: string) => {
+  return [`http://localhost:3002/invoices/${id}`] as const;
+};
+
+export const getGetInvoiceByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInvoiceById>>,
+  TError = GetInvoiceById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoiceById>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInvoiceByIdQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInvoiceById>>> = ({ signal }) =>
+    getInvoiceById(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getInvoiceById>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type GetInvoiceByIdQueryResult = NonNullable<Awaited<ReturnType<typeof getInvoiceById>>>;
+export type GetInvoiceByIdQueryError = GetInvoiceById404;
+
+export function useGetInvoiceById<
+  TData = Awaited<ReturnType<typeof getInvoiceById>>,
+  TError = GetInvoiceById404,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoiceById>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInvoiceById>>,
+          TError,
+          Awaited<ReturnType<typeof getInvoiceById>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInvoiceById<
+  TData = Awaited<ReturnType<typeof getInvoiceById>>,
+  TError = GetInvoiceById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoiceById>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInvoiceById>>,
+          TError,
+          Awaited<ReturnType<typeof getInvoiceById>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInvoiceById<
+  TData = Awaited<ReturnType<typeof getInvoiceById>>,
+  TError = GetInvoiceById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoiceById>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get invoice by id
+ */
+
+export function useGetInvoiceById<
+  TData = Awaited<ReturnType<typeof getInvoiceById>>,
+  TError = GetInvoiceById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvoiceById>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInvoiceByIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type updateInvoiceResponse200 = {
+  data: UpdateInvoice200;
+  status: 200;
+};
+
+export type updateInvoiceResponse404 = {
+  data: UpdateInvoice404;
+  status: 404;
+};
+
+export type updateInvoiceResponse409 = {
+  data: UpdateInvoice409;
+  status: 409;
+};
+
+export type updateInvoiceResponseSuccess = updateInvoiceResponse200 & {
+  headers: Headers;
+};
+export type updateInvoiceResponseError = (updateInvoiceResponse404 | updateInvoiceResponse409) & {
+  headers: Headers;
+};
+
+export type updateInvoiceResponse = updateInvoiceResponseSuccess | updateInvoiceResponseError;
+
+export const getUpdateInvoiceUrl = (id: string) => {
+  return `http://localhost:3002/invoices/${id}`;
+};
+
+/**
+ * @summary Update invoice
+ */
+export const updateInvoice = async (
+  id: string,
+  updateInvoiceBody: UpdateInvoiceBodyOne | UpdateInvoiceBodyTwo | UpdateInvoiceBodyThree,
+  options?: RequestInit,
+): Promise<updateInvoiceResponse> => {
+  return apiFetch<updateInvoiceResponse>(getUpdateInvoiceUrl(id), {
+    ...options,
+    method: "PATCH",
+    body: JSON.stringify(updateInvoiceBody),
+  });
+};
+
+export const getUpdateInvoiceMutationOptions = <
+  TError = UpdateInvoice404 | UpdateInvoice409,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateInvoice>>,
+    TError,
+    { id: string; data: UpdateInvoiceBodyOne | UpdateInvoiceBodyTwo | UpdateInvoiceBodyThree },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateInvoice>>,
+  TError,
+  { id: string; data: UpdateInvoiceBodyOne | UpdateInvoiceBodyTwo | UpdateInvoiceBodyThree },
+  TContext
+> => {
+  const mutationKey = ["updateInvoice"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateInvoice>>,
+    { id: string; data: UpdateInvoiceBodyOne | UpdateInvoiceBodyTwo | UpdateInvoiceBodyThree }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateInvoice(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateInvoiceMutationResult = NonNullable<Awaited<ReturnType<typeof updateInvoice>>>;
+export type UpdateInvoiceMutationBody =
+  | UpdateInvoiceBodyOne
+  | UpdateInvoiceBodyTwo
+  | UpdateInvoiceBodyThree;
+export type UpdateInvoiceMutationError = UpdateInvoice404 | UpdateInvoice409;
+
+/**
+ * @summary Update invoice
+ */
+export const useUpdateInvoice = <TError = UpdateInvoice404 | UpdateInvoice409, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateInvoice>>,
+      TError,
+      { id: string; data: UpdateInvoiceBodyOne | UpdateInvoiceBodyTwo | UpdateInvoiceBodyThree },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateInvoice>>,
+  TError,
+  { id: string; data: UpdateInvoiceBodyOne | UpdateInvoiceBodyTwo | UpdateInvoiceBodyThree },
+  TContext
+> => {
+  return useMutation(getUpdateInvoiceMutationOptions(options), queryClient);
+};
+
+export type deleteInvoiceResponse200 = {
+  data: DeleteInvoice200;
+  status: 200;
+};
+
+export type deleteInvoiceResponse404 = {
+  data: DeleteInvoice404;
+  status: 404;
+};
+
+export type deleteInvoiceResponse409 = {
+  data: DeleteInvoice409;
+  status: 409;
+};
+
+export type deleteInvoiceResponseSuccess = deleteInvoiceResponse200 & {
+  headers: Headers;
+};
+export type deleteInvoiceResponseError = (deleteInvoiceResponse404 | deleteInvoiceResponse409) & {
+  headers: Headers;
+};
+
+export type deleteInvoiceResponse = deleteInvoiceResponseSuccess | deleteInvoiceResponseError;
+
+export const getDeleteInvoiceUrl = (id: string) => {
+  return `http://localhost:3002/invoices/${id}`;
+};
+
+/**
+ * @summary Delete invoice
+ */
+export const deleteInvoice = async (
+  id: string,
+  options?: RequestInit,
+): Promise<deleteInvoiceResponse> => {
+  return apiFetch<deleteInvoiceResponse>(getDeleteInvoiceUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteInvoiceMutationOptions = <
+  TError = DeleteInvoice404 | DeleteInvoice409,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteInvoice>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteInvoice>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteInvoice"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteInvoice>>, { id: string }> = (
+    props,
+  ) => {
+    const { id } = props ?? {};
+
+    return deleteInvoice(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteInvoiceMutationResult = NonNullable<Awaited<ReturnType<typeof deleteInvoice>>>;
+
+export type DeleteInvoiceMutationError = DeleteInvoice404 | DeleteInvoice409;
+
+/**
+ * @summary Delete invoice
+ */
+export const useDeleteInvoice = <TError = DeleteInvoice404 | DeleteInvoice409, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteInvoice>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteInvoice>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(getDeleteInvoiceMutationOptions(options), queryClient);
 };
 
 export type getServiceRootResponse200 = {

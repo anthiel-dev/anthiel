@@ -29,6 +29,7 @@ import {
   useCreateUser,
   useDeleteUser,
   useGetUserById,
+  useListBusinesses,
   useListRoles,
   useListUsers,
   useUpdateUser,
@@ -71,12 +72,14 @@ export function UsersPage() {
 
   const usersQuery = useListUsers();
   const rolesQuery = useListRoles();
+  const businessesQuery = useListBusinesses();
   const userDetailQuery = useGetUserById(selectedUser?.id ?? "", {
     query: { enabled: Boolean(selectedUser && (detailOpen || editOpen)) },
   });
 
   const rows = usersQuery.data?.data.data ?? EMPTY_USERS;
   const roles = rolesQuery.data?.data.data ?? EMPTY_ROLES;
+  const businesses = businessesQuery.data?.data.data ?? [];
   const searchableRows = useMemo(
     () => rows.map((user) => ({ ...user, roleName: getRoleName(user) })),
     [rows],
@@ -154,7 +157,8 @@ export function UsersPage() {
 
   const detailUser =
     userDetailQuery.data?.status === 200 ? userDetailQuery.data.data.data : selectedUser;
-  const pageError = usersQuery.error ?? rolesQuery.error ?? deleteMutation.error;
+  const pageError =
+    usersQuery.error ?? rolesQuery.error ?? businessesQuery.error ?? deleteMutation.error;
 
   return (
     <div className="flex flex-col gap-6">
@@ -186,6 +190,7 @@ export function UsersPage() {
         open={createOpen}
         onOpenChange={setCreateOpen}
         roles={roles}
+        businesses={businesses}
         pending={createMutation.isPending}
         error={
           createMutation.error
@@ -201,6 +206,7 @@ export function UsersPage() {
               email: values.email,
               password: values.password,
               roleId: values.roleId,
+              businessId: values.businessId,
             },
           });
         }}
@@ -214,6 +220,7 @@ export function UsersPage() {
         }}
         user={detailUser}
         roles={roles}
+        businesses={businesses}
         pending={updateMutation.isPending}
         error={
           updateMutation.error
@@ -229,6 +236,7 @@ export function UsersPage() {
               username: values.username,
               email: values.email,
               roleId: values.roleId,
+              businessId: values.businessId,
             },
           });
         }}

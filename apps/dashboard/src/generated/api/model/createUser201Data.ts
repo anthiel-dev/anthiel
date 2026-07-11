@@ -5,6 +5,7 @@
  * Development documentation
  * OpenAPI spec version: 0.0.1
  */
+import type { CreateUser201DataBusiness } from "./createUser201DataBusiness.ts";
 import type { CreateUser201DataRole } from "./createUser201DataRole.ts";
 import type { CreateUser201DataStatus } from "./createUser201DataStatus.ts";
 
@@ -21,6 +22,10 @@ export type CreateUser201Data = {
   roleId: string | null;
   /** @nullable */
   role: CreateUser201DataRole;
+  /** @nullable */
+  businessId: string | null;
+  /** @nullable */
+  business: CreateUser201DataBusiness;
   status: CreateUser201DataStatus;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
   createdAt: string;

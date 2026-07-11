@@ -16,6 +16,12 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
   const { session } = Route.useRouteContext();
+  const role =
+    typeof session.user.role === "string"
+      ? session.user.role
+      : Array.isArray(session.user.role)
+        ? session.user.role.join(",")
+        : null;
 
   return (
     <SidebarProvider>
@@ -24,6 +30,7 @@ function AuthenticatedLayout() {
           name: session.user.name,
           email: session.user.email,
           avatar: session.user.image,
+          role,
         }}
       />
       <SidebarInset>

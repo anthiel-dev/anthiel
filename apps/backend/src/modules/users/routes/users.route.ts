@@ -65,6 +65,12 @@ export const usersRoutes = (db: AppDb) => {
           if (result.error === "role_not_found") {
             return status(404, { error: "Role not found" });
           }
+          if (result.error === "business_not_found") {
+            return status(404, { error: "Business not found" });
+          }
+          if (result.error === "business_required") {
+            return status(409, { error: "Client users must be assigned to a business" });
+          }
           if (result.error === "email_taken") {
             return status(409, { error: "Email is already in use" });
           }
@@ -102,6 +108,12 @@ export const usersRoutes = (db: AppDb) => {
           }
           if (result.error === "role_not_found") {
             return status(404, { error: "Role not found" });
+          }
+          if (result.error === "business_not_found") {
+            return status(404, { error: "Business not found" });
+          }
+          if (result.error === "business_required") {
+            return status(409, { error: "Client users must be assigned to a business" });
           }
           if (result.error === "cannot_remove_last_admin") {
             return status(409, { error: "The last admin cannot be demoted" });

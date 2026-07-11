@@ -6,6 +6,8 @@ import * as z from "zod";
 import { betterAuthPlugin } from "./core/better-auth.plugin";
 import { db } from "./database";
 import { env } from "./env";
+import { businessesRoutes } from "./modules/businesses";
+import { invoicesRoutes } from "./modules/invoices";
 import { rbacRoutes } from "./modules/rbac";
 import { usersRoutes } from "./modules/users";
 
@@ -32,6 +34,8 @@ export const app = new Elysia()
           { name: "Auth", description: "Session and identity" },
           { name: "RBAC", description: "Roles, permissions, and resources" },
           { name: "Users", description: "User administration" },
+          { name: "Businesses", description: "Client business administration" },
+          { name: "Invoices", description: "Invoice management" },
         ],
       },
       mapJsonSchema: {
@@ -43,6 +47,8 @@ export const app = new Elysia()
   .use(betterAuthPlugin)
   .use(rbacRoutes(db))
   .use(usersRoutes(db))
+  .use(businessesRoutes(db))
+  .use(invoicesRoutes(db))
   .get(
     "/",
     () => ({

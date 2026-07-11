@@ -11,13 +11,25 @@ const usernameSchema = z
   .max(32)
   .regex(/^[a-zA-Z0-9._-]+$/, "Username may only contain letters, numbers, '.', '_' and '-'");
 
-export const createUserBodySchema = z.object({
-  name: z.string().trim().min(1).max(100),
-  username: usernameSchema,
-  email: z.string().trim().email().max(320),
-  password: z.string().min(8).max(128),
-  roleId: z.string().min(1),
-});
+export const createUserBodySchema = z
+  .object({
+    name: z.string().trim().min(1).max(100),
+    username: usernameSchema,
+    email: z.string().trim().email().max(320),
+    password: z.string().min(8).max(128),
+    roleId: z.string().min(1),
+    businessId: z.string().min(1).nullable().optional(),
+  })
+  .superRefine((body, ctx) => {
+    // businessId required when assigning client role — validated in service against role key
+    if (body.businessId === "") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Business is required",
+        path: ["businessId"],
+      });
+    }
+  });
 
 export const updateUserBodySchema = z
   .object({
@@ -26,6 +38,7 @@ export const updateUserBodySchema = z
     email: z.string().trim().email().max(320).optional(),
     password: z.string().min(8).max(128).optional(),
     roleId: z.string().min(1).optional(),
+    businessId: z.string().min(1).nullable().optional(),
   })
   .refine((body) => Object.values(body).some((value) => value !== undefined), {
     message: "At least one field is required",

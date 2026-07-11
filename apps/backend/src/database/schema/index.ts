@@ -7,6 +7,13 @@ export {
   userRelations,
   verification,
 } from "./auth.schema";
+export { businesses, businessesRelations } from "./businesses.schema";
+export {
+  invoiceLineItems,
+  invoiceLineItemsRelations,
+  invoices,
+  invoicesRelations,
+} from "./invoices.schema";
 export {
   permissions,
   permissionsRelations,

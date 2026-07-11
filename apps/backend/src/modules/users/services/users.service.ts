@@ -3,17 +3,20 @@ import { and, eq, ne } from "drizzle-orm";
 import type { AppDb } from "@/database";
 
 import { auth } from "@/core/auth";
-import { roles, user as userTable } from "@/database/schema";
+import { businesses, roles, user as userTable } from "@/database/schema";
 import { ROLE } from "@/modules/rbac";
 
 import type { CreateUserBody, UpdateUserBody } from "../contracts/request.contract";
 import type { UserDto } from "../contracts/response.contract";
 
-type UserWithRoleRow = typeof userTable.$inferSelect & {
+type UserWithRelations = typeof userTable.$inferSelect & {
   assignedRole: typeof roles.$inferSelect | null;
+  business: { id: string; name: string } | null;
 };
 
 type UserMutationError =
+  | "business_not_found"
+  | "business_required"
   | "cannot_remove_last_admin"
   | "email_taken"
   | "role_not_found"
@@ -31,11 +34,14 @@ export class UsersService {
 
   async listUsers(): Promise<UserDto[]> {
     const rows = await this.deps.db.query.user.findMany({
-      with: { assignedRole: true },
+      with: {
+        assignedRole: true,
+        business: { columns: { id: true, name: true } },
+      },
       orderBy: (table, { asc }) => [asc(table.name), asc(table.email)],
     });
 
-    return rows.map((row) => this.toDto(row));
+    return rows.map((row) => this.toDto(row as UserWithRelations));
   }
 
   async getUserById(id: string): Promise<UserDto | null> {
@@ -46,6 +52,9 @@ export class UsersService {
   async createUser(input: CreateUserBody): Promise<UserMutationResult> {
     const role = await this.findRoleById(input.roleId);
     if (!role) return { error: "role_not_found" };
+
+    const businessId = await this.resolveBusinessId(role.key, input.businessId);
+    if (!businessId.ok) return { error: businessId.error };
 
     const existingEmail = await this.deps.db.query.user.findFirst({
       where: eq(userTable.email, input.email),
@@ -78,6 +87,7 @@ export class UsersService {
         roleId: role.id,
         username: input.username,
         displayUsername: input.username,
+        businessId: businessId.businessId,
       })
       .where(eq(userTable.id, created.user.id));
 
@@ -104,6 +114,15 @@ export class UsersService {
       (await this.isLastAdmin())
     ) {
       return { error: "cannot_remove_last_admin" };
+    }
+
+    const nextRoleKey = role?.key ?? existingUser.role;
+    const businessIdInput =
+      input.businessId !== undefined ? input.businessId : existingUser.businessId;
+
+    if (nextRoleKey === ROLE.client) {
+      const businessId = await this.resolveBusinessId(ROLE.client, businessIdInput);
+      if (!businessId.ok) return { error: businessId.error };
     }
 
     if (input.email) {
@@ -139,6 +158,7 @@ export class UsersService {
       role?: string;
       roleId?: string;
       username?: string;
+      businessId?: string | null;
     } = {};
 
     if (input.name !== undefined) changes.name = input.name;
@@ -150,6 +170,17 @@ export class UsersService {
     if (role) {
       changes.role = role.key;
       changes.roleId = role.id;
+    }
+
+    if (nextRoleKey === ROLE.admin) {
+      if (input.businessId !== undefined || role?.key === ROLE.admin) {
+        changes.businessId = null;
+      }
+    } else if (input.businessId !== undefined || role?.key === ROLE.client) {
+      const resolved = await this.resolveBusinessId(ROLE.client, businessIdInput);
+      if (resolved.ok) {
+        changes.businessId = resolved.businessId;
+      }
     }
 
     if (Object.keys(changes).length > 0) {
@@ -180,11 +211,32 @@ export class UsersService {
     return { success: true };
   }
 
-  private findUserById(id: string): Promise<UserWithRoleRow | undefined> {
+  private async resolveBusinessId(
+    roleKey: string,
+    businessId: string | null | undefined,
+  ): Promise<
+    | { ok: true; businessId: string | null }
+    | { ok: false; error: "business_required" | "business_not_found" }
+  > {
+    if (roleKey !== ROLE.client) return { ok: true, businessId: null };
+    if (!businessId) return { ok: false, error: "business_required" };
+
+    const business = await this.deps.db.query.businesses.findFirst({
+      where: eq(businesses.id, businessId),
+      columns: { id: true },
+    });
+    if (!business) return { ok: false, error: "business_not_found" };
+    return { ok: true, businessId: business.id };
+  }
+
+  private findUserById(id: string): Promise<UserWithRelations | undefined> {
     return this.deps.db.query.user.findFirst({
       where: eq(userTable.id, id),
-      with: { assignedRole: true },
-    });
+      with: {
+        assignedRole: true,
+        business: { columns: { id: true, name: true } },
+      },
+    }) as Promise<UserWithRelations | undefined>;
   }
 
   private findRoleById(id: string) {
@@ -203,7 +255,7 @@ export class UsersService {
     return admins.length === 1;
   }
 
-  private toDto(row: UserWithRoleRow): UserDto {
+  private toDto(row: UserWithRelations): UserDto {
     return {
       id: row.id,
       name: row.name,
@@ -217,6 +269,13 @@ export class UsersService {
             id: row.assignedRole.id,
             key: row.assignedRole.key,
             name: row.assignedRole.name,
+          }
+        : null,
+      businessId: row.businessId,
+      business: row.business
+        ? {
+            id: row.business.id,
+            name: row.business.name,
           }
         : null,
       status: row.banned ? "banned" : "active",

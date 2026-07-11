@@ -12,6 +12,7 @@ import {
 } from "@anthiel/ui/components/sidebar";
 import { Link } from "@tanstack/react-router";
 import {
+  Building2Icon,
   FileTextIcon,
   GalleryVerticalEndIcon,
   KeyRoundIcon,
@@ -38,6 +39,11 @@ const platformItems = [
 
 const manageItems = [
   {
+    title: "Businesses",
+    to: "/dashboard/businesses" as const,
+    icon: Building2Icon,
+  },
+  {
     title: "Users",
     to: "/dashboard/users" as const,
     icon: UsersIcon,
@@ -59,10 +65,21 @@ type AppSidebarProps = ComponentProps<typeof Sidebar> & {
     name: string;
     email: string;
     avatar?: string | null;
+    role?: string | null;
   };
 };
 
+function isAdminRole(role: string | null | undefined) {
+  if (!role) return false;
+  return role
+    .split(",")
+    .map((value) => value.trim())
+    .includes("admin");
+}
+
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
+  const showManage = isAdminRole(user.role);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -81,7 +98,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavSection label="Platform" items={platformItems} />
-        <NavSection label="Manage" items={manageItems} />
+        {showManage ? <NavSection label="Manage" items={manageItems} /> : null}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

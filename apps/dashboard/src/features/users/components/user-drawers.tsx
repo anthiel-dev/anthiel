@@ -19,7 +19,7 @@ import {
 } from "@anthiel/ui/components/sheet";
 import { useEffect, useState } from "react";
 
-import type { ListRoles200DataItem } from "#/generated/api/model";
+import type { ListBusinesses200DataItem, ListRoles200DataItem } from "#/generated/api/model";
 
 import type { UserRecord } from "../types";
 
@@ -29,6 +29,7 @@ export type UserFormValues = {
   email: string;
   password?: string;
   roleId: string;
+  businessId: string | null;
 };
 
 type UserFormDrawerProps = {
@@ -37,6 +38,7 @@ type UserFormDrawerProps = {
   onOpenChange: (open: boolean) => void;
   user?: UserRecord | null;
   roles: ListRoles200DataItem[];
+  businesses: ListBusinesses200DataItem[];
   pending: boolean;
   error: string | null;
   onSubmit: (values: UserFormValues) => void;
@@ -55,6 +57,7 @@ export function UserFormDrawer({
   onOpenChange,
   user,
   roles,
+  businesses,
   pending,
   error,
   onSubmit,
@@ -64,6 +67,7 @@ export function UserFormDrawer({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [roleId, setRoleId] = useState("");
+  const [businessId, setBusinessId] = useState("");
 
   useEffect(() => {
     if (!open) return;
@@ -72,6 +76,7 @@ export function UserFormDrawer({
     setEmail(mode === "edit" ? (user?.email ?? "") : "");
     setPassword("");
     setRoleId(mode === "edit" ? getInitialRoleId(user) : "");
+    setBusinessId(mode === "edit" ? (user?.businessId ?? "") : "");
   }, [mode, open, user]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -82,11 +87,14 @@ export function UserFormDrawer({
       email: email.trim(),
       password: mode === "create" ? password : undefined,
       roleId,
+      businessId: isClientRole ? businessId || null : null,
     });
   }
 
   const title = mode === "create" ? "Create user" : "Edit user";
   const selectedRole = roles.find((role) => role.id === roleId);
+  const selectedBusiness = businesses.find((business) => business.id === businessId);
+  const isClientRole = selectedRole?.key === "client";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -108,6 +116,7 @@ export function UserFormDrawer({
                   id={`${mode}-user-name`}
                   value={name}
                   onChange={(event) => setName(event.target.value)}
+                  placeholder="Jane Doe"
                   autoComplete="name"
                   required
                   nativeInput
@@ -119,6 +128,7 @@ export function UserFormDrawer({
                   id={`${mode}-user-username`}
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
+                  placeholder="jane.doe"
                   autoComplete="username"
                   minLength={3}
                   maxLength={32}
@@ -134,6 +144,7 @@ export function UserFormDrawer({
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
+                  placeholder="jane@company.com"
                   autoComplete="email"
                   required
                   nativeInput
@@ -147,6 +158,7 @@ export function UserFormDrawer({
                     type="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
+                    placeholder="At least 8 characters"
                     autoComplete="new-password"
                     minLength={8}
                     required
@@ -162,7 +174,9 @@ export function UserFormDrawer({
                   required
                 >
                   <SelectTrigger aria-label="Role">
-                    <SelectValue>{selectedRole?.name ?? "Select a role"}</SelectValue>
+                    <SelectValue placeholder="Select a role">
+                      {selectedRole?.name ?? null}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {roles.map((role) => (
@@ -173,6 +187,29 @@ export function UserFormDrawer({
                   </SelectContent>
                 </Select>
               </Field>
+              {isClientRole ? (
+                <Field>
+                  <FieldLabel>Business</FieldLabel>
+                  <Select
+                    value={businessId || null}
+                    onValueChange={(value) => setBusinessId(value ?? "")}
+                    required
+                  >
+                    <SelectTrigger aria-label="Business">
+                      <SelectValue placeholder="Select a business">
+                        {selectedBusiness?.name ?? null}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {businesses.map((business) => (
+                        <SelectItem key={business.id} value={business.id}>
+                          {business.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              ) : null}
               {error ? <p className="text-destructive text-sm">{error}</p> : null}
             </FieldGroup>
           </SheetPanel>
@@ -180,7 +217,11 @@ export function UserFormDrawer({
             <Button variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" loading={pending} disabled={!roleId}>
+            <Button
+              type="submit"
+              loading={pending}
+              disabled={!roleId || (isClientRole && !businessId)}
+            >
               {mode === "create" ? "Create user" : "Save changes"}
             </Button>
           </SheetFooter>
@@ -247,6 +288,7 @@ export function UserDetailDrawer({
               <DetailRow label="Username" value={user.username ?? "—"} />
               <DetailRow label="Email" value={user.email} />
               <DetailRow label="Role" value={getRoleName(user)} />
+              <DetailRow label="Business" value={user.business?.name ?? "—"} />
               <div className="grid gap-1 border-b py-4">
                 <dt className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
                   Status

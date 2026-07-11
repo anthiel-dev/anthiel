@@ -22,6 +22,20 @@
       "when": 1783767162294,
       "tag": "0002_bizarre_spitfire",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783785263921,
+      "tag": "0003_lazy_true_believers",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1783786000000,
+      "tag": "0004_business_invoice_share",
+      "breakpoints": true
     }
   ]
 }

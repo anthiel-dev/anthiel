@@ -32,6 +32,18 @@ export const RESOURCE_CATALOG = {
     description: "Dashboard access",
     actions: ["access"],
   },
+  invoice: {
+    key: "invoice",
+    name: "Invoice",
+    description: "Invoice management",
+    actions: ["list", "get", "create", "update", "delete"],
+  },
+  business: {
+    key: "business",
+    name: "Business",
+    description: "Business (client company) administration",
+    actions: ["list", "get", "create", "update", "delete"],
+  },
 } as const;
 
 export type ResourceKey = keyof typeof RESOURCE_CATALOG;
@@ -57,6 +69,8 @@ export const ROLE_CATALOG = {
       user: [...RESOURCE_CATALOG.user.actions],
       session: [...RESOURCE_CATALOG.session.actions],
       dashboard: [...RESOURCE_CATALOG.dashboard.actions],
+      invoice: [...RESOURCE_CATALOG.invoice.actions],
+      business: [...RESOURCE_CATALOG.business.actions],
     },
   },
   client: {
@@ -67,6 +81,8 @@ export const ROLE_CATALOG = {
       user: [] as const,
       session: [] as const,
       dashboard: ["access"] as const,
+      invoice: ["list", "get"] as const,
+      business: [] as const,
     },
   },
 } as const satisfies Record<
