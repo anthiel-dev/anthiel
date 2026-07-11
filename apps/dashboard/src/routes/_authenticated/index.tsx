@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { pageMeta } from "#lib/page-meta";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => pageMeta("Dashboard", "Anthiel dashboard"),
   component: HomePage,
 });

@@ -5,7 +5,11 @@ import { useState, type ComponentProps, type FormEvent } from "react";
 
 import { authClient } from "#/lib/auth-client";
 
-export function LoginForm({ className, ...props }: ComponentProps<"div">) {
+type LoginFormProps = ComponentProps<"div"> & {
+  redirectTo?: string;
+};
+
+export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +33,12 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
       return;
     }
 
-    await navigate({ to: "/" });
+    if (redirectTo?.startsWith("/") && !redirectTo.startsWith("//")) {
+      await navigate({ href: redirectTo });
+      return;
+    }
+
+    await navigate({ to: "/dashboard" });
   }
 
   return (
