@@ -19,6 +19,7 @@ import {
   LayoutDashboardIcon,
   ShieldIcon,
   UsersIcon,
+  WalletCardsIcon,
 } from "lucide-react";
 
 import { NavSection } from "#components/nav-section";
@@ -42,6 +43,11 @@ const manageItems = [
     title: "Businesses",
     to: "/dashboard/businesses" as const,
     icon: Building2Icon,
+  },
+  {
+    title: "Payment methods",
+    to: "/dashboard/payment-methods" as const,
+    icon: WalletCardsIcon,
   },
   {
     title: "Users",

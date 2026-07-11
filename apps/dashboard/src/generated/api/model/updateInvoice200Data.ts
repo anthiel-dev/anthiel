@@ -7,6 +7,7 @@
  */
 import type { UpdateInvoice200DataBusiness } from "./updateInvoice200DataBusiness.ts";
 import type { UpdateInvoice200DataLineItemsItem } from "./updateInvoice200DataLineItemsItem.ts";
+import type { UpdateInvoice200DataPaymentMethod } from "./updateInvoice200DataPaymentMethod.ts";
 import type { UpdateInvoice200DataStatus } from "./updateInvoice200DataStatus.ts";
 
 export type UpdateInvoice200Data = {
@@ -15,6 +16,8 @@ export type UpdateInvoice200Data = {
   shareToken: string;
   businessId: string;
   business: UpdateInvoice200DataBusiness;
+  paymentMethodId: string;
+  paymentMethod: UpdateInvoice200DataPaymentMethod;
   createdByUserId: string;
   status: UpdateInvoice200DataStatus;
   currency: string;

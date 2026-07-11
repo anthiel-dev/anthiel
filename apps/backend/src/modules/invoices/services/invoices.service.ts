@@ -2,8 +2,15 @@ import { and, desc, eq, like, ne } from "drizzle-orm";
 
 import type { AppDb } from "@/database";
 import type { InvoiceStatus, ServiceType } from "@/database/schema/invoices.schema";
+import type { PaymentMethodType } from "@/database/schema/payment-methods.schema";
 
-import { businesses, invoiceLineItems, invoices, user as userTable } from "@/database/schema";
+import {
+  businesses,
+  invoiceLineItems,
+  invoices,
+  paymentMethods,
+  user as userTable,
+} from "@/database/schema";
 
 import type {
   CreateInvoiceBody,
@@ -19,15 +26,32 @@ type BusinessRow = {
   id: string;
   name: string;
   email: string | null;
+  address: string | null;
 };
+type PaymentMethodRow = {
+  id: string;
+  method: PaymentMethodType;
+  receiverName: string;
+  accountNumber: string | null;
+};
+
+const businessColumns = { id: true, name: true, email: true, address: true } as const;
+const paymentMethodColumns = {
+  id: true,
+  method: true,
+  receiverName: true,
+  accountNumber: true,
+} as const;
 
 type InvoiceWithRelations = InvoiceRow & {
   lineItems: LineItemRow[];
   business: BusinessRow | null;
+  paymentMethod: PaymentMethodRow | null;
 };
 
 type InvoiceMutationError =
   | "business_not_found"
+  | "payment_method_not_found"
   | "invoice_not_found"
   | "not_editable"
   | "invalid_status_transition"
@@ -85,7 +109,10 @@ export class InvoicesService {
           orderBy: (table, { asc }) => [asc(table.sortOrder)],
         },
         business: {
-          columns: { id: true, name: true, email: true },
+          columns: businessColumns,
+        },
+        paymentMethod: {
+          columns: paymentMethodColumns,
         },
       },
       orderBy: [desc(invoices.createdAt)],
@@ -107,15 +134,18 @@ export class InvoicesService {
     return this.toDto(row);
   }
 
-  async getPublicInvoiceByToken(token: string): Promise<PublicInvoiceDto | null> {
+  async getPublicInvoiceByNumber(number: string): Promise<PublicInvoiceDto | null> {
     const row = await this.deps.db.query.invoices.findFirst({
-      where: and(eq(invoices.shareToken, token), ne(invoices.status, "draft")),
+      where: and(eq(invoices.number, number), ne(invoices.status, "draft")),
       with: {
         lineItems: {
           orderBy: (table, { asc }) => [asc(table.sortOrder)],
         },
         business: {
-          columns: { id: true, name: true, email: true },
+          columns: businessColumns,
+        },
+        paymentMethod: {
+          columns: paymentMethodColumns,
         },
       },
     });
@@ -131,6 +161,9 @@ export class InvoicesService {
     const business = await this.findBusiness(input.businessId);
     if (!business) return { error: "business_not_found" };
 
+    const paymentMethod = await this.findPaymentMethod(input.paymentMethodId);
+    if (!paymentMethod) return { error: "payment_method_not_found" };
+
     const preparedLines = this.prepareLineItems(input.lineItems);
     const totalAmount = preparedLines.reduce((sum, line) => sum + line.lineAmount, 0);
     const invoiceId = newId();
@@ -142,6 +175,7 @@ export class InvoicesService {
       number,
       shareToken: newShareToken(),
       businessId: input.businessId,
+      paymentMethodId: input.paymentMethodId,
       createdByUserId,
       status: "draft",
       currency: "IDR",
@@ -182,6 +216,7 @@ export class InvoicesService {
 
     const isContentUpdate =
       input.businessId !== undefined ||
+      input.paymentMethodId !== undefined ||
       input.dueDate !== undefined ||
       input.notes !== undefined ||
       input.lineItems !== undefined;
@@ -195,8 +230,14 @@ export class InvoicesService {
       if (!business) return { error: "business_not_found" };
     }
 
+    if (input.paymentMethodId !== undefined) {
+      const paymentMethod = await this.findPaymentMethod(input.paymentMethodId);
+      if (!paymentMethod) return { error: "payment_method_not_found" };
+    }
+
     const changes: {
       businessId?: string;
+      paymentMethodId?: string;
       dueDate?: Date | null;
       notes?: string | null;
       status?: InvoiceStatus;
@@ -204,6 +245,7 @@ export class InvoicesService {
     } = {};
 
     if (input.businessId !== undefined) changes.businessId = input.businessId;
+    if (input.paymentMethodId !== undefined) changes.paymentMethodId = input.paymentMethodId;
     if (input.dueDate !== undefined) {
       changes.dueDate = input.dueDate ? new Date(input.dueDate) : null;
     }
@@ -274,7 +316,14 @@ export class InvoicesService {
   private findBusiness(id: string) {
     return this.deps.db.query.businesses.findFirst({
       where: eq(businesses.id, id),
-      columns: { id: true, name: true, email: true },
+      columns: businessColumns,
+    });
+  }
+
+  private findPaymentMethod(id: string) {
+    return this.deps.db.query.paymentMethods.findFirst({
+      where: eq(paymentMethods.id, id),
+      columns: paymentMethodColumns,
     });
   }
 
@@ -294,7 +343,10 @@ export class InvoicesService {
           orderBy: (table, { asc }) => [asc(table.sortOrder)],
         },
         business: {
-          columns: { id: true, name: true, email: true },
+          columns: businessColumns,
+        },
+        paymentMethod: {
+          columns: paymentMethodColumns,
         },
       },
     }) as Promise<InvoiceWithRelations | undefined>;
@@ -302,6 +354,7 @@ export class InvoicesService {
 
   private toDto(row: InvoiceWithRelations): InvoiceDto {
     const business = row.business;
+    const paymentMethod = row.paymentMethod;
     return {
       id: row.id,
       number: row.number,
@@ -311,6 +364,14 @@ export class InvoicesService {
         id: business?.id ?? row.businessId,
         name: business?.name ?? "Unknown",
         email: business?.email ?? null,
+        address: business?.address ?? null,
+      },
+      paymentMethodId: row.paymentMethodId,
+      paymentMethod: {
+        id: paymentMethod?.id ?? row.paymentMethodId,
+        method: (paymentMethod?.method ?? "bca") as PaymentMethodType,
+        receiverName: paymentMethod?.receiverName ?? "Unknown",
+        accountNumber: paymentMethod?.accountNumber ?? null,
       },
       createdByUserId: row.createdByUserId,
       status: row.status as InvoiceStatus,
@@ -338,6 +399,7 @@ export class InvoicesService {
     return {
       number: full.number,
       business: full.business,
+      paymentMethod: full.paymentMethod,
       status: full.status,
       currency: full.currency,
       totalAmount: full.totalAmount,

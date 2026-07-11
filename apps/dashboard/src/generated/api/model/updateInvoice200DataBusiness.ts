@@ -11,4 +11,6 @@ export type UpdateInvoice200DataBusiness = {
   name: string;
   /** @nullable */
   email: string | null;
+  /** @nullable */
+  address: string | null;
 };

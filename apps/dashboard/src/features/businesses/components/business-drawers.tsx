@@ -1,8 +1,7 @@
-import type { FormEvent } from "react";
-
 import { Button, Field, FieldGroup, FieldLabel, Input } from "@anthiel/ui";
 import {
   Sheet,
+  SheetClose,
   SheetDescription,
   SheetFooter,
   SheetHeader,
@@ -11,11 +10,13 @@ import {
   SheetTitle,
 } from "@anthiel/ui/components/sheet";
 import { Textarea } from "@anthiel/ui/components/textarea";
-import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 import type { BusinessFormValues, BusinessRecord } from "../types";
 
-import { formatDate } from "../types";
+import { businessFormSchema, formatDate } from "../types";
 import { IndonesiaPhoneInput } from "./indonesia-phone-input";
 
 type BusinessFormDrawerProps = {
@@ -28,6 +29,11 @@ type BusinessFormDrawerProps = {
   onSubmit: (values: BusinessFormValues) => void;
 };
 
+function FieldMessage({ message }: { message?: string }) {
+  if (!message) return null;
+  return <p className="text-destructive-foreground text-xs">{message}</p>;
+}
+
 export function BusinessFormDrawer({
   mode,
   open,
@@ -37,110 +43,152 @@ export function BusinessFormDrawer({
   error,
   onSubmit,
 }: BusinessFormDrawerProps) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [notes, setNotes] = useState("");
+  const formId = `${mode}-business-form`;
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<BusinessFormValues>({
+    resolver: zodResolver(businessFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      notes: "",
+    },
+  });
 
   useEffect(() => {
     if (!open) return;
-    setName(mode === "edit" ? (business?.name ?? "") : "");
-    setEmail(mode === "edit" ? (business?.email ?? "") : "");
-    setPhone(mode === "edit" ? (business?.phone ?? "") : "");
-    setAddress(mode === "edit" ? (business?.address ?? "") : "");
-    setNotes(mode === "edit" ? (business?.notes ?? "") : "");
-  }, [business, mode, open]);
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    onSubmit({
-      name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      address: address.trim(),
-      notes: notes.trim(),
-    });
-  }
+    reset(
+      mode === "edit"
+        ? {
+            name: business?.name ?? "",
+            email: business?.email ?? "",
+            phone: business?.phone ?? "",
+            address: business?.address ?? "",
+            notes: business?.notes ?? "",
+          }
+        : {
+            name: "",
+            email: "",
+            phone: "",
+            address: "",
+            notes: "",
+          },
+    );
+  }, [business, mode, open, reset]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetPopup side="right">
-        <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
-          <SheetHeader>
-            <SheetTitle>{mode === "create" ? "Create business" : "Edit business"}</SheetTitle>
-            <SheetDescription>
-              {mode === "create"
-                ? "Add a client business that invoices can be assigned to."
-                : "Update business contact details."}
-            </SheetDescription>
-          </SheetHeader>
-          <SheetPanel className="flex-1">
+        <SheetHeader>
+          <SheetTitle>{mode === "create" ? "Create business" : "Edit business"}</SheetTitle>
+          <SheetDescription>
+            {mode === "create"
+              ? "Add a client business that invoices can be assigned to."
+              : "Update business contact details."}
+          </SheetDescription>
+        </SheetHeader>
+        <SheetPanel>
+          <form id={formId} onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor={`${mode}-business-name`}>Name</FieldLabel>
                 <Input
                   id={`${mode}-business-name`}
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
                   placeholder="Acme Coffee"
-                  required
                   nativeInput
+                  aria-invalid={Boolean(errors.name)}
+                  {...register("name")}
                 />
+                <FieldMessage message={errors.name?.message} />
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${mode}-business-email`}>Email</FieldLabel>
                 <Input
                   id={`${mode}-business-email`}
                   type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
                   placeholder="hello@acmecoffee.com"
                   nativeInput
+                  aria-invalid={Boolean(errors.email)}
+                  {...register("email")}
                 />
+                <FieldMessage message={errors.email?.message} />
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${mode}-business-phone`}>Phone</FieldLabel>
-                <IndonesiaPhoneInput
-                  id={`${mode}-business-phone`}
-                  value={phone}
-                  onValueChange={setPhone}
-                  placeholder="812 3456 7890"
-                  aria-label="Phone number"
+                <Controller
+                  control={control}
+                  name="phone"
+                  render={({ field }) => (
+                    <IndonesiaPhoneInput
+                      id={`${mode}-business-phone`}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      placeholder="812 3456 7890"
+                      aria-label="Phone number"
+                    />
+                  )}
                 />
+                <FieldMessage message={errors.phone?.message} />
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${mode}-business-address`}>Address</FieldLabel>
-                <Textarea
-                  id={`${mode}-business-address`}
-                  value={address}
-                  onChange={(event) => setAddress(event.target.value)}
-                  placeholder="Jl. Example No. 12, Jakarta"
-                  rows={2}
+                <Controller
+                  control={control}
+                  name="address"
+                  render={({ field }) => (
+                    <Textarea
+                      id={`${mode}-business-address`}
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                      placeholder="Jl. Example No. 12, Jakarta"
+                      rows={2}
+                      aria-invalid={Boolean(errors.address)}
+                    />
+                  )}
                 />
+                <FieldMessage message={errors.address?.message} />
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${mode}-business-notes`}>Notes</FieldLabel>
-                <Textarea
-                  id={`${mode}-business-notes`}
-                  value={notes}
-                  onChange={(event) => setNotes(event.target.value)}
-                  placeholder="Optional internal notes about this business"
-                  rows={3}
+                <Controller
+                  control={control}
+                  name="notes"
+                  render={({ field }) => (
+                    <Textarea
+                      id={`${mode}-business-notes`}
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                      placeholder="Optional internal notes about this business"
+                      rows={3}
+                      aria-invalid={Boolean(errors.notes)}
+                    />
+                  )}
                 />
+                <FieldMessage message={errors.notes?.message} />
               </Field>
               {error ? <p className="text-destructive text-sm">{error}</p> : null}
             </FieldGroup>
-          </SheetPanel>
-          <SheetFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" loading={pending} disabled={!name.trim()}>
-              {mode === "create" ? "Create business" : "Save changes"}
-            </Button>
-          </SheetFooter>
-        </form>
+          </form>
+        </SheetPanel>
+        <SheetFooter>
+          <SheetClose render={<Button variant="outline" />}>Cancel</SheetClose>
+          <Button type="submit" form={formId} loading={pending}>
+            {mode === "create" ? "Create business" : "Save changes"}
+          </Button>
+        </SheetFooter>
       </SheetPopup>
     </Sheet>
   );

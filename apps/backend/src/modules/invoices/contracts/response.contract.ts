@@ -1,11 +1,20 @@
 import { z } from "zod";
 
 import { INVOICE_STATUSES, SERVICE_TYPES } from "@/database/schema/invoices.schema";
+import { PAYMENT_METHOD_TYPES } from "@/database/schema/payment-methods.schema";
 
 export const invoiceBusinessSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string().nullable(),
+  address: z.string().nullable(),
+});
+
+export const invoicePaymentMethodSchema = z.object({
+  id: z.string(),
+  method: z.enum(PAYMENT_METHOD_TYPES),
+  receiverName: z.string(),
+  accountNumber: z.string().nullable(),
 });
 
 export const invoiceLineItemSchema = z.object({
@@ -24,6 +33,8 @@ export const invoiceSchema = z.object({
   shareToken: z.string(),
   businessId: z.string(),
   business: invoiceBusinessSchema,
+  paymentMethodId: z.string(),
+  paymentMethod: invoicePaymentMethodSchema,
   createdByUserId: z.string(),
   status: z.enum(INVOICE_STATUSES),
   currency: z.string(),
@@ -39,6 +50,7 @@ export const invoiceSchema = z.object({
 export const publicInvoiceSchema = z.object({
   number: z.string(),
   business: invoiceBusinessSchema,
+  paymentMethod: invoicePaymentMethodSchema,
   status: z.enum(INVOICE_STATUSES),
   currency: z.string(),
   totalAmount: z.number().int(),

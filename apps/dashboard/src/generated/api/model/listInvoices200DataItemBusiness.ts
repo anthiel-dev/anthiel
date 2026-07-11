@@ -11,4 +11,6 @@ export type ListInvoices200DataItemBusiness = {
   name: string;
   /** @nullable */
   email: string | null;
+  /** @nullable */
+  address: string | null;
 };

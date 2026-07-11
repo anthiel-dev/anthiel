@@ -1,10 +1,20 @@
 import { Button, Field, FieldGroup, FieldLabel, Input, cn } from "@anthiel/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { GalleryVerticalEnd } from "lucide-react";
-import { useState, type ComponentProps, type FormEvent } from "react";
+import { useState, type ComponentProps } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { authClient } from "#/lib/auth-client";
 import { invalidateSessionCache } from "#/lib/auth-session";
+
+const loginFormSchema = z.object({
+  username: z.string().trim().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
+type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 type LoginFormProps = ComponentProps<"div"> & {
   redirectTo?: string;
@@ -12,22 +22,27 @@ type LoginFormProps = ComponentProps<"div"> & {
 
 export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(values: LoginFormValues) {
     setError(null);
-    setLoading(true);
 
     const result = await authClient.signIn.username({
-      username,
-      password,
+      username: values.username,
+      password: values.password,
     });
-
-    setLoading(false);
 
     if (result.error) {
       setError(result.error.message ?? "Unable to sign in");
@@ -46,7 +61,7 @@ export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
             <a href="/" className="flex flex-col items-center gap-2 font-medium">
@@ -63,34 +78,36 @@ export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
             <FieldLabel htmlFor="username">Username</FieldLabel>
             <Input
               id="username"
-              name="username"
               type="text"
               autoComplete="username"
               placeholder="username"
-              required
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
               nativeInput
+              aria-invalid={Boolean(errors.username)}
+              {...register("username")}
             />
+            {errors.username?.message ? (
+              <p className="text-destructive-foreground text-xs">{errors.username.message}</p>
+            ) : null}
           </Field>
 
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
             <Input
               id="password"
-              name="password"
               type="password"
               autoComplete="current-password"
-              required
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
               nativeInput
+              aria-invalid={Boolean(errors.password)}
+              {...register("password")}
             />
+            {errors.password?.message ? (
+              <p className="text-destructive-foreground text-xs">{errors.password.message}</p>
+            ) : null}
           </Field>
 
           {error ? <p className="text-destructive-foreground text-xs">{error}</p> : null}
 
-          <Button type="submit" className="w-full" loading={loading}>
+          <Button type="submit" className="w-full" loading={isSubmitting}>
             Login
           </Button>
         </FieldGroup>

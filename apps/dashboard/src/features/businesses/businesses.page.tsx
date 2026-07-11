@@ -73,7 +73,9 @@ export function BusinessesPage() {
   const filteredRows = useMemo(() => fuzzySearch(fuse, rows, query), [fuse, query, rows]);
 
   async function invalidateBusinesses() {
-    await queryClient.invalidateQueries({ queryKey: getListBusinessesQueryKey() });
+    await queryClient.invalidateQueries({
+      queryKey: getListBusinessesQueryKey(),
+    });
   }
 
   const createMutation = useCreateBusiness({

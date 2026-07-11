@@ -1,5 +1,3 @@
-import type { FormEvent } from "react";
-
 import { Badge, Button, Field, FieldGroup, FieldLabel, Input } from "@anthiel/ui";
 import {
   Select,
@@ -10,6 +8,7 @@ import {
 } from "@anthiel/ui/components/select";
 import {
   Sheet,
+  SheetClose,
   SheetDescription,
   SheetFooter,
   SheetHeader,
@@ -17,11 +16,36 @@ import {
   SheetPopup,
   SheetTitle,
 } from "@anthiel/ui/components/sheet";
-import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 
 import type { ListBusinesses200DataItem, ListRoles200DataItem } from "#/generated/api/model";
 
 import type { UserRecord } from "../types";
+
+const userFormBaseSchema = z.object({
+  name: z.string().trim().min(1, "Name is required"),
+  username: z
+    .string()
+    .trim()
+    .min(3, "Username must be at least 3 characters")
+    .max(32, "Username must be at most 32 characters")
+    .regex(/^[a-zA-Z0-9._-]+$/, "Only letters, numbers, dots, underscores, and hyphens"),
+  email: z.email("Enter a valid email"),
+  roleId: z.string().min(1, "Role is required"),
+  businessId: z.string(),
+});
+
+const createUserSchema = userFormBaseSchema.extend({
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+const editUserSchema = userFormBaseSchema;
+
+type CreateUserFormValues = z.infer<typeof createUserSchema>;
+type EditUserFormValues = z.infer<typeof editUserSchema>;
 
 export type UserFormValues = {
   name: string;
@@ -51,6 +75,11 @@ function getInitialRoleId(user: UserRecord | null | undefined) {
   return "";
 }
 
+function FieldMessage({ message }: { message?: string }) {
+  if (!message) return null;
+  return <p className="text-destructive-foreground text-xs">{message}</p>;
+}
+
 export function UserFormDrawer({
   mode,
   open,
@@ -62,93 +91,117 @@ export function UserFormDrawer({
   error,
   onSubmit,
 }: UserFormDrawerProps) {
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [roleId, setRoleId] = useState("");
-  const [businessId, setBusinessId] = useState("");
+  const formId = `${mode}-user-form`;
+  const title = mode === "create" ? "Create user" : "Edit user";
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreateUserFormValues | EditUserFormValues>({
+    resolver: zodResolver(mode === "create" ? createUserSchema : editUserSchema),
+    defaultValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+      roleId: "",
+      businessId: "",
+    },
+  });
+
+  const roleId = useWatch({ control, name: "roleId" });
+  const selectedRole = roles.find((role) => role.id === roleId);
+  const selectedBusinessId = useWatch({ control, name: "businessId" });
+  const selectedBusiness = businesses.find((business) => business.id === selectedBusinessId);
+  const isClientRole = selectedRole?.key === "client";
 
   useEffect(() => {
     if (!open) return;
-    setName(mode === "edit" ? (user?.name ?? "") : "");
-    setUsername(mode === "edit" ? (user?.username ?? "") : "");
-    setEmail(mode === "edit" ? (user?.email ?? "") : "");
-    setPassword("");
-    setRoleId(mode === "edit" ? getInitialRoleId(user) : "");
-    setBusinessId(mode === "edit" ? (user?.businessId ?? "") : "");
-  }, [mode, open, user]);
+    reset(
+      mode === "edit"
+        ? {
+            name: user?.name ?? "",
+            username: user?.username ?? "",
+            email: user?.email ?? "",
+            password: "",
+            roleId: getInitialRoleId(user),
+            businessId: user?.businessId ?? "",
+          }
+        : {
+            name: "",
+            username: "",
+            email: "",
+            password: "",
+            roleId: "",
+            businessId: "",
+          },
+    );
+  }, [mode, open, reset, user]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function submit(values: CreateUserFormValues | EditUserFormValues) {
     onSubmit({
-      name: name.trim(),
-      username: username.trim(),
-      email: email.trim(),
-      password: mode === "create" ? password : undefined,
-      roleId,
-      businessId: isClientRole ? businessId || null : null,
+      name: values.name,
+      username: values.username,
+      email: values.email,
+      roleId: values.roleId,
+      businessId: isClientRole ? values.businessId || null : null,
+      password: mode === "create" ? (values as CreateUserFormValues).password : undefined,
     });
   }
-
-  const title = mode === "create" ? "Create user" : "Edit user";
-  const selectedRole = roles.find((role) => role.id === roleId);
-  const selectedBusiness = businesses.find((business) => business.id === businessId);
-  const isClientRole = selectedRole?.key === "client";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetPopup side="right">
-        <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
-          <SheetHeader>
-            <SheetTitle>{title}</SheetTitle>
-            <SheetDescription>
-              {mode === "create"
-                ? "Add a user and assign their dashboard role."
-                : "Update this user's profile and assigned role."}
-            </SheetDescription>
-          </SheetHeader>
-          <SheetPanel className="flex-1">
+        <SheetHeader>
+          <SheetTitle>{title}</SheetTitle>
+          <SheetDescription>
+            {mode === "create"
+              ? "Add a user and assign their dashboard role."
+              : "Update this user's profile and assigned role."}
+          </SheetDescription>
+        </SheetHeader>
+        <SheetPanel>
+          <form id={formId} onSubmit={handleSubmit(submit)}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor={`${mode}-user-name`}>Name</FieldLabel>
                 <Input
                   id={`${mode}-user-name`}
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
                   placeholder="Jane Doe"
                   autoComplete="name"
-                  required
                   nativeInput
+                  aria-invalid={Boolean(errors.name)}
+                  {...register("name")}
                 />
+                <FieldMessage message={errors.name?.message} />
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${mode}-user-username`}>Username</FieldLabel>
                 <Input
                   id={`${mode}-user-username`}
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
                   placeholder="jane.doe"
                   autoComplete="username"
-                  minLength={3}
-                  maxLength={32}
-                  pattern="[a-zA-Z0-9._-]+"
-                  required
                   nativeInput
+                  aria-invalid={Boolean(errors.username)}
+                  {...register("username")}
                 />
+                <FieldMessage message={errors.username?.message} />
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${mode}-user-email`}>Email</FieldLabel>
                 <Input
                   id={`${mode}-user-email`}
                   type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
                   placeholder="jane@company.com"
                   autoComplete="email"
-                  required
                   nativeInput
+                  aria-invalid={Boolean(errors.email)}
+                  {...register("email")}
                 />
+                <FieldMessage message={errors.email?.message} />
               </Field>
               {mode === "create" ? (
                 <Field>
@@ -156,76 +209,90 @@ export function UserFormDrawer({
                   <Input
                     id="create-user-password"
                     type="password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
                     placeholder="At least 8 characters"
                     autoComplete="new-password"
-                    minLength={8}
-                    required
                     nativeInput
+                    aria-invalid={Boolean((errors as { password?: { message?: string } }).password)}
+                    {...register("password")}
+                  />
+                  <FieldMessage
+                    message={(errors as { password?: { message?: string } }).password?.message}
                   />
                 </Field>
               ) : null}
               <Field>
                 <FieldLabel>Role</FieldLabel>
-                <Select
-                  value={roleId || null}
-                  onValueChange={(value) => setRoleId(value ?? "")}
-                  required
-                >
-                  <SelectTrigger aria-label="Role">
-                    <SelectValue placeholder="Select a role">
-                      {selectedRole?.name ?? null}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {roles.map((role) => (
-                      <SelectItem key={role.id} value={role.id}>
-                        {role.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Controller
+                  control={control}
+                  name="roleId"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value || null}
+                      onValueChange={(value) => field.onChange(value ?? "")}
+                    >
+                      <SelectTrigger aria-label="Role" aria-invalid={Boolean(errors.roleId)}>
+                        <SelectValue placeholder="Select a role">
+                          {selectedRole?.name ?? null}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {roles.map((role) => (
+                          <SelectItem key={role.id} value={role.id}>
+                            {role.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <FieldMessage message={errors.roleId?.message} />
               </Field>
               {isClientRole ? (
                 <Field>
                   <FieldLabel>Business</FieldLabel>
-                  <Select
-                    value={businessId || null}
-                    onValueChange={(value) => setBusinessId(value ?? "")}
-                    required
-                  >
-                    <SelectTrigger aria-label="Business">
-                      <SelectValue placeholder="Select a business">
-                        {selectedBusiness?.name ?? null}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {businesses.map((business) => (
-                        <SelectItem key={business.id} value={business.id}>
-                          {business.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    control={control}
+                    name="businessId"
+                    rules={{
+                      validate: (value) =>
+                        !isClientRole || Boolean(value) || "Business is required",
+                    }}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value || null}
+                        onValueChange={(value) => field.onChange(value ?? "")}
+                      >
+                        <SelectTrigger
+                          aria-label="Business"
+                          aria-invalid={Boolean(errors.businessId)}
+                        >
+                          <SelectValue placeholder="Select a business">
+                            {selectedBusiness?.name ?? null}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {businesses.map((business) => (
+                            <SelectItem key={business.id} value={business.id}>
+                              {business.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <FieldMessage message={errors.businessId?.message} />
                 </Field>
               ) : null}
               {error ? <p className="text-destructive text-sm">{error}</p> : null}
             </FieldGroup>
-          </SheetPanel>
-          <SheetFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              loading={pending}
-              disabled={!roleId || (isClientRole && !businessId)}
-            >
-              {mode === "create" ? "Create user" : "Save changes"}
-            </Button>
-          </SheetFooter>
-        </form>
+          </form>
+        </SheetPanel>
+        <SheetFooter>
+          <SheetClose render={<Button variant="outline" />}>Cancel</SheetClose>
+          <Button type="submit" form={formId} loading={pending}>
+            {mode === "create" ? "Create user" : "Save changes"}
+          </Button>
+        </SheetFooter>
       </SheetPopup>
     </Sheet>
   );

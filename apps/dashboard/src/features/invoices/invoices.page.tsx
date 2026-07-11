@@ -30,6 +30,7 @@ import {
   useGetInvoiceById,
   useListBusinesses,
   useListInvoices,
+  useListPaymentMethods,
   useUpdateInvoice,
 } from "#/generated/api";
 
@@ -93,12 +94,16 @@ export function InvoicesPage() {
   const businessesQuery = useListBusinesses({
     query: { enabled: isAdmin },
   });
+  const paymentMethodsQuery = useListPaymentMethods({
+    query: { enabled: isAdmin },
+  });
   const invoiceDetailQuery = useGetInvoiceById(selectedInvoice?.id ?? "", {
     query: { enabled: Boolean(selectedInvoice && (detailOpen || editOpen)) },
   });
 
   const rows = invoicesQuery.data?.data.data ?? EMPTY_INVOICES;
   const businesses = businessesQuery.data?.data.data ?? [];
+  const paymentMethods = paymentMethodsQuery.data?.data.data ?? [];
 
   const searchableRows = useMemo(
     () =>
@@ -209,7 +214,10 @@ export function InvoicesPage() {
   const detailInvoice =
     invoiceDetailQuery.data?.status === 200 ? invoiceDetailQuery.data.data.data : selectedInvoice;
   const pageError =
-    invoicesQuery.error ?? (isAdmin ? businessesQuery.error : null) ?? deleteMutation.error;
+    invoicesQuery.error ??
+    (isAdmin ? businessesQuery.error : null) ??
+    (isAdmin ? paymentMethodsQuery.error : null) ??
+    deleteMutation.error;
 
   return (
     <div className="flex flex-col gap-6">
@@ -246,60 +254,60 @@ export function InvoicesPage() {
         }
       />
 
-      {isAdmin ? (
-        <>
-          <InvoiceFormDrawer
-            mode="create"
-            open={createOpen}
-            onOpenChange={setCreateOpen}
-            businesses={businesses}
-            pending={createMutation.isPending}
-            error={
-              createMutation.error
-                ? getErrorMessage(createMutation.error, "Failed to create invoice")
-                : null
-            }
-            onSubmit={(values) => {
-              createMutation.mutate({
-                data: {
-                  businessId: values.businessId,
-                  dueDate: dueDateToIso(values.dueDate),
-                  notes: values.notes || null,
-                  lineItems: parseLineItems(values),
-                },
-              });
-            }}
-          />
-          <InvoiceFormDrawer
-            mode="edit"
-            open={editOpen}
-            onOpenChange={(open) => {
-              setEditOpen(open);
-              if (!open) setSelectedInvoice(null);
-            }}
-            invoice={detailInvoice}
-            businesses={businesses}
-            pending={updateMutation.isPending}
-            error={
-              updateMutation.error
-                ? getErrorMessage(updateMutation.error, "Failed to update invoice")
-                : null
-            }
-            onSubmit={(values) => {
-              if (!selectedInvoice) return;
-              updateMutation.mutate({
-                id: selectedInvoice.id,
-                data: {
-                  businessId: values.businessId,
-                  dueDate: dueDateToIso(values.dueDate),
-                  notes: values.notes || null,
-                  lineItems: parseLineItems(values),
-                },
-              });
-            }}
-          />
-        </>
-      ) : null}
+      <InvoiceFormDrawer
+        mode="create"
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        businesses={businesses}
+        paymentMethods={paymentMethods}
+        pending={createMutation.isPending}
+        error={
+          createMutation.error
+            ? getErrorMessage(createMutation.error, "Failed to create invoice")
+            : null
+        }
+        onSubmit={(values) => {
+          createMutation.mutate({
+            data: {
+              businessId: values.businessId,
+              paymentMethodId: values.paymentMethodId,
+              dueDate: dueDateToIso(values.dueDate),
+              notes: values.notes || null,
+              lineItems: parseLineItems(values),
+            },
+          });
+        }}
+      />
+      <InvoiceFormDrawer
+        mode="edit"
+        open={editOpen}
+        onOpenChange={(open) => {
+          setEditOpen(open);
+          if (!open) setSelectedInvoice(null);
+        }}
+        invoice={detailInvoice}
+        businesses={businesses}
+        paymentMethods={paymentMethods}
+        pending={updateMutation.isPending}
+        error={
+          updateMutation.error
+            ? getErrorMessage(updateMutation.error, "Failed to update invoice")
+            : null
+        }
+        onSubmit={(values) => {
+          if (!selectedInvoice) return;
+          updateMutation.mutate({
+            id: selectedInvoice.id,
+            data: {
+              businessId: values.businessId,
+              paymentMethodId: values.paymentMethodId,
+              dueDate: dueDateToIso(values.dueDate),
+              notes: values.notes || null,
+              lineItems: parseLineItems(values),
+            },
+          });
+        }}
+      />
 
       <InvoiceDetailDrawer
         open={detailOpen}

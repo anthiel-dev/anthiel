@@ -15,6 +15,7 @@ export type NavItem = {
     | "/dashboard"
     | "/dashboard/invoices"
     | "/dashboard/businesses"
+    | "/dashboard/payment-methods"
     | "/dashboard/users"
     | "/dashboard/roles"
     | "/dashboard/permissions";

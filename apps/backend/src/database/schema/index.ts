@@ -14,6 +14,7 @@ export {
   invoices,
   invoicesRelations,
 } from "./invoices.schema";
+export { paymentMethods, paymentMethodsRelations } from "./payment-methods.schema";
 export {
   permissions,
   permissionsRelations,

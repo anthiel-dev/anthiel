@@ -8,6 +8,7 @@ import { db } from "./database";
 import { env } from "./env";
 import { businessesRoutes } from "./modules/businesses";
 import { invoicesRoutes } from "./modules/invoices";
+import { paymentMethodsRoutes } from "./modules/payment-methods";
 import { rbacRoutes } from "./modules/rbac";
 import { usersRoutes } from "./modules/users";
 
@@ -35,6 +36,7 @@ export const app = new Elysia()
           { name: "RBAC", description: "Roles, permissions, and resources" },
           { name: "Users", description: "User administration" },
           { name: "Businesses", description: "Client business administration" },
+          { name: "Payment methods", description: "Invoice payment destinations" },
           { name: "Invoices", description: "Invoice management" },
         ],
       },
@@ -48,6 +50,7 @@ export const app = new Elysia()
   .use(rbacRoutes(db))
   .use(usersRoutes(db))
   .use(businessesRoutes(db))
+  .use(paymentMethodsRoutes(db))
   .use(invoicesRoutes(db))
   .get(
     "/",

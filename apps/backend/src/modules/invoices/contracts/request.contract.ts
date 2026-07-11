@@ -6,8 +6,8 @@ export const invoiceIdParamsSchema = z.object({
   id: z.string().min(1),
 });
 
-export const invoiceShareTokenParamsSchema = z.object({
-  token: z.string().min(1),
+export const invoiceNumberParamsSchema = z.object({
+  number: z.string().min(1),
 });
 
 export const listInvoicesQuerySchema = z.object({
@@ -24,6 +24,7 @@ export const invoiceLineItemInputSchema = z.object({
 
 export const createInvoiceBodySchema = z.object({
   businessId: z.string().min(1),
+  paymentMethodId: z.string().min(1),
   dueDate: z.string().datetime().nullable().optional(),
   notes: z.string().trim().max(2000).nullable().optional(),
   lineItems: z.array(invoiceLineItemInputSchema).min(1).max(100),
@@ -32,6 +33,7 @@ export const createInvoiceBodySchema = z.object({
 export const updateInvoiceBodySchema = z
   .object({
     businessId: z.string().min(1).optional(),
+    paymentMethodId: z.string().min(1).optional(),
     dueDate: z.string().datetime().nullable().optional(),
     notes: z.string().trim().max(2000).nullable().optional(),
     status: z.enum(INVOICE_STATUSES).optional(),

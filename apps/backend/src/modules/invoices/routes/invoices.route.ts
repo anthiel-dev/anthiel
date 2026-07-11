@@ -8,7 +8,7 @@ import { isAdmin } from "@/modules/rbac";
 import {
   createInvoiceBodySchema,
   invoiceIdParamsSchema,
-  invoiceShareTokenParamsSchema,
+  invoiceNumberParamsSchema,
   listInvoicesQuerySchema,
   updateInvoiceBodySchema,
 } from "../contracts/request.contract";
@@ -27,21 +27,21 @@ export const invoicesRoutes = (db: AppDb) => {
   return new Elysia({ prefix: "/invoices", name: "invoices", tags: ["Invoices"] })
     .use(authGuardPlugin)
     .get(
-      "/public/:token",
+      "/public/:number",
       async ({ params, status }) => {
-        const invoice = await invoicesService.getPublicInvoiceByToken(params.token);
+        const invoice = await invoicesService.getPublicInvoiceByNumber(params.number);
         if (!invoice) return status(404, { error: "Invoice not found" });
         return { data: invoice };
       },
       {
-        params: invoiceShareTokenParamsSchema,
+        params: invoiceNumberParamsSchema,
         response: {
           200: getPublicInvoiceResponseSchema,
           404: invoiceErrorResponseSchema,
         },
         detail: {
-          summary: "Get public invoice by share token",
-          operationId: "getPublicInvoiceByToken",
+          summary: "Get public invoice by invoice number",
+          operationId: "getPublicInvoiceByNumber",
         },
       },
     )
@@ -99,6 +99,9 @@ export const invoicesRoutes = (db: AppDb) => {
           if (result.error === "business_not_found") {
             return status(404, { error: "Business not found" });
           }
+          if (result.error === "payment_method_not_found") {
+            return status(404, { error: "Payment method not found" });
+          }
           return status(500, { error: "Created invoice could not be loaded" });
         }
 
@@ -129,6 +132,9 @@ export const invoicesRoutes = (db: AppDb) => {
           }
           if (result.error === "business_not_found") {
             return status(404, { error: "Business not found" });
+          }
+          if (result.error === "payment_method_not_found") {
+            return status(404, { error: "Payment method not found" });
           }
           if (result.error === "not_editable") {
             return status(409, { error: "Only draft invoices can be edited" });

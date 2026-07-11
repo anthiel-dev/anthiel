@@ -3,6 +3,7 @@ import { index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { user } from "./auth.schema";
 import { businesses } from "./businesses.schema";
+import { paymentMethods } from "./payment-methods.schema";
 
 export const INVOICE_STATUSES = ["draft", "sent", "paid", "cancelled"] as const;
 export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
@@ -19,6 +20,9 @@ export const invoices = pgTable(
     businessId: text("business_id")
       .notNull()
       .references(() => businesses.id, { onDelete: "restrict" }),
+    paymentMethodId: text("payment_method_id")
+      .notNull()
+      .references(() => paymentMethods.id, { onDelete: "restrict" }),
     createdByUserId: text("created_by_user_id")
       .notNull()
       .references(() => user.id, { onDelete: "restrict" }),
@@ -36,6 +40,7 @@ export const invoices = pgTable(
   },
   (table) => [
     index("invoices_business_id_idx").on(table.businessId),
+    index("invoices_payment_method_id_idx").on(table.paymentMethodId),
     index("invoices_status_idx").on(table.status),
     index("invoices_share_token_idx").on(table.shareToken),
   ],
@@ -68,6 +73,10 @@ export const invoicesRelations = relations(invoices, ({ many, one }) => ({
   business: one(businesses, {
     fields: [invoices.businessId],
     references: [businesses.id],
+  }),
+  paymentMethod: one(paymentMethods, {
+    fields: [invoices.paymentMethodId],
+    references: [paymentMethods.id],
   }),
   createdByUser: one(user, {
     fields: [invoices.createdByUserId],

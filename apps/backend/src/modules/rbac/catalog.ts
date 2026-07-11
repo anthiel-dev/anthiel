@@ -44,6 +44,12 @@ export const RESOURCE_CATALOG = {
     description: "Business (client company) administration",
     actions: ["list", "get", "create", "update", "delete"],
   },
+  "payment-method": {
+    key: "payment-method",
+    name: "Payment method",
+    description: "Payment method administration",
+    actions: ["list", "get", "create", "update", "delete"],
+  },
 } as const;
 
 export type ResourceKey = keyof typeof RESOURCE_CATALOG;
@@ -71,6 +77,7 @@ export const ROLE_CATALOG = {
       dashboard: [...RESOURCE_CATALOG.dashboard.actions],
       invoice: [...RESOURCE_CATALOG.invoice.actions],
       business: [...RESOURCE_CATALOG.business.actions],
+      "payment-method": [...RESOURCE_CATALOG["payment-method"].actions],
     },
   },
   client: {
@@ -83,6 +90,7 @@ export const ROLE_CATALOG = {
       dashboard: ["access"] as const,
       invoice: ["list", "get"] as const,
       business: [] as const,
+      "payment-method": [] as const,
     },
   },
 } as const satisfies Record<

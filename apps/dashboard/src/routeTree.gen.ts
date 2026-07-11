@@ -12,12 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as GuestRouteRouteImport } from './routes/_guest/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as InvoiceTokenRouteImport } from './routes/invoice.$token'
+import { Route as InvoiceNumberRouteImport } from './routes/invoice.$number'
 import { Route as AuthenticatedDashboardRouteRouteImport } from './routes/_authenticated/dashboard/route'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardUsersRouteImport } from './routes/_authenticated/dashboard/users'
 import { Route as AuthenticatedDashboardRolesRouteImport } from './routes/_authenticated/dashboard/roles'
 import { Route as AuthenticatedDashboardPermissionsRouteImport } from './routes/_authenticated/dashboard/permissions'
+import { Route as AuthenticatedDashboardPaymentMethodsRouteImport } from './routes/_authenticated/dashboard/payment-methods'
 import { Route as AuthenticatedDashboardInvoicesRouteImport } from './routes/_authenticated/dashboard/invoices'
 import { Route as AuthenticatedDashboardBusinessesRouteImport } from './routes/_authenticated/dashboard/businesses'
 import { Route as GuestDashboardAuthLoginRouteImport } from './routes/_guest/dashboard/auth/login'
@@ -35,9 +36,9 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const InvoiceTokenRoute = InvoiceTokenRouteImport.update({
-  id: '/invoice/$token',
-  path: '/invoice/$token',
+const InvoiceNumberRoute = InvoiceNumberRouteImport.update({
+  id: '/invoice/$number',
+  path: '/invoice/$number',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRouteRoute =
@@ -70,6 +71,12 @@ const AuthenticatedDashboardPermissionsRoute =
     path: '/permissions',
     getParentRoute: () => AuthenticatedDashboardRouteRoute,
   } as any)
+const AuthenticatedDashboardPaymentMethodsRoute =
+  AuthenticatedDashboardPaymentMethodsRouteImport.update({
+    id: '/payment-methods',
+    path: '/payment-methods',
+    getParentRoute: () => AuthenticatedDashboardRouteRoute,
+  } as any)
 const AuthenticatedDashboardInvoicesRoute =
   AuthenticatedDashboardInvoicesRouteImport.update({
     id: '/invoices',
@@ -91,9 +98,10 @@ const GuestDashboardAuthLoginRoute = GuestDashboardAuthLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
-  '/invoice/$token': typeof InvoiceTokenRoute
+  '/invoice/$number': typeof InvoiceNumberRoute
   '/dashboard/businesses': typeof AuthenticatedDashboardBusinessesRoute
   '/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
+  '/dashboard/payment-methods': typeof AuthenticatedDashboardPaymentMethodsRoute
   '/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
   '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/dashboard/users': typeof AuthenticatedDashboardUsersRoute
@@ -102,9 +110,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
-  '/invoice/$token': typeof InvoiceTokenRoute
+  '/invoice/$number': typeof InvoiceNumberRoute
   '/dashboard/businesses': typeof AuthenticatedDashboardBusinessesRoute
   '/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
+  '/dashboard/payment-methods': typeof AuthenticatedDashboardPaymentMethodsRoute
   '/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
   '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/dashboard/users': typeof AuthenticatedDashboardUsersRoute
@@ -116,10 +125,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_guest': typeof GuestRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
-  '/invoice/$token': typeof InvoiceTokenRoute
+  '/invoice/$number': typeof InvoiceNumberRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/dashboard/businesses': typeof AuthenticatedDashboardBusinessesRoute
   '/_authenticated/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
+  '/_authenticated/dashboard/payment-methods': typeof AuthenticatedDashboardPaymentMethodsRoute
   '/_authenticated/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
   '/_authenticated/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/_authenticated/dashboard/users': typeof AuthenticatedDashboardUsersRoute
@@ -131,9 +141,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/invoice/$token'
+    | '/invoice/$number'
     | '/dashboard/businesses'
     | '/dashboard/invoices'
+    | '/dashboard/payment-methods'
     | '/dashboard/permissions'
     | '/dashboard/roles'
     | '/dashboard/users'
@@ -142,9 +153,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/invoice/$token'
+    | '/invoice/$number'
     | '/dashboard/businesses'
     | '/dashboard/invoices'
+    | '/dashboard/payment-methods'
     | '/dashboard/permissions'
     | '/dashboard/roles'
     | '/dashboard/users'
@@ -155,10 +167,11 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/_guest'
     | '/_authenticated/dashboard'
-    | '/invoice/$token'
+    | '/invoice/$number'
     | '/_authenticated/'
     | '/_authenticated/dashboard/businesses'
     | '/_authenticated/dashboard/invoices'
+    | '/_authenticated/dashboard/payment-methods'
     | '/_authenticated/dashboard/permissions'
     | '/_authenticated/dashboard/roles'
     | '/_authenticated/dashboard/users'
@@ -169,7 +182,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   GuestRouteRoute: typeof GuestRouteRouteWithChildren
-  InvoiceTokenRoute: typeof InvoiceTokenRoute
+  InvoiceNumberRoute: typeof InvoiceNumberRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -195,11 +208,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/invoice/$token': {
-      id: '/invoice/$token'
-      path: '/invoice/$token'
-      fullPath: '/invoice/$token'
-      preLoaderRoute: typeof InvoiceTokenRouteImport
+    '/invoice/$number': {
+      id: '/invoice/$number'
+      path: '/invoice/$number'
+      fullPath: '/invoice/$number'
+      preLoaderRoute: typeof InvoiceNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -237,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardPermissionsRouteImport
       parentRoute: typeof AuthenticatedDashboardRouteRoute
     }
+    '/_authenticated/dashboard/payment-methods': {
+      id: '/_authenticated/dashboard/payment-methods'
+      path: '/payment-methods'
+      fullPath: '/dashboard/payment-methods'
+      preLoaderRoute: typeof AuthenticatedDashboardPaymentMethodsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRouteRoute
+    }
     '/_authenticated/dashboard/invoices': {
       id: '/_authenticated/dashboard/invoices'
       path: '/invoices'
@@ -264,6 +284,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedDashboardRouteRouteChildren {
   AuthenticatedDashboardBusinessesRoute: typeof AuthenticatedDashboardBusinessesRoute
   AuthenticatedDashboardInvoicesRoute: typeof AuthenticatedDashboardInvoicesRoute
+  AuthenticatedDashboardPaymentMethodsRoute: typeof AuthenticatedDashboardPaymentMethodsRoute
   AuthenticatedDashboardPermissionsRoute: typeof AuthenticatedDashboardPermissionsRoute
   AuthenticatedDashboardRolesRoute: typeof AuthenticatedDashboardRolesRoute
   AuthenticatedDashboardUsersRoute: typeof AuthenticatedDashboardUsersRoute
@@ -275,6 +296,8 @@ const AuthenticatedDashboardRouteRouteChildren: AuthenticatedDashboardRouteRoute
     AuthenticatedDashboardBusinessesRoute:
       AuthenticatedDashboardBusinessesRoute,
     AuthenticatedDashboardInvoicesRoute: AuthenticatedDashboardInvoicesRoute,
+    AuthenticatedDashboardPaymentMethodsRoute:
+      AuthenticatedDashboardPaymentMethodsRoute,
     AuthenticatedDashboardPermissionsRoute:
       AuthenticatedDashboardPermissionsRoute,
     AuthenticatedDashboardRolesRoute: AuthenticatedDashboardRolesRoute,
@@ -316,7 +339,7 @@ const GuestRouteRouteWithChildren = GuestRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   GuestRouteRoute: GuestRouteRouteWithChildren,
-  InvoiceTokenRoute: InvoiceTokenRoute,
+  InvoiceNumberRoute: InvoiceNumberRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

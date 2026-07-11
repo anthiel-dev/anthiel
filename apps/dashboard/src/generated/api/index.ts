@@ -34,6 +34,11 @@ import type {
   CreateInvoiceBodyOne,
   CreateInvoiceBodyThree,
   CreateInvoiceBodyTwo,
+  CreatePaymentMethod201,
+  CreatePaymentMethod500,
+  CreatePaymentMethodBodyOne,
+  CreatePaymentMethodBodyThree,
+  CreatePaymentMethodBodyTwo,
   CreateUser201,
   CreateUser404,
   CreateUser409,
@@ -47,6 +52,9 @@ import type {
   DeleteInvoice200,
   DeleteInvoice404,
   DeleteInvoice409,
+  DeletePaymentMethod200,
+  DeletePaymentMethod404,
+  DeletePaymentMethod409,
   DeleteUser200,
   DeleteUser403,
   DeleteUser404,
@@ -57,8 +65,10 @@ import type {
   GetInvoiceById200,
   GetInvoiceById404,
   GetMe200,
-  GetPublicInvoiceByToken200,
-  GetPublicInvoiceByToken404,
+  GetPaymentMethodById200,
+  GetPaymentMethodById404,
+  GetPublicInvoiceByNumber200,
+  GetPublicInvoiceByNumber404,
   GetRoleById200,
   GetRoleById404,
   GetServiceRoot200,
@@ -67,6 +77,7 @@ import type {
   ListBusinesses200,
   ListInvoices200,
   ListInvoicesParams,
+  ListPaymentMethods200,
   ListPermissions200,
   ListResources200,
   ListRoles200,
@@ -82,6 +93,11 @@ import type {
   UpdateInvoiceBodyOne,
   UpdateInvoiceBodyThree,
   UpdateInvoiceBodyTwo,
+  UpdatePaymentMethod200,
+  UpdatePaymentMethod404,
+  UpdatePaymentMethodBodyOne,
+  UpdatePaymentMethodBodyThree,
+  UpdatePaymentMethodBodyTwo,
   UpdateUser200,
   UpdateUser404,
   UpdateUser409,
@@ -1772,97 +1788,74 @@ export const useDeleteBusiness = <
   return useMutation(getDeleteBusinessMutationOptions(options), queryClient);
 };
 
-export type getPublicInvoiceByTokenResponse200 = {
-  data: GetPublicInvoiceByToken200;
+export type listPaymentMethodsResponse200 = {
+  data: ListPaymentMethods200;
   status: 200;
 };
 
-export type getPublicInvoiceByTokenResponse404 = {
-  data: GetPublicInvoiceByToken404;
-  status: 404;
-};
-
-export type getPublicInvoiceByTokenResponseSuccess = getPublicInvoiceByTokenResponse200 & {
-  headers: Headers;
-};
-export type getPublicInvoiceByTokenResponseError = getPublicInvoiceByTokenResponse404 & {
+export type listPaymentMethodsResponseSuccess = listPaymentMethodsResponse200 & {
   headers: Headers;
 };
 
-export type getPublicInvoiceByTokenResponse =
-  | getPublicInvoiceByTokenResponseSuccess
-  | getPublicInvoiceByTokenResponseError;
+export type listPaymentMethodsResponse = listPaymentMethodsResponseSuccess;
 
-export const getGetPublicInvoiceByTokenUrl = (token: string) => {
-  return `http://localhost:3002/invoices/public/${token}`;
+export const getListPaymentMethodsUrl = () => {
+  return `http://localhost:3002/payment-methods`;
 };
 
 /**
- * @summary Get public invoice by share token
+ * @summary List payment methods
  */
-export const getPublicInvoiceByToken = async (
-  token: string,
+export const listPaymentMethods = async (
   options?: RequestInit,
-): Promise<getPublicInvoiceByTokenResponse> => {
-  return apiFetch<getPublicInvoiceByTokenResponse>(getGetPublicInvoiceByTokenUrl(token), {
+): Promise<listPaymentMethodsResponse> => {
+  return apiFetch<listPaymentMethodsResponse>(getListPaymentMethodsUrl(), {
     ...options,
     method: "GET",
   });
 };
 
-export const getGetPublicInvoiceByTokenQueryKey = (token: string) => {
-  return [`http://localhost:3002/invoices/public/${token}`] as const;
+export const getListPaymentMethodsQueryKey = () => {
+  return [`http://localhost:3002/payment-methods`] as const;
 };
 
-export const getGetPublicInvoiceByTokenQueryOptions = <
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
-  TError = GetPublicInvoiceByToken404,
->(
-  token: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiFetch>;
-  },
-) => {
+export const getListPaymentMethodsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPaymentMethods>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPaymentMethods>>, TError, TData>>;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetPublicInvoiceByTokenQueryKey(token);
+  const queryKey = queryOptions?.queryKey ?? getListPaymentMethodsQueryKey();
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicInvoiceByToken>>> = ({
-    signal,
-  }) => getPublicInvoiceByToken(token, { signal, ...requestOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPaymentMethods>>> = ({ signal }) =>
+    listPaymentMethods({ signal, ...requestOptions });
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: token !== null && token !== undefined,
-    ...queryOptions,
-  } as UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPaymentMethods>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetPublicInvoiceByTokenQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getPublicInvoiceByToken>>
+export type ListPaymentMethodsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPaymentMethods>>
 >;
-export type GetPublicInvoiceByTokenQueryError = GetPublicInvoiceByToken404;
+export type ListPaymentMethodsQueryError = unknown;
 
-export function useGetPublicInvoiceByToken<
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
-  TError = GetPublicInvoiceByToken404,
+export function useListPaymentMethods<
+  TData = Awaited<ReturnType<typeof listPaymentMethods>>,
+  TError = unknown,
 >(
-  token: string,
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPaymentMethods>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+          Awaited<ReturnType<typeof listPaymentMethods>>,
           TError,
-          Awaited<ReturnType<typeof getPublicInvoiceByToken>>
+          Awaited<ReturnType<typeof listPaymentMethods>>
         >,
         "initialData"
       >;
@@ -1870,20 +1863,19 @@ export function useGetPublicInvoiceByToken<
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetPublicInvoiceByToken<
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
-  TError = GetPublicInvoiceByToken404,
+export function useListPaymentMethods<
+  TData = Awaited<ReturnType<typeof listPaymentMethods>>,
+  TError = unknown,
 >(
-  token: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentMethods>>, TError, TData>
     > &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
+          Awaited<ReturnType<typeof listPaymentMethods>>,
           TError,
-          Awaited<ReturnType<typeof getPublicInvoiceByToken>>
+          Awaited<ReturnType<typeof listPaymentMethods>>
         >,
         "initialData"
       >;
@@ -1891,37 +1883,706 @@ export function useGetPublicInvoiceByToken<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetPublicInvoiceByToken<
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
-  TError = GetPublicInvoiceByToken404,
+export function useListPaymentMethods<
+  TData = Awaited<ReturnType<typeof listPaymentMethods>>,
+  TError = unknown,
 >(
-  token: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPaymentMethods>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List payment methods
+ */
+
+export function useListPaymentMethods<
+  TData = Awaited<ReturnType<typeof listPaymentMethods>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPaymentMethods>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPaymentMethodsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createPaymentMethodResponse201 = {
+  data: CreatePaymentMethod201;
+  status: 201;
+};
+
+export type createPaymentMethodResponse500 = {
+  data: CreatePaymentMethod500;
+  status: 500;
+};
+
+export type createPaymentMethodResponseSuccess = createPaymentMethodResponse201 & {
+  headers: Headers;
+};
+export type createPaymentMethodResponseError = createPaymentMethodResponse500 & {
+  headers: Headers;
+};
+
+export type createPaymentMethodResponse =
+  | createPaymentMethodResponseSuccess
+  | createPaymentMethodResponseError;
+
+export const getCreatePaymentMethodUrl = () => {
+  return `http://localhost:3002/payment-methods`;
+};
+
+/**
+ * @summary Create payment method
+ */
+export const createPaymentMethod = async (
+  createPaymentMethodBody:
+    | CreatePaymentMethodBodyOne
+    | CreatePaymentMethodBodyTwo
+    | CreatePaymentMethodBodyThree,
+  options?: RequestInit,
+): Promise<createPaymentMethodResponse> => {
+  return apiFetch<createPaymentMethodResponse>(getCreatePaymentMethodUrl(), {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(createPaymentMethodBody),
+  });
+};
+
+export const getCreatePaymentMethodMutationOptions = <
+  TError = CreatePaymentMethod500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createPaymentMethod>>,
+    TError,
+    {
+      data: CreatePaymentMethodBodyOne | CreatePaymentMethodBodyTwo | CreatePaymentMethodBodyThree;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createPaymentMethod>>,
+  TError,
+  { data: CreatePaymentMethodBodyOne | CreatePaymentMethodBodyTwo | CreatePaymentMethodBodyThree },
+  TContext
+> => {
+  const mutationKey = ["createPaymentMethod"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createPaymentMethod>>,
+    { data: CreatePaymentMethodBodyOne | CreatePaymentMethodBodyTwo | CreatePaymentMethodBodyThree }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createPaymentMethod(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreatePaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createPaymentMethod>>
+>;
+export type CreatePaymentMethodMutationBody =
+  | CreatePaymentMethodBodyOne
+  | CreatePaymentMethodBodyTwo
+  | CreatePaymentMethodBodyThree;
+export type CreatePaymentMethodMutationError = CreatePaymentMethod500;
+
+/**
+ * @summary Create payment method
+ */
+export const useCreatePaymentMethod = <TError = CreatePaymentMethod500, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createPaymentMethod>>,
+      TError,
+      {
+        data:
+          | CreatePaymentMethodBodyOne
+          | CreatePaymentMethodBodyTwo
+          | CreatePaymentMethodBodyThree;
+      },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createPaymentMethod>>,
+  TError,
+  { data: CreatePaymentMethodBodyOne | CreatePaymentMethodBodyTwo | CreatePaymentMethodBodyThree },
+  TContext
+> => {
+  return useMutation(getCreatePaymentMethodMutationOptions(options), queryClient);
+};
+
+export type getPaymentMethodByIdResponse200 = {
+  data: GetPaymentMethodById200;
+  status: 200;
+};
+
+export type getPaymentMethodByIdResponse404 = {
+  data: GetPaymentMethodById404;
+  status: 404;
+};
+
+export type getPaymentMethodByIdResponseSuccess = getPaymentMethodByIdResponse200 & {
+  headers: Headers;
+};
+export type getPaymentMethodByIdResponseError = getPaymentMethodByIdResponse404 & {
+  headers: Headers;
+};
+
+export type getPaymentMethodByIdResponse =
+  | getPaymentMethodByIdResponseSuccess
+  | getPaymentMethodByIdResponseError;
+
+export const getGetPaymentMethodByIdUrl = (id: string) => {
+  return `http://localhost:3002/payment-methods/${id}`;
+};
+
+/**
+ * @summary Get payment method by id
+ */
+export const getPaymentMethodById = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getPaymentMethodByIdResponse> => {
+  return apiFetch<getPaymentMethodByIdResponse>(getGetPaymentMethodByIdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPaymentMethodByIdQueryKey = (id: string) => {
+  return [`http://localhost:3002/payment-methods/${id}`] as const;
+};
+
+export const getGetPaymentMethodByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPaymentMethodById>>,
+  TError = GetPaymentMethodById404,
+>(
+  id: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentMethodById>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPaymentMethodByIdQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPaymentMethodById>>> = ({ signal }) =>
+    getPaymentMethodById(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getPaymentMethodById>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type GetPaymentMethodByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPaymentMethodById>>
+>;
+export type GetPaymentMethodByIdQueryError = GetPaymentMethodById404;
+
+export function useGetPaymentMethodById<
+  TData = Awaited<ReturnType<typeof getPaymentMethodById>>,
+  TError = GetPaymentMethodById404,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentMethodById>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentMethodById>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentMethodById>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentMethodById<
+  TData = Awaited<ReturnType<typeof getPaymentMethodById>>,
+  TError = GetPaymentMethodById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentMethodById>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentMethodById>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentMethodById>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentMethodById<
+  TData = Awaited<ReturnType<typeof getPaymentMethodById>>,
+  TError = GetPaymentMethodById404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentMethodById>>, TError, TData>
     >;
     request?: SecondParameter<typeof apiFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Get public invoice by share token
+ * @summary Get payment method by id
  */
 
-export function useGetPublicInvoiceByToken<
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByToken>>,
-  TError = GetPublicInvoiceByToken404,
+export function useGetPaymentMethodById<
+  TData = Awaited<ReturnType<typeof getPaymentMethodById>>,
+  TError = GetPaymentMethodById404,
 >(
-  token: string,
+  id: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByToken>>, TError, TData>
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentMethodById>>, TError, TData>
     >;
     request?: SecondParameter<typeof apiFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetPublicInvoiceByTokenQueryOptions(token, options);
+  const queryOptions = getGetPaymentMethodByIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type updatePaymentMethodResponse200 = {
+  data: UpdatePaymentMethod200;
+  status: 200;
+};
+
+export type updatePaymentMethodResponse404 = {
+  data: UpdatePaymentMethod404;
+  status: 404;
+};
+
+export type updatePaymentMethodResponseSuccess = updatePaymentMethodResponse200 & {
+  headers: Headers;
+};
+export type updatePaymentMethodResponseError = updatePaymentMethodResponse404 & {
+  headers: Headers;
+};
+
+export type updatePaymentMethodResponse =
+  | updatePaymentMethodResponseSuccess
+  | updatePaymentMethodResponseError;
+
+export const getUpdatePaymentMethodUrl = (id: string) => {
+  return `http://localhost:3002/payment-methods/${id}`;
+};
+
+/**
+ * @summary Update payment method
+ */
+export const updatePaymentMethod = async (
+  id: string,
+  updatePaymentMethodBody:
+    | UpdatePaymentMethodBodyOne
+    | UpdatePaymentMethodBodyTwo
+    | UpdatePaymentMethodBodyThree,
+  options?: RequestInit,
+): Promise<updatePaymentMethodResponse> => {
+  return apiFetch<updatePaymentMethodResponse>(getUpdatePaymentMethodUrl(id), {
+    ...options,
+    method: "PATCH",
+    body: JSON.stringify(updatePaymentMethodBody),
+  });
+};
+
+export const getUpdatePaymentMethodMutationOptions = <
+  TError = UpdatePaymentMethod404,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePaymentMethod>>,
+    TError,
+    {
+      id: string;
+      data: UpdatePaymentMethodBodyOne | UpdatePaymentMethodBodyTwo | UpdatePaymentMethodBodyThree;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatePaymentMethod>>,
+  TError,
+  {
+    id: string;
+    data: UpdatePaymentMethodBodyOne | UpdatePaymentMethodBodyTwo | UpdatePaymentMethodBodyThree;
+  },
+  TContext
+> => {
+  const mutationKey = ["updatePaymentMethod"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePaymentMethod>>,
+    {
+      id: string;
+      data: UpdatePaymentMethodBodyOne | UpdatePaymentMethodBodyTwo | UpdatePaymentMethodBodyThree;
+    }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updatePaymentMethod(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatePaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePaymentMethod>>
+>;
+export type UpdatePaymentMethodMutationBody =
+  | UpdatePaymentMethodBodyOne
+  | UpdatePaymentMethodBodyTwo
+  | UpdatePaymentMethodBodyThree;
+export type UpdatePaymentMethodMutationError = UpdatePaymentMethod404;
+
+/**
+ * @summary Update payment method
+ */
+export const useUpdatePaymentMethod = <TError = UpdatePaymentMethod404, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updatePaymentMethod>>,
+      TError,
+      {
+        id: string;
+        data:
+          | UpdatePaymentMethodBodyOne
+          | UpdatePaymentMethodBodyTwo
+          | UpdatePaymentMethodBodyThree;
+      },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updatePaymentMethod>>,
+  TError,
+  {
+    id: string;
+    data: UpdatePaymentMethodBodyOne | UpdatePaymentMethodBodyTwo | UpdatePaymentMethodBodyThree;
+  },
+  TContext
+> => {
+  return useMutation(getUpdatePaymentMethodMutationOptions(options), queryClient);
+};
+
+export type deletePaymentMethodResponse200 = {
+  data: DeletePaymentMethod200;
+  status: 200;
+};
+
+export type deletePaymentMethodResponse404 = {
+  data: DeletePaymentMethod404;
+  status: 404;
+};
+
+export type deletePaymentMethodResponse409 = {
+  data: DeletePaymentMethod409;
+  status: 409;
+};
+
+export type deletePaymentMethodResponseSuccess = deletePaymentMethodResponse200 & {
+  headers: Headers;
+};
+export type deletePaymentMethodResponseError = (
+  | deletePaymentMethodResponse404
+  | deletePaymentMethodResponse409
+) & {
+  headers: Headers;
+};
+
+export type deletePaymentMethodResponse =
+  | deletePaymentMethodResponseSuccess
+  | deletePaymentMethodResponseError;
+
+export const getDeletePaymentMethodUrl = (id: string) => {
+  return `http://localhost:3002/payment-methods/${id}`;
+};
+
+/**
+ * @summary Delete payment method
+ */
+export const deletePaymentMethod = async (
+  id: string,
+  options?: RequestInit,
+): Promise<deletePaymentMethodResponse> => {
+  return apiFetch<deletePaymentMethodResponse>(getDeletePaymentMethodUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeletePaymentMethodMutationOptions = <
+  TError = DeletePaymentMethod404 | DeletePaymentMethod409,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deletePaymentMethod>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deletePaymentMethod>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deletePaymentMethod"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deletePaymentMethod>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deletePaymentMethod(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeletePaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deletePaymentMethod>>
+>;
+
+export type DeletePaymentMethodMutationError = DeletePaymentMethod404 | DeletePaymentMethod409;
+
+/**
+ * @summary Delete payment method
+ */
+export const useDeletePaymentMethod = <
+  TError = DeletePaymentMethod404 | DeletePaymentMethod409,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deletePaymentMethod>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deletePaymentMethod>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(getDeletePaymentMethodMutationOptions(options), queryClient);
+};
+
+export type getPublicInvoiceByNumberResponse200 = {
+  data: GetPublicInvoiceByNumber200;
+  status: 200;
+};
+
+export type getPublicInvoiceByNumberResponse404 = {
+  data: GetPublicInvoiceByNumber404;
+  status: 404;
+};
+
+export type getPublicInvoiceByNumberResponseSuccess = getPublicInvoiceByNumberResponse200 & {
+  headers: Headers;
+};
+export type getPublicInvoiceByNumberResponseError = getPublicInvoiceByNumberResponse404 & {
+  headers: Headers;
+};
+
+export type getPublicInvoiceByNumberResponse =
+  | getPublicInvoiceByNumberResponseSuccess
+  | getPublicInvoiceByNumberResponseError;
+
+export const getGetPublicInvoiceByNumberUrl = (number: string) => {
+  return `http://localhost:3002/invoices/public/${number}`;
+};
+
+/**
+ * @summary Get public invoice by invoice number
+ */
+export const getPublicInvoiceByNumber = async (
+  number: string,
+  options?: RequestInit,
+): Promise<getPublicInvoiceByNumberResponse> => {
+  return apiFetch<getPublicInvoiceByNumberResponse>(getGetPublicInvoiceByNumberUrl(number), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPublicInvoiceByNumberQueryKey = (number: string) => {
+  return [`http://localhost:3002/invoices/public/${number}`] as const;
+};
+
+export const getGetPublicInvoiceByNumberQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+  TError = GetPublicInvoiceByNumber404,
+>(
+  number: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPublicInvoiceByNumberQueryKey(number);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>> = ({
+    signal,
+  }) => getPublicInvoiceByNumber(number, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: number !== null && number !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type GetPublicInvoiceByNumberQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPublicInvoiceByNumber>>
+>;
+export type GetPublicInvoiceByNumberQueryError = GetPublicInvoiceByNumber404;
+
+export function useGetPublicInvoiceByNumber<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+  TError = GetPublicInvoiceByNumber404,
+>(
+  number: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+          TError,
+          Awaited<ReturnType<typeof getPublicInvoiceByNumber>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPublicInvoiceByNumber<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+  TError = GetPublicInvoiceByNumber404,
+>(
+  number: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+          TError,
+          Awaited<ReturnType<typeof getPublicInvoiceByNumber>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPublicInvoiceByNumber<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+  TError = GetPublicInvoiceByNumber404,
+>(
+  number: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get public invoice by invoice number
+ */
+
+export function useGetPublicInvoiceByNumber<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+  TError = GetPublicInvoiceByNumber404,
+>(
+  number: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetPublicInvoiceByNumberQueryOptions(number, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
