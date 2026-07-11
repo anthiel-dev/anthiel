@@ -19,8 +19,8 @@ import {
 import { Textarea } from "@anthiel/ui/components/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon, Trash2Icon } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
-import { useEffect, useState } from "react";
+import { QRCodeCanvas } from "qrcode.react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import type {
@@ -405,12 +405,22 @@ export function InvoiceDetailDrawer({
   const shareUrl =
     invoice && invoice.status !== "draft" ? getInvoiceShareUrl(invoice.number) : null;
   const [copied, setCopied] = useState(false);
+  const qrCanvasRef = useRef<HTMLCanvasElement>(null);
 
   async function copyShareUrl() {
     if (!shareUrl) return;
     await navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 2000);
+  }
+
+  function downloadQrCode() {
+    const canvas = qrCanvasRef.current;
+    if (!canvas || !invoice) return;
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = `${invoice.number}-qr.png`;
+    link.click();
   }
 
   return (
@@ -481,11 +491,22 @@ export function InvoiceDetailDrawer({
                   <p className="break-all text-muted-foreground text-xs">{shareUrl}</p>
                   <div className="flex flex-wrap items-center gap-4">
                     <div className="rounded-lg border bg-background p-3">
-                      <QRCodeSVG value={shareUrl} size={128} level="M" marginSize={2} />
+                      <QRCodeCanvas
+                        ref={qrCanvasRef}
+                        value={shareUrl}
+                        size={128}
+                        level="M"
+                        marginSize={2}
+                      />
                     </div>
-                    <Button type="button" variant="outline" onClick={() => void copyShareUrl()}>
-                      {copied ? "Copied" : "Copy link"}
-                    </Button>
+                    <div className="flex flex-col gap-2">
+                      <Button type="button" variant="outline" onClick={() => void copyShareUrl()}>
+                        {copied ? "Copied" : "Copy link"}
+                      </Button>
+                      <Button type="button" variant="outline" onClick={downloadQrCode}>
+                        Download QR
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ) : (

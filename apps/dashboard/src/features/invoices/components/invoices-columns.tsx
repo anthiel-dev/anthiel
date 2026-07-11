@@ -19,6 +19,7 @@ import { STATUS_LABELS, formatDate, formatIdr } from "../types";
 type InvoiceColumnActions = {
   isAdmin: boolean;
   onDetail: (invoice: InvoiceRecord) => void;
+  onShowInvoice: (invoice: InvoiceRecord) => void;
   onEdit: (invoice: InvoiceRecord) => void;
   onDelete: (invoice: InvoiceRecord) => void;
   onStatusChange: (invoice: InvoiceRecord, status: InvoiceStatus) => void;
@@ -35,6 +36,7 @@ function statusVariant(status: InvoiceStatus) {
 export function createInvoiceColumns({
   isAdmin,
   onDetail,
+  onShowInvoice,
   onEdit,
   onDelete,
   onStatusChange,
@@ -124,6 +126,9 @@ export function createInvoiceColumns({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-44">
                 <DropdownMenuItem onClick={() => onDetail(invoice)}>Detail</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onShowInvoice(invoice)}>
+                  Show Invoice
+                </DropdownMenuItem>
                 {canShare ? (
                   <DropdownMenuItem onClick={() => onShare(invoice)}>Share link</DropdownMenuItem>
                 ) : null}

@@ -171,16 +171,10 @@ export function PaymentMethodsPage() {
         title="Payment methods"
         description="Manage bank, cash, and QRIS destinations used on invoices."
       />
-      {pageError ? (
-        <p className="text-destructive text-sm">
-          {getErrorMessage(pageError, "Failed to load payment methods")}
-        </p>
-      ) : null}
-      {paymentMethodsQuery.isPending ? (
-        <p className="text-muted-foreground text-sm">Loading…</p>
-      ) : null}
       <DataTableFrame
         table={table}
+        loading={paymentMethodsQuery.isPending}
+        error={pageError ? getErrorMessage(pageError, "Failed to load payment methods") : null}
         toolbar={
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <DataTableSearch

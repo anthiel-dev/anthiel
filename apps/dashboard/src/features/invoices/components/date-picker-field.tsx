@@ -35,6 +35,12 @@ function formatDisplayDate(value: string) {
   }).format(date);
 }
 
+function startOfToday() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
 export function DatePickerField({
   id,
   value,
@@ -43,6 +49,7 @@ export function DatePickerField({
 }: DatePickerFieldProps) {
   const [open, setOpen] = useState(false);
   const selected = parseDateInput(value);
+  const today = startOfToday();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -68,7 +75,8 @@ export function DatePickerField({
         <Calendar
           mode="single"
           selected={selected}
-          defaultMonth={selected}
+          defaultMonth={selected ?? today}
+          disabled={{ before: today }}
           onSelect={(date) => {
             onValueChange(date ? toDateInputValue(date) : "");
             setOpen(false);

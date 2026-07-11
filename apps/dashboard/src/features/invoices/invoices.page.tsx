@@ -37,6 +37,7 @@ import {
 import type { InvoiceFormValues, InvoiceRecord, InvoiceStatus } from "./types";
 
 import { InvoiceDetailDrawer, InvoiceFormDrawer } from "./components/invoice-drawers";
+import { InvoicePreviewDialog } from "./components/invoice-preview-dialog";
 import { createInvoiceColumns } from "./components/invoices-columns";
 import { dueDateToIso } from "./types";
 
@@ -86,9 +87,11 @@ export function InvoicesPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceRecord | null>(null);
   const [invoiceToDelete, setInvoiceToDelete] = useState<InvoiceRecord | null>(null);
+  const [previewInvoice, setPreviewInvoice] = useState<InvoiceRecord | null>(null);
 
   const invoicesQuery = useListInvoices();
   const businessesQuery = useListBusinesses({
@@ -166,6 +169,11 @@ export function InvoicesPage() {
     setDetailOpen(true);
   }
 
+  function openShowInvoice(invoice: InvoiceRecord) {
+    setPreviewInvoice(invoice);
+    setPreviewOpen(true);
+  }
+
   function openEdit(invoice: InvoiceRecord) {
     setSelectedInvoice(invoice);
     setEditOpen(true);
@@ -193,6 +201,7 @@ export function InvoicesPage() {
       createInvoiceColumns({
         isAdmin,
         onDetail: openDetail,
+        onShowInvoice: openShowInvoice,
         onEdit: openEdit,
         onDelete: openDelete,
         onStatusChange: changeStatus,
@@ -229,14 +238,10 @@ export function InvoicesPage() {
             : "View invoices issued to your business."
         }
       />
-      {pageError ? (
-        <p className="text-destructive text-sm">
-          {getErrorMessage(pageError, "Failed to load invoices")}
-        </p>
-      ) : null}
-      {invoicesQuery.isPending ? <p className="text-muted-foreground text-sm">Loading…</p> : null}
       <DataTableFrame
         table={table}
+        loading={invoicesQuery.isPending}
+        error={pageError ? getErrorMessage(pageError, "Failed to load invoices") : null}
         toolbar={
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <DataTableSearch
@@ -322,6 +327,15 @@ export function InvoicesPage() {
             ? getErrorMessage(invoiceDetailQuery.error, "Failed to load invoice")
             : null
         }
+      />
+
+      <InvoicePreviewDialog
+        open={previewOpen}
+        onOpenChange={(open) => {
+          setPreviewOpen(open);
+          if (!open) setPreviewInvoice(null);
+        }}
+        invoice={previewInvoice}
       />
 
       <AlertDialog

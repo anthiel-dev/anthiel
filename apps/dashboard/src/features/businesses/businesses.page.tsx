@@ -152,14 +152,10 @@ export function BusinessesPage() {
         title="Businesses"
         description="Manage client businesses that receive Anthiel invoices."
       />
-      {pageError ? (
-        <p className="text-destructive text-sm">
-          {getErrorMessage(pageError, "Failed to load businesses")}
-        </p>
-      ) : null}
-      {businessesQuery.isPending ? <p className="text-muted-foreground text-sm">Loading…</p> : null}
       <DataTableFrame
         table={table}
+        loading={businessesQuery.isPending}
+        error={pageError ? getErrorMessage(pageError, "Failed to load businesses") : null}
         toolbar={
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <DataTableSearch

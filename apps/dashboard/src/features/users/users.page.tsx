@@ -166,14 +166,10 @@ export function UsersPage() {
         title="Users"
         description="Manage dashboard users, account details, and assigned roles."
       />
-      {pageError ? (
-        <p className="text-destructive text-sm">
-          {getErrorMessage(pageError, "Failed to load users")}
-        </p>
-      ) : null}
-      {usersQuery.isPending ? <p className="text-muted-foreground text-sm">Loading…</p> : null}
       <DataTableFrame
         table={table}
+        loading={usersQuery.isPending}
+        error={pageError ? getErrorMessage(pageError, "Failed to load users") : null}
         toolbar={
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <DataTableSearch value={query} onValueChange={setQuery} placeholder="Search users…" />

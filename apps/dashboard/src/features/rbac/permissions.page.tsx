@@ -45,14 +45,12 @@ export function PermissionsPage() {
         title="Permissions"
         description="Every permission in the catalog and which roles grant it."
       />
-      {error ? (
-        <p className="text-destructive text-sm">
-          {error instanceof Error ? error.message : "Failed to load permissions"}
-        </p>
-      ) : null}
-      {isPending ? <p className="text-muted-foreground text-sm">Loading…</p> : null}
       <DataTableFrame
         table={table}
+        loading={isPending}
+        error={
+          error ? (error instanceof Error ? error.message : "Failed to load permissions") : null
+        }
         toolbar={
           <DataTableSearch
             value={query}
