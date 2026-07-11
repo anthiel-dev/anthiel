@@ -1,4 +1,4 @@
-import { Button, Field, FieldDescription, FieldGroup, FieldLabel, Input, cn } from "@anthiel/ui";
+import { Button, Field, FieldGroup, FieldLabel, Input, cn } from "@anthiel/ui";
 import { useNavigate } from "@tanstack/react-router";
 import { GalleryVerticalEnd } from "lucide-react";
 import { useState, type ComponentProps, type FormEvent } from "react";
@@ -44,7 +44,7 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
               <span className="sr-only">Anthiel</span>
             </a>
             <h1 className="font-heading text-xl font-bold">Welcome to Anthiel</h1>
-            <FieldDescription>Sign in with your username and password</FieldDescription>
+            <p className="text-muted-foreground text-xs">Sign in with your username and password</p>
           </div>
 
           <Field>
@@ -78,11 +78,9 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
 
           {error ? <p className="text-destructive-foreground text-xs">{error}</p> : null}
 
-          <Field>
-            <Button type="submit" className="w-full" loading={loading}>
-              Login
-            </Button>
-          </Field>
+          <Button type="submit" className="w-full" loading={loading}>
+            Login
+          </Button>
         </FieldGroup>
       </form>
     </div>
