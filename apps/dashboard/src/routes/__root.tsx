@@ -1,3 +1,4 @@
+import { TooltipProvider } from "@anthiel/ui/components/tooltip";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
@@ -34,8 +35,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
-        {children}
+      <body className="font-sans">
+        <TooltipProvider>{children}</TooltipProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",

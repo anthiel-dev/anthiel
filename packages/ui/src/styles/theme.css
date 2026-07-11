@@ -7,8 +7,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: "Geist Variable", sans-serif;
-  --font-sans: "Geist Variable", sans-serif;
+  --font-heading: "Inter", sans-serif;
+  --font-sans: "Inter", sans-serif;
   --font-display: "Playfair Display Variable", serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -67,7 +67,6 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --text-xxs: 0.75rem;
   --text-xxxs: 0.625rem;
-
   @keyframes skeleton {
     to {
       background-position: -200% 0;
@@ -246,6 +245,12 @@
   }
   html {
     @apply font-mono;
+  }
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
   }
   code,
   kbd,

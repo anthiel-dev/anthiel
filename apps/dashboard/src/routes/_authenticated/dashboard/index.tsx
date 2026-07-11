@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { pageMeta } from "#lib/page-meta";
+
 export const Route = createFileRoute("/_authenticated/dashboard/")({
-  component: RouteComponent,
+  head: () => pageMeta("Dashboard", "Anthiel dashboard overview"),
+  component: DashboardPage,
 });
 
-function RouteComponent() {
-  return <div>Hello "/dashboard/"!</div>;
+function DashboardPage() {
+  return null;
 }

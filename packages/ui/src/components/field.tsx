@@ -4,7 +4,7 @@ import type React from "react";
 
 import { Field as FieldPrimitive } from "@base-ui/react/field";
 
-import { cn } from "../lib/utils.ts";
+import { cn } from "#lib/utils";
 
 export function Field({ className, ...props }: FieldPrimitive.Root.Props): React.ReactElement {
   return (

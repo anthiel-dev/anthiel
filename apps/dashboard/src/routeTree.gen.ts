@@ -13,6 +13,9 @@ import { Route as GuestRouteRouteImport } from './routes/_guest/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedDashboardRolesRouteImport } from './routes/_authenticated/dashboard/roles'
+import { Route as AuthenticatedDashboardPermissionsRouteImport } from './routes/_authenticated/dashboard/permissions'
+import { Route as AuthenticatedDashboardInvoicesRouteImport } from './routes/_authenticated/dashboard/invoices'
 import { Route as GuestDashboardAuthLoginRouteImport } from './routes/_guest/dashboard/auth/login'
 
 const GuestRouteRoute = GuestRouteRouteImport.update({
@@ -34,6 +37,24 @@ const AuthenticatedDashboardIndexRoute =
     path: '/dashboard/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDashboardRolesRoute =
+  AuthenticatedDashboardRolesRouteImport.update({
+    id: '/dashboard/roles',
+    path: '/dashboard/roles',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardPermissionsRoute =
+  AuthenticatedDashboardPermissionsRouteImport.update({
+    id: '/dashboard/permissions',
+    path: '/dashboard/permissions',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardInvoicesRoute =
+  AuthenticatedDashboardInvoicesRouteImport.update({
+    id: '/dashboard/invoices',
+    path: '/dashboard/invoices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const GuestDashboardAuthLoginRoute = GuestDashboardAuthLoginRouteImport.update({
   id: '/dashboard/auth/login',
   path: '/dashboard/auth/login',
@@ -42,11 +63,17 @@ const GuestDashboardAuthLoginRoute = GuestDashboardAuthLoginRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
+  '/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
+  '/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
+  '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/auth/login': typeof GuestDashboardAuthLoginRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
+  '/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
+  '/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
+  '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/auth/login': typeof GuestDashboardAuthLoginRoute
 }
@@ -55,19 +82,37 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_guest': typeof GuestRouteRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
+  '/_authenticated/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
+  '/_authenticated/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_guest/dashboard/auth/login': typeof GuestDashboardAuthLoginRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard/' | '/dashboard/auth/login'
+  fullPaths:
+    | '/'
+    | '/dashboard/invoices'
+    | '/dashboard/permissions'
+    | '/dashboard/roles'
+    | '/dashboard/'
+    | '/dashboard/auth/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/dashboard/auth/login'
+  to:
+    | '/'
+    | '/dashboard/invoices'
+    | '/dashboard/permissions'
+    | '/dashboard/roles'
+    | '/dashboard'
+    | '/dashboard/auth/login'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_guest'
     | '/_authenticated/'
+    | '/_authenticated/dashboard/invoices'
+    | '/_authenticated/dashboard/permissions'
+    | '/_authenticated/dashboard/roles'
     | '/_authenticated/dashboard/'
     | '/_guest/dashboard/auth/login'
   fileRoutesById: FileRoutesById
@@ -107,6 +152,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard/roles': {
+      id: '/_authenticated/dashboard/roles'
+      path: '/dashboard/roles'
+      fullPath: '/dashboard/roles'
+      preLoaderRoute: typeof AuthenticatedDashboardRolesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/permissions': {
+      id: '/_authenticated/dashboard/permissions'
+      path: '/dashboard/permissions'
+      fullPath: '/dashboard/permissions'
+      preLoaderRoute: typeof AuthenticatedDashboardPermissionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/invoices': {
+      id: '/_authenticated/dashboard/invoices'
+      path: '/dashboard/invoices'
+      fullPath: '/dashboard/invoices'
+      preLoaderRoute: typeof AuthenticatedDashboardInvoicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_guest/dashboard/auth/login': {
       id: '/_guest/dashboard/auth/login'
       path: '/dashboard/auth/login'
@@ -119,11 +185,18 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedDashboardInvoicesRoute: typeof AuthenticatedDashboardInvoicesRoute
+  AuthenticatedDashboardPermissionsRoute: typeof AuthenticatedDashboardPermissionsRoute
+  AuthenticatedDashboardRolesRoute: typeof AuthenticatedDashboardRolesRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedDashboardInvoicesRoute: AuthenticatedDashboardInvoicesRoute,
+  AuthenticatedDashboardPermissionsRoute:
+    AuthenticatedDashboardPermissionsRoute,
+  AuthenticatedDashboardRolesRoute: AuthenticatedDashboardRolesRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
 }
 
