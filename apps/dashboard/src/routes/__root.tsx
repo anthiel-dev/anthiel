@@ -1,7 +1,6 @@
 import { TooltipProvider } from "@anthiel/ui/components/tooltip";
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 import appCss from "../styles.css?url";
 
@@ -29,6 +28,47 @@ export const Route = createRootRoute({
   shellComponent: RootDocument,
 });
 
+const Devtools = import.meta.env.DEV
+  ? lazy(() =>
+      Promise.all([
+        import("@tanstack/react-devtools"),
+        import("@tanstack/react-router-devtools"),
+      ]).then(([{ TanStackDevtools }, { TanStackRouterDevtoolsPanel }]) => ({
+        default: function DevtoolsPanel() {
+          return (
+            <TanStackDevtools
+              config={{
+                position: "bottom-right",
+              }}
+              plugins={[
+                {
+                  name: "Tanstack Router",
+                  render: <TanStackRouterDevtoolsPanel />,
+                },
+              ]}
+            />
+          );
+        },
+      })),
+    )
+  : null;
+
+function ClientDevtools() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!import.meta.env.DEV || !mounted || !Devtools) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <Devtools />
+    </Suspense>
+  );
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
@@ -38,17 +78,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body className="font-sans">
         <div className="isolate relative flex min-h-svh flex-col">
           <TooltipProvider>{children}</TooltipProvider>
-          <TanStackDevtools
-            config={{
-              position: "bottom-right",
-            }}
-            plugins={[
-              {
-                name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
+          <ClientDevtools />
           <Scripts />
         </div>
       </body>

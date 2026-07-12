@@ -1,16 +1,11 @@
 import tailwindcss from "@tailwindcss/vite";
-import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 
-const config = defineConfig({
-  resolve: {
-    tsconfigPaths: true,
-  },
-  plugins: [
-    devtools(),
+const config = defineConfig(async ({ command }) => {
+  const plugins: PluginOption[] = [
     tailwindcss(),
     tanstackStart({
       // Prerender conflicts with Nitro bun builds during `vite build` on Node.
@@ -21,7 +16,20 @@ const config = defineConfig({
     }),
     nitro({ preset: "bun" }),
     viteReact(),
-  ],
+  ];
+
+  // Devtools inject markup that can mismatch SSR hydration; keep them out of production builds.
+  if (command === "serve") {
+    const { devtools } = await import("@tanstack/devtools-vite");
+    plugins.unshift(devtools());
+  }
+
+  return {
+    resolve: {
+      tsconfigPaths: true,
+    },
+    plugins,
+  };
 });
 
 export default config;
