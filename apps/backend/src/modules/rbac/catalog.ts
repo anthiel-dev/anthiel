@@ -70,7 +70,7 @@ export const ROLE_CATALOG = {
   admin: {
     key: ROLE.admin,
     name: "Admin",
-    description: "Full access to user admin, sessions, and the dashboard.",
+    description: "Full access to every resource and action.",
     permissions: {
       user: [...RESOURCE_CATALOG.user.actions],
       session: [...RESOURCE_CATALOG.session.actions],
@@ -83,11 +83,11 @@ export const ROLE_CATALOG = {
   client: {
     key: ROLE.client,
     name: "Client",
-    description: "Standard access limited to the dashboard.",
+    description: "Invoice access only — can list and view own invoices.",
     permissions: {
       user: [] as const,
       session: [] as const,
-      dashboard: ["access"] as const,
+      dashboard: [] as const,
       invoice: ["list", "get"] as const,
       business: [] as const,
       "payment-method": [] as const,

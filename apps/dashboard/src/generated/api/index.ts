@@ -77,6 +77,7 @@ import type {
   ListBusinesses200,
   ListInvoices200,
   ListInvoicesParams,
+  ListMyPermissions200,
   ListPaymentMethods200,
   ListPermissions200,
   ListResources200,
@@ -98,6 +99,11 @@ import type {
   UpdatePaymentMethodBodyOne,
   UpdatePaymentMethodBodyThree,
   UpdatePaymentMethodBodyTwo,
+  UpdateRolePermission200,
+  UpdateRolePermission404,
+  UpdateRolePermissionBodyOne,
+  UpdateRolePermissionBodyThree,
+  UpdateRolePermissionBodyTwo,
   UpdateUser200,
   UpdateUser404,
   UpdateUser409,
@@ -123,6 +129,132 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export type listMyPermissionsResponse200 = {
+  data: ListMyPermissions200;
+  status: 200;
+};
+
+export type listMyPermissionsResponseSuccess = listMyPermissionsResponse200 & {
+  headers: Headers;
+};
+
+export type listMyPermissionsResponse = listMyPermissionsResponseSuccess;
+
+export const getListMyPermissionsUrl = () => {
+  return `http://localhost:3002/rbac/me/permissions`;
+};
+
+/**
+ * @summary List current user permission keys
+ */
+export const listMyPermissions = async (
+  options?: RequestInit,
+): Promise<listMyPermissionsResponse> => {
+  return apiFetch<listMyPermissionsResponse>(getListMyPermissionsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListMyPermissionsQueryKey = () => {
+  return [`http://localhost:3002/rbac/me/permissions`] as const;
+};
+
+export const getListMyPermissionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyPermissions>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPermissions>>, TError, TData>>;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyPermissionsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyPermissions>>> = ({ signal }) =>
+    listMyPermissions({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyPermissions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyPermissionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listMyPermissions>>
+>;
+export type ListMyPermissionsQueryError = unknown;
+
+export function useListMyPermissions<
+  TData = Awaited<ReturnType<typeof listMyPermissions>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPermissions>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPermissions>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPermissions>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPermissions<
+  TData = Awaited<ReturnType<typeof listMyPermissions>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPermissions>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPermissions>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPermissions>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPermissions<
+  TData = Awaited<ReturnType<typeof listMyPermissions>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPermissions>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List current user permission keys
+ */
+
+export function useListMyPermissions<
+  TData = Awaited<ReturnType<typeof listMyPermissions>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPermissions>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyPermissionsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export type listResourcesResponse200 = {
   data: ListResources200;
@@ -620,6 +752,141 @@ export function useGetRoleById<
 
   return withQueryKey(query, queryOptions.queryKey);
 }
+
+export type updateRolePermissionResponse200 = {
+  data: UpdateRolePermission200;
+  status: 200;
+};
+
+export type updateRolePermissionResponse404 = {
+  data: UpdateRolePermission404;
+  status: 404;
+};
+
+export type updateRolePermissionResponseSuccess = updateRolePermissionResponse200 & {
+  headers: Headers;
+};
+export type updateRolePermissionResponseError = updateRolePermissionResponse404 & {
+  headers: Headers;
+};
+
+export type updateRolePermissionResponse =
+  | updateRolePermissionResponseSuccess
+  | updateRolePermissionResponseError;
+
+export const getUpdateRolePermissionUrl = (id: string) => {
+  return `http://localhost:3002/rbac/roles/${id}/permissions`;
+};
+
+/**
+ * @summary Grant or revoke a permission on a role
+ */
+export const updateRolePermission = async (
+  id: string,
+  updateRolePermissionBody:
+    | UpdateRolePermissionBodyOne
+    | UpdateRolePermissionBodyTwo
+    | UpdateRolePermissionBodyThree,
+  options?: RequestInit,
+): Promise<updateRolePermissionResponse> => {
+  return apiFetch<updateRolePermissionResponse>(getUpdateRolePermissionUrl(id), {
+    ...options,
+    method: "PATCH",
+    body: JSON.stringify(updateRolePermissionBody),
+  });
+};
+
+export const getUpdateRolePermissionMutationOptions = <
+  TError = UpdateRolePermission404,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateRolePermission>>,
+    TError,
+    {
+      id: string;
+      data:
+        | UpdateRolePermissionBodyOne
+        | UpdateRolePermissionBodyTwo
+        | UpdateRolePermissionBodyThree;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateRolePermission>>,
+  TError,
+  {
+    id: string;
+    data: UpdateRolePermissionBodyOne | UpdateRolePermissionBodyTwo | UpdateRolePermissionBodyThree;
+  },
+  TContext
+> => {
+  const mutationKey = ["updateRolePermission"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateRolePermission>>,
+    {
+      id: string;
+      data:
+        | UpdateRolePermissionBodyOne
+        | UpdateRolePermissionBodyTwo
+        | UpdateRolePermissionBodyThree;
+    }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateRolePermission(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateRolePermissionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateRolePermission>>
+>;
+export type UpdateRolePermissionMutationBody =
+  | UpdateRolePermissionBodyOne
+  | UpdateRolePermissionBodyTwo
+  | UpdateRolePermissionBodyThree;
+export type UpdateRolePermissionMutationError = UpdateRolePermission404;
+
+/**
+ * @summary Grant or revoke a permission on a role
+ */
+export const useUpdateRolePermission = <TError = UpdateRolePermission404, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateRolePermission>>,
+      TError,
+      {
+        id: string;
+        data:
+          | UpdateRolePermissionBodyOne
+          | UpdateRolePermissionBodyTwo
+          | UpdateRolePermissionBodyThree;
+      },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateRolePermission>>,
+  TError,
+  {
+    id: string;
+    data: UpdateRolePermissionBodyOne | UpdateRolePermissionBodyTwo | UpdateRolePermissionBodyThree;
+  },
+  TContext
+> => {
+  return useMutation(getUpdateRolePermissionMutationOptions(options), queryClient);
+};
 
 export type listUsersResponse200 = {
   data: ListUsers200;

@@ -47,6 +47,14 @@ export const getRoleResponseSchema = z.object({
   data: roleDetailSchema,
 });
 
+export const updateRolePermissionResponseSchema = z.object({
+  data: permissionSchema,
+});
+
+export const rbacErrorResponseSchema = z.object({
+  error: z.string(),
+});
+
 export type ResourceDto = z.infer<typeof resourceSchema>;
 export type PermissionDto = z.infer<typeof permissionSchema>;
 export type RoleDto = z.infer<typeof roleSchema>;

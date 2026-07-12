@@ -4,12 +4,17 @@ import type { AppDb } from "@/database";
 
 import { permissions, rolePermission, roles } from "@/database/schema";
 
+import type { UpdateRolePermissionBody } from "../contracts/request.contract";
 import type {
   PermissionDto,
   ResourceDto,
   RoleDetailDto,
   RoleDto,
 } from "../contracts/response.contract";
+
+type UpdateRolePermissionResult =
+  | { data: PermissionDto }
+  | { error: "role_not_found" | "permission_not_found" };
 
 export class RbacService {
   constructor(private readonly deps: { db: AppDb }) {}
@@ -38,16 +43,21 @@ export class RbacService {
       orderBy: (table, { asc }) => [asc(table.key)],
     });
 
-    return rows.map((row) => ({
-      id: row.id,
-      key: row.key,
-      action: row.action,
-      description: row.description,
-      resourceId: row.resourceId,
-      resourceKey: row.resource.key,
-      resourceName: row.resource.name,
-      roles: row.rolePermissions.map((link) => link.role.key).sort(),
-    }));
+    return rows.map((row) => this.toPermissionDto(row));
+  }
+
+  async getPermissionById(id: string): Promise<PermissionDto | null> {
+    const row = await this.deps.db.query.permissions.findFirst({
+      where: eq(permissions.id, id),
+      with: {
+        resource: true,
+        rolePermissions: {
+          with: { role: true },
+        },
+      },
+    });
+
+    return row ? this.toPermissionDto(row) : null;
   }
 
   async listRoles(): Promise<RoleDto[]> {
@@ -147,5 +157,84 @@ export class RbacService {
     });
 
     return Boolean(link);
+  }
+
+  async listPermissionKeysForUser(userId: string): Promise<string[]> {
+    const userRow = await this.deps.db.query.user.findFirst({
+      where: (table, { eq: whereEq }) => whereEq(table.id, userId),
+      columns: { roleId: true },
+    });
+
+    if (!userRow?.roleId) return [];
+
+    const links = await this.deps.db.query.rolePermission.findMany({
+      where: eq(rolePermission.roleId, userRow.roleId),
+      with: {
+        permission: {
+          columns: { key: true },
+        },
+      },
+    });
+
+    return links.map((link) => link.permission.key).sort();
+  }
+
+  async updateRolePermission(
+    roleId: string,
+    input: UpdateRolePermissionBody,
+  ): Promise<UpdateRolePermissionResult> {
+    const role = await this.deps.db.query.roles.findFirst({
+      where: eq(roles.id, roleId),
+      columns: { id: true },
+    });
+    if (!role) return { error: "role_not_found" };
+
+    const permission = await this.deps.db.query.permissions.findFirst({
+      where: eq(permissions.id, input.permissionId),
+      columns: { id: true },
+    });
+    if (!permission) return { error: "permission_not_found" };
+
+    if (input.granted) {
+      await this.deps.db
+        .insert(rolePermission)
+        .values({
+          roleId: role.id,
+          permissionId: permission.id,
+        })
+        .onConflictDoNothing();
+    } else {
+      await this.deps.db
+        .delete(rolePermission)
+        .where(
+          and(eq(rolePermission.roleId, role.id), eq(rolePermission.permissionId, permission.id)),
+        );
+    }
+
+    const updated = await this.getPermissionById(permission.id);
+    if (!updated) return { error: "permission_not_found" };
+
+    return { data: updated };
+  }
+
+  private toPermissionDto(row: {
+    id: string;
+    key: string;
+    action: string;
+    description: string | null;
+    resourceId: string;
+    resource: { key: string; name: string };
+    rolePermissions: { role: { key: string } }[];
+  }): PermissionDto {
+    return {
+      id: row.id,
+      key: row.key,
+      action: row.action,
+      description: row.description,
+      resourceId: row.resourceId,
+      resourceKey: row.resource.key,
+      resourceName: row.resource.name,
+      roles: row.rolePermissions.map((link) => link.role.key).sort(),
+    };
   }
 }

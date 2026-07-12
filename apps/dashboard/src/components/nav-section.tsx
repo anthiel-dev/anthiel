@@ -20,6 +20,7 @@ export type NavItem = {
     | "/dashboard/roles"
     | "/dashboard/permissions";
   icon: LucideIcon;
+  adminOnly?: boolean;
 };
 
 export function NavSection({ label, items }: { label: string; items: NavItem[] }) {

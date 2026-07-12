@@ -33,6 +33,7 @@ import {
   useListPaymentMethods,
   useUpdateInvoice,
 } from "#/generated/api";
+import { isAdminRole } from "#/lib/roles";
 
 import type { InvoiceFormValues, InvoiceRecord, InvoiceStatus } from "./types";
 
@@ -53,19 +54,6 @@ function getErrorMessage(error: unknown, fallback: string) {
     return String(error.error);
   }
   return fallback;
-}
-
-function isAdminRole(role: unknown) {
-  if (typeof role === "string") {
-    return role
-      .split(",")
-      .map((value) => value.trim())
-      .includes("admin");
-  }
-  if (Array.isArray(role)) {
-    return role.includes("admin");
-  }
-  return false;
 }
 
 function parseLineItems(values: InvoiceFormValues) {

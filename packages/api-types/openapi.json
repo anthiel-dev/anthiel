@@ -36,6 +36,35 @@
     }
   ],
   "paths": {
+    "/rbac/me/permissions": {
+      "get": {
+        "tags": ["RBAC"],
+        "summary": "List current user permission keys",
+        "operationId": "listMyPermissions",
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": ["data"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/rbac/resources": {
       "get": {
         "tags": ["RBAC"],
@@ -323,6 +352,154 @@
                         "permissionCount",
                         "resources",
                         "permissions"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["data"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rbac/roles/{id}/permissions": {
+      "patch": {
+        "tags": ["RBAC"],
+        "summary": "Grant or revoke a permission on a role",
+        "operationId": "updateRolePermission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "permissionId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "granted": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["permissionId", "granted"],
+                "additionalProperties": false
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "permissionId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "granted": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["permissionId", "granted"],
+                "additionalProperties": false
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "permissionId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "granted": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["permissionId", "granted"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "key": {
+                          "type": "string"
+                        },
+                        "action": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "resourceId": {
+                          "type": "string"
+                        },
+                        "resourceKey": {
+                          "type": "string"
+                        },
+                        "resourceName": {
+                          "type": "string"
+                        },
+                        "roles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "key",
+                        "action",
+                        "description",
+                        "resourceId",
+                        "resourceKey",
+                        "resourceName",
+                        "roles"
                       ],
                       "additionalProperties": false
                     }

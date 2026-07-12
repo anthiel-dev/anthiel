@@ -3,6 +3,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@anthiel/ui/compo
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 import { requireAuth } from "#/lib/auth-guards";
+import { normalizeRole } from "#/lib/roles";
 import { AppBreadcrumb } from "#components/app-breadcrumb";
 import { AppSidebar } from "#components/app-sidebar";
 
@@ -16,12 +17,7 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
   const { session } = Route.useRouteContext();
-  const role =
-    typeof session.user.role === "string"
-      ? session.user.role
-      : Array.isArray(session.user.role)
-        ? session.user.role.join(",")
-        : null;
+  const role = normalizeRole(session.user.role);
 
   return (
     <SidebarProvider>

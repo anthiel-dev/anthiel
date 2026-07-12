@@ -56,6 +56,7 @@ export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
       return;
     }
 
+    // Clients are redirected to invoices by the dashboard index guard.
     await navigate({ to: "/dashboard" });
   }
 
