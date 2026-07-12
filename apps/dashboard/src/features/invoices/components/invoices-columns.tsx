@@ -14,7 +14,24 @@ import { DataTableColumnHeader } from "#/features/rbac/components/data-table-col
 
 import type { InvoiceRecord, InvoiceStatus } from "../types";
 
-import { STATUS_LABELS, formatDate, formatIdr } from "../types";
+import { SERVICE_TYPE_OPTIONS, STATUS_LABELS, formatDate, formatIdr } from "../types";
+
+const SERVICE_TYPE_LABELS = Object.fromEntries(
+  SERVICE_TYPE_OPTIONS.map((option) => [option.value, option.label]),
+) as Record<InvoiceRecord["lineItems"][number]["serviceType"], string>;
+
+function formatServiceTypes(lineItems: InvoiceRecord["lineItems"]) {
+  const labels: string[] = [];
+  const seen = new Set<string>();
+
+  for (const item of lineItems) {
+    if (seen.has(item.serviceType)) continue;
+    seen.add(item.serviceType);
+    labels.push(SERVICE_TYPE_LABELS[item.serviceType] ?? item.serviceType);
+  }
+
+  return labels.length > 0 ? labels.join(", ") : "—";
+}
 
 type InvoiceColumnActions = {
   isAdmin: boolean;
@@ -59,6 +76,14 @@ export function createInvoiceColumns({
             {row.original.business.email ?? "—"}
           </p>
         </div>
+      ),
+    },
+    {
+      id: "serviceType",
+      accessorFn: (row) => formatServiceTypes(row.lineItems),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Service type" />,
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">{formatServiceTypes(row.original.lineItems)}</span>
       ),
     },
     {
