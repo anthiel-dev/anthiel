@@ -142,7 +142,7 @@ export type listMyPermissionsResponseSuccess = listMyPermissionsResponse200 & {
 export type listMyPermissionsResponse = listMyPermissionsResponseSuccess;
 
 export const getListMyPermissionsUrl = () => {
-  return `http://localhost:3002/rbac/me/permissions`;
+  return `/rbac/me/permissions`;
 };
 
 /**
@@ -158,7 +158,7 @@ export const listMyPermissions = async (
 };
 
 export const getListMyPermissionsQueryKey = () => {
-  return [`http://localhost:3002/rbac/me/permissions`] as const;
+  return [`/rbac/me/permissions`] as const;
 };
 
 export const getListMyPermissionsQueryOptions = <
@@ -268,7 +268,7 @@ export type listResourcesResponseSuccess = listResourcesResponse200 & {
 export type listResourcesResponse = listResourcesResponseSuccess;
 
 export const getListResourcesUrl = () => {
-  return `http://localhost:3002/rbac/resources`;
+  return `/rbac/resources`;
 };
 
 /**
@@ -282,7 +282,7 @@ export const listResources = async (options?: RequestInit): Promise<listResource
 };
 
 export const getListResourcesQueryKey = () => {
-  return [`http://localhost:3002/rbac/resources`] as const;
+  return [`/rbac/resources`] as const;
 };
 
 export const getListResourcesQueryOptions = <
@@ -390,7 +390,7 @@ export type listPermissionsResponseSuccess = listPermissionsResponse200 & {
 export type listPermissionsResponse = listPermissionsResponseSuccess;
 
 export const getListPermissionsUrl = () => {
-  return `http://localhost:3002/rbac/permissions`;
+  return `/rbac/permissions`;
 };
 
 /**
@@ -404,7 +404,7 @@ export const listPermissions = async (options?: RequestInit): Promise<listPermis
 };
 
 export const getListPermissionsQueryKey = () => {
-  return [`http://localhost:3002/rbac/permissions`] as const;
+  return [`/rbac/permissions`] as const;
 };
 
 export const getListPermissionsQueryOptions = <
@@ -512,7 +512,7 @@ export type listRolesResponseSuccess = listRolesResponse200 & {
 export type listRolesResponse = listRolesResponseSuccess;
 
 export const getListRolesUrl = () => {
-  return `http://localhost:3002/rbac/roles`;
+  return `/rbac/roles`;
 };
 
 /**
@@ -526,7 +526,7 @@ export const listRoles = async (options?: RequestInit): Promise<listRolesRespons
 };
 
 export const getListRolesQueryKey = () => {
-  return [`http://localhost:3002/rbac/roles`] as const;
+  return [`/rbac/roles`] as const;
 };
 
 export const getListRolesQueryOptions = <
@@ -630,7 +630,7 @@ export type getRoleByIdResponseError = getRoleByIdResponse404 & {
 export type getRoleByIdResponse = getRoleByIdResponseSuccess | getRoleByIdResponseError;
 
 export const getGetRoleByIdUrl = (id: string) => {
-  return `http://localhost:3002/rbac/roles/${id}`;
+  return `/rbac/roles/${id}`;
 };
 
 /**
@@ -647,7 +647,7 @@ export const getRoleById = async (
 };
 
 export const getGetRoleByIdQueryKey = (id: string) => {
-  return [`http://localhost:3002/rbac/roles/${id}`] as const;
+  return [`/rbac/roles/${id}`] as const;
 };
 
 export const getGetRoleByIdQueryOptions = <
@@ -775,7 +775,7 @@ export type updateRolePermissionResponse =
   | updateRolePermissionResponseError;
 
 export const getUpdateRolePermissionUrl = (id: string) => {
-  return `http://localhost:3002/rbac/roles/${id}/permissions`;
+  return `/rbac/roles/${id}/permissions`;
 };
 
 /**
@@ -900,7 +900,7 @@ export type listUsersResponseSuccess = listUsersResponse200 & {
 export type listUsersResponse = listUsersResponseSuccess;
 
 export const getListUsersUrl = () => {
-  return `http://localhost:3002/users`;
+  return `/users`;
 };
 
 /**
@@ -914,7 +914,7 @@ export const listUsers = async (options?: RequestInit): Promise<listUsersRespons
 };
 
 export const getListUsersQueryKey = () => {
-  return [`http://localhost:3002/users`] as const;
+  return [`/users`] as const;
 };
 
 export const getListUsersQueryOptions = <
@@ -1032,7 +1032,7 @@ export type createUserResponseError = (
 export type createUserResponse = createUserResponseSuccess | createUserResponseError;
 
 export const getCreateUserUrl = () => {
-  return `http://localhost:3002/users`;
+  return `/users`;
 };
 
 /**
@@ -1135,7 +1135,7 @@ export type getUserByIdResponseError = getUserByIdResponse404 & {
 export type getUserByIdResponse = getUserByIdResponseSuccess | getUserByIdResponseError;
 
 export const getGetUserByIdUrl = (id: string) => {
-  return `http://localhost:3002/users/${id}`;
+  return `/users/${id}`;
 };
 
 /**
@@ -1152,7 +1152,7 @@ export const getUserById = async (
 };
 
 export const getGetUserByIdQueryKey = (id: string) => {
-  return [`http://localhost:3002/users/${id}`] as const;
+  return [`/users/${id}`] as const;
 };
 
 export const getGetUserByIdQueryOptions = <
@@ -1283,7 +1283,7 @@ export type updateUserResponseError = (updateUserResponse404 | updateUserRespons
 export type updateUserResponse = updateUserResponseSuccess | updateUserResponseError;
 
 export const getUpdateUserUrl = (id: string) => {
-  return `http://localhost:3002/users/${id}`;
+  return `/users/${id}`;
 };
 
 /**
@@ -1398,7 +1398,7 @@ export type deleteUserResponseError = (
 export type deleteUserResponse = deleteUserResponseSuccess | deleteUserResponseError;
 
 export const getDeleteUserUrl = (id: string) => {
-  return `http://localhost:3002/users/${id}`;
+  return `/users/${id}`;
 };
 
 /**
@@ -1486,7 +1486,7 @@ export type listBusinessesResponseSuccess = listBusinessesResponse200 & {
 export type listBusinessesResponse = listBusinessesResponseSuccess;
 
 export const getListBusinessesUrl = () => {
-  return `http://localhost:3002/businesses`;
+  return `/businesses`;
 };
 
 /**
@@ -1500,7 +1500,7 @@ export const listBusinesses = async (options?: RequestInit): Promise<listBusines
 };
 
 export const getListBusinessesQueryKey = () => {
-  return [`http://localhost:3002/businesses`] as const;
+  return [`/businesses`] as const;
 };
 
 export const getListBusinessesQueryOptions = <
@@ -1616,7 +1616,7 @@ export type createBusinessResponseError = createBusinessResponse500 & {
 export type createBusinessResponse = createBusinessResponseSuccess | createBusinessResponseError;
 
 export const getCreateBusinessUrl = () => {
-  return `http://localhost:3002/businesses`;
+  return `/businesses`;
 };
 
 /**
@@ -1719,7 +1719,7 @@ export type getBusinessByIdResponseError = getBusinessByIdResponse404 & {
 export type getBusinessByIdResponse = getBusinessByIdResponseSuccess | getBusinessByIdResponseError;
 
 export const getGetBusinessByIdUrl = (id: string) => {
-  return `http://localhost:3002/businesses/${id}`;
+  return `/businesses/${id}`;
 };
 
 /**
@@ -1736,7 +1736,7 @@ export const getBusinessById = async (
 };
 
 export const getGetBusinessByIdQueryKey = (id: string) => {
-  return [`http://localhost:3002/businesses/${id}`] as const;
+  return [`/businesses/${id}`] as const;
 };
 
 export const getGetBusinessByIdQueryOptions = <
@@ -1862,7 +1862,7 @@ export type updateBusinessResponseError = updateBusinessResponse404 & {
 export type updateBusinessResponse = updateBusinessResponseSuccess | updateBusinessResponseError;
 
 export const getUpdateBusinessUrl = (id: string) => {
-  return `http://localhost:3002/businesses/${id}`;
+  return `/businesses/${id}`;
 };
 
 /**
@@ -1974,7 +1974,7 @@ export type deleteBusinessResponseError = (
 export type deleteBusinessResponse = deleteBusinessResponseSuccess | deleteBusinessResponseError;
 
 export const getDeleteBusinessUrl = (id: string) => {
-  return `http://localhost:3002/businesses/${id}`;
+  return `/businesses/${id}`;
 };
 
 /**
@@ -2067,7 +2067,7 @@ export type listPaymentMethodsResponseSuccess = listPaymentMethodsResponse200 & 
 export type listPaymentMethodsResponse = listPaymentMethodsResponseSuccess;
 
 export const getListPaymentMethodsUrl = () => {
-  return `http://localhost:3002/payment-methods`;
+  return `/payment-methods`;
 };
 
 /**
@@ -2083,7 +2083,7 @@ export const listPaymentMethods = async (
 };
 
 export const getListPaymentMethodsQueryKey = () => {
-  return [`http://localhost:3002/payment-methods`] as const;
+  return [`/payment-methods`] as const;
 };
 
 export const getListPaymentMethodsQueryOptions = <
@@ -2205,7 +2205,7 @@ export type createPaymentMethodResponse =
   | createPaymentMethodResponseError;
 
 export const getCreatePaymentMethodUrl = () => {
-  return `http://localhost:3002/payment-methods`;
+  return `/payment-methods`;
 };
 
 /**
@@ -2322,7 +2322,7 @@ export type getPaymentMethodByIdResponse =
   | getPaymentMethodByIdResponseError;
 
 export const getGetPaymentMethodByIdUrl = (id: string) => {
-  return `http://localhost:3002/payment-methods/${id}`;
+  return `/payment-methods/${id}`;
 };
 
 /**
@@ -2339,7 +2339,7 @@ export const getPaymentMethodById = async (
 };
 
 export const getGetPaymentMethodByIdQueryKey = (id: string) => {
-  return [`http://localhost:3002/payment-methods/${id}`] as const;
+  return [`/payment-methods/${id}`] as const;
 };
 
 export const getGetPaymentMethodByIdQueryOptions = <
@@ -2479,7 +2479,7 @@ export type updatePaymentMethodResponse =
   | updatePaymentMethodResponseError;
 
 export const getUpdatePaymentMethodUrl = (id: string) => {
-  return `http://localhost:3002/payment-methods/${id}`;
+  return `/payment-methods/${id}`;
 };
 
 /**
@@ -2616,7 +2616,7 @@ export type deletePaymentMethodResponse =
   | deletePaymentMethodResponseError;
 
 export const getDeletePaymentMethodUrl = (id: string) => {
-  return `http://localhost:3002/payment-methods/${id}`;
+  return `/payment-methods/${id}`;
 };
 
 /**
@@ -2722,7 +2722,7 @@ export type getPublicInvoiceByNumberResponse =
   | getPublicInvoiceByNumberResponseError;
 
 export const getGetPublicInvoiceByNumberUrl = (number: string) => {
-  return `http://localhost:3002/invoices/public/${number}`;
+  return `/invoices/public/${number}`;
 };
 
 /**
@@ -2739,7 +2739,7 @@ export const getPublicInvoiceByNumber = async (
 };
 
 export const getGetPublicInvoiceByNumberQueryKey = (number: string) => {
-  return [`http://localhost:3002/invoices/public/${number}`] as const;
+  return [`/invoices/public/${number}`] as const;
 };
 
 export const getGetPublicInvoiceByNumberQueryOptions = <
@@ -2880,9 +2880,7 @@ export const getListInvoicesUrl = (params?: ListInvoicesParams) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `http://localhost:3002/invoices?${stringifiedParams}`
-    : `http://localhost:3002/invoices`;
+  return stringifiedParams.length > 0 ? `/invoices?${stringifiedParams}` : `/invoices`;
 };
 
 /**
@@ -2899,7 +2897,7 @@ export const listInvoices = async (
 };
 
 export const getListInvoicesQueryKey = (params?: ListInvoicesParams) => {
-  return [`http://localhost:3002/invoices`, ...(params ? [params] : [])] as const;
+  return [`/invoices`, ...(params ? [params] : [])] as const;
 };
 
 export const getListInvoicesQueryOptions = <
@@ -3015,7 +3013,7 @@ export type createInvoiceResponseError = (createInvoiceResponse404 | createInvoi
 export type createInvoiceResponse = createInvoiceResponseSuccess | createInvoiceResponseError;
 
 export const getCreateInvoiceUrl = () => {
-  return `http://localhost:3002/invoices`;
+  return `/invoices`;
 };
 
 /**
@@ -3118,7 +3116,7 @@ export type getInvoiceByIdResponseError = getInvoiceByIdResponse404 & {
 export type getInvoiceByIdResponse = getInvoiceByIdResponseSuccess | getInvoiceByIdResponseError;
 
 export const getGetInvoiceByIdUrl = (id: string) => {
-  return `http://localhost:3002/invoices/${id}`;
+  return `/invoices/${id}`;
 };
 
 /**
@@ -3135,7 +3133,7 @@ export const getInvoiceById = async (
 };
 
 export const getGetInvoiceByIdQueryKey = (id: string) => {
-  return [`http://localhost:3002/invoices/${id}`] as const;
+  return [`/invoices/${id}`] as const;
 };
 
 export const getGetInvoiceByIdQueryOptions = <
@@ -3266,7 +3264,7 @@ export type updateInvoiceResponseError = (updateInvoiceResponse404 | updateInvoi
 export type updateInvoiceResponse = updateInvoiceResponseSuccess | updateInvoiceResponseError;
 
 export const getUpdateInvoiceUrl = (id: string) => {
-  return `http://localhost:3002/invoices/${id}`;
+  return `/invoices/${id}`;
 };
 
 /**
@@ -3375,7 +3373,7 @@ export type deleteInvoiceResponseError = (deleteInvoiceResponse404 | deleteInvoi
 export type deleteInvoiceResponse = deleteInvoiceResponseSuccess | deleteInvoiceResponseError;
 
 export const getDeleteInvoiceUrl = (id: string) => {
-  return `http://localhost:3002/invoices/${id}`;
+  return `/invoices/${id}`;
 };
 
 /**
@@ -3465,7 +3463,7 @@ export type getServiceRootResponseSuccess = getServiceRootResponse200 & {
 export type getServiceRootResponse = getServiceRootResponseSuccess;
 
 export const getGetServiceRootUrl = () => {
-  return `http://localhost:3002/`;
+  return `/`;
 };
 
 /**
@@ -3479,7 +3477,7 @@ export const getServiceRoot = async (options?: RequestInit): Promise<getServiceR
 };
 
 export const getGetServiceRootQueryKey = () => {
-  return [`http://localhost:3002/`] as const;
+  return [`/`] as const;
 };
 
 export const getGetServiceRootQueryOptions = <
@@ -3587,7 +3585,7 @@ export type getMeResponseSuccess = getMeResponse200 & {
 export type getMeResponse = getMeResponseSuccess;
 
 export const getGetMeUrl = () => {
-  return `http://localhost:3002/me`;
+  return `/me`;
 };
 
 /**
@@ -3601,7 +3599,7 @@ export const getMe = async (options?: RequestInit): Promise<getMeResponse> => {
 };
 
 export const getGetMeQueryKey = () => {
-  return [`http://localhost:3002/me`] as const;
+  return [`/me`] as const;
 };
 
 export const getGetMeQueryOptions = <
@@ -3697,7 +3695,7 @@ export type getAdminHealthResponseSuccess = getAdminHealthResponse200 & {
 export type getAdminHealthResponse = getAdminHealthResponseSuccess;
 
 export const getGetAdminHealthUrl = () => {
-  return `http://localhost:3002/admin/health`;
+  return `/admin/health`;
 };
 
 /**
@@ -3711,7 +3709,7 @@ export const getAdminHealth = async (options?: RequestInit): Promise<getAdminHea
 };
 
 export const getGetAdminHealthQueryKey = () => {
-  return [`http://localhost:3002/admin/health`] as const;
+  return [`/admin/health`] as const;
 };
 
 export const getGetAdminHealthQueryOptions = <

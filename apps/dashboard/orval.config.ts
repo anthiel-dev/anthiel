@@ -14,7 +14,8 @@ export default defineConfig({
       client: "react-query",
       httpClient: "fetch",
       clean: true,
-      baseUrl: "http://localhost:3002",
+      // Relative paths — `apiFetch` prefixes `VITE_BETTER_AUTH_URL` at runtime.
+      baseUrl: "",
       override: {
         mutator: {
           path: "./src/lib/http-client.ts",
