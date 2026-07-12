@@ -34,7 +34,7 @@ module.exports = {
       kill_timeout: 10_000,
       env: {
         NODE_ENV: "production",
-        PORT: "3002",
+        PORT: "3005",
       },
     },
     {
@@ -51,7 +51,7 @@ module.exports = {
       kill_timeout: 10_000,
       env: {
         NODE_ENV: "production",
-        PORT: "3001",
+        PORT: "3006",
       },
     },
   ],
