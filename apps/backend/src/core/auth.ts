@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin as adminPlugin, username } from "better-auth/plugins";
 
+import { CORS_ORIGINS } from "../constants";
 import { db } from "../database";
 import * as schema from "../database/schema";
 import { env } from "../env";
@@ -14,7 +15,7 @@ export const auth = betterAuth({
   }),
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: env.CORS_ORIGIN,
+  trustedOrigins: [...CORS_ORIGINS],
   emailAndPassword: {
     enabled: true,
   },

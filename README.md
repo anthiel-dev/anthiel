@@ -68,20 +68,19 @@ chmod 600 apps/backend/.env apps/dashboard/.env
 ```env
 # backend.env
 BETTER_AUTH_URL=http://api.anthiel.local
-# Comma-separated list of allowed dashboard origins
-CORS_ORIGIN=http://localhost:3001,http://dashboard.anthiel.local
 PORT=3002
 
 # dashboard.env
 VITE_BETTER_AUTH_URL=http://api.anthiel.local
 ```
 
-**Production (browsers via Cloudflare)** — include public HTTPS origins (and keep `.local` / localhost if you still use them):
+CORS origins live in `apps/backend/src/constants.ts` (`CORS_ORIGINS`).
+
+**Production (browsers via Cloudflare)** — set public HTTPS auth URL and add the dashboard origin to `CORS_ORIGINS`:
 
 ```env
 # backend.env
 BETTER_AUTH_URL=https://api.yourdomain.com
-CORS_ORIGIN=http://localhost:3001,http://dashboard.anthiel.local,https://dashboard.yourdomain.com
 
 # dashboard.env  (baked at build time — set before ./deploy/dashboard.sh)
 VITE_BETTER_AUTH_URL=https://api.yourdomain.com

@@ -3,9 +3,9 @@ import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
 import * as z from "zod";
 
+import { CORS_ORIGINS } from "./constants";
 import { betterAuthPlugin } from "./core/better-auth.plugin";
 import { db } from "./database";
-import { env } from "./env";
 import { businessesRoutes } from "./modules/businesses";
 import { invoicesRoutes } from "./modules/invoices";
 import { paymentMethodsRoutes } from "./modules/payment-methods";
@@ -15,7 +15,7 @@ import { usersRoutes } from "./modules/users";
 export const app = new Elysia()
   .use(
     cors({
-      origin: env.CORS_ORIGIN,
+      origin: CORS_ORIGINS,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       credentials: true,
       allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
