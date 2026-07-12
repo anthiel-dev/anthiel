@@ -3,13 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 
 import { paymentMethodLabel, type PaymentMethodType } from "#/features/payment-methods/types";
 
-import {
-  SERVICE_TYPE_OPTIONS,
-  formatDate,
-  formatIdr,
-  getInvoiceShareUrl,
-  type InvoiceServiceType,
-} from "../types";
+import { SERVICE_TYPE_OPTIONS, formatDate, formatIdr, type InvoiceServiceType } from "../types";
 
 export type InvoiceCardData = {
   number: string;
@@ -39,15 +33,14 @@ function serviceTypeLabel(value: InvoiceServiceType) {
   return SERVICE_TYPE_OPTIONS.find((option) => option.value === value)?.label ?? value;
 }
 
-export function InvoiceCard({ invoice }: { invoice: InvoiceCardData }) {
+export function InvoiceCard({ invoice, shareUrl }: { invoice: InvoiceCardData; shareUrl: string }) {
   const watermarkText = `Anthiel - ${invoice.number}`;
-  const shareUrl = getInvoiceShareUrl(invoice.number);
 
   return (
     <div className="relative overflow-hidden rounded-2xl border bg-background/95 p-4 shadow-sm backdrop-blur-sm sm:p-6">
       <Watermark text={watermarkText} />
 
-      <div className="relative space-y-8">
+      <div className="relative space-y-4">
         <header className="flex items-end justify-between gap-4 border-b pb-2">
           <div>
             <p className="text-muted-foreground text-sm">Invoice</p>
@@ -80,7 +73,7 @@ export function InvoiceCard({ invoice }: { invoice: InvoiceCardData }) {
           </div>
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-1">
           <h2 className="font-medium text-sm tracking-tight">Items</h2>
           <div className="overflow-hidden rounded-xl border">
             <table className="w-full text-sm">
@@ -116,7 +109,7 @@ export function InvoiceCard({ invoice }: { invoice: InvoiceCardData }) {
           </div>
         </section>
 
-        <div className="flex items-stretch gap-3">
+        <div className="flex items-stretch gap-3 pt-2">
           <Card className="h-18 min-w-0 flex-1 bg-transparent shadow-none before:hidden">
             <CardPanel className="flex h-full items-center p-4">
               <dl className="grid w-full gap-4 text-sm sm:grid-cols-3">
@@ -139,13 +132,23 @@ export function InvoiceCard({ invoice }: { invoice: InvoiceCardData }) {
               </dl>
             </CardPanel>
           </Card>
-          <div className="aspect-square h-18 shrink-0 self-stretch overflow-hidden rounded-2xl border bg-background p-1">
-            <QRCodeSVG value={shareUrl} level="M" marginSize={3} className="size-full rounded-xl" />
+          <div className="flex shrink-0 flex-col items-center gap-1">
+            <div className="aspect-square h-18 overflow-hidden rounded-2xl border bg-background p-1">
+              <QRCodeSVG
+                value={shareUrl}
+                level="M"
+                marginSize={3}
+                className="size-full rounded-xl"
+              />
+            </div>
+            <p className="max-w-18 text-center text-[10px] text-muted-foreground leading-tight">
+              Scan to verify
+            </p>
           </div>
         </div>
 
         {invoice.notes ? (
-          <section className="border-t pt-6">
+          <section className="border-t pt-4">
             <h2 className="font-medium text-sm tracking-tight">Notes</h2>
             <p className="mt-2 whitespace-pre-wrap text-muted-foreground text-sm leading-relaxed">
               {invoice.notes}
@@ -153,10 +156,9 @@ export function InvoiceCard({ invoice }: { invoice: InvoiceCardData }) {
           </section>
         ) : null}
 
-        <footer className="border-t pt-6 text-center">
+        <footer className="space-y-2 border-t pt-3 text-center">
           <p className="text-muted-foreground text-xs">
-            Thank you for your business. Please include the invoice number with your payment for
-            prompt reconciliation.
+            Terima kasih atas bisnis Anda. Mohon cantumkan nomor invoice saat pembayaran.
           </p>
         </footer>
       </div>

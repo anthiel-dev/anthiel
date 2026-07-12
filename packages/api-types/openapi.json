@@ -2635,19 +2635,20 @@
         }
       }
     },
-    "/invoices/public/{number}": {
+    "/invoices/public/{shareToken}": {
       "get": {
         "tags": ["Invoices"],
-        "summary": "Get public invoice by invoice number",
-        "operationId": "getPublicInvoiceByNumber",
+        "summary": "Get public invoice by share token",
+        "operationId": "getPublicInvoiceByShareToken",
         "parameters": [
           {
-            "name": "number",
+            "name": "shareToken",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 1,
+              "maxLength": 128
             }
           }
         ],

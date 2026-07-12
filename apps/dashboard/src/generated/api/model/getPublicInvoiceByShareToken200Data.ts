@@ -5,16 +5,16 @@
  * Development documentation
  * OpenAPI spec version: 0.0.1
  */
-import type { GetPublicInvoiceByNumber200DataBusiness } from "./getPublicInvoiceByNumber200DataBusiness.ts";
-import type { GetPublicInvoiceByNumber200DataLineItemsItem } from "./getPublicInvoiceByNumber200DataLineItemsItem.ts";
-import type { GetPublicInvoiceByNumber200DataPaymentMethod } from "./getPublicInvoiceByNumber200DataPaymentMethod.ts";
-import type { GetPublicInvoiceByNumber200DataStatus } from "./getPublicInvoiceByNumber200DataStatus.ts";
+import type { GetPublicInvoiceByShareToken200DataBusiness } from "./getPublicInvoiceByShareToken200DataBusiness.ts";
+import type { GetPublicInvoiceByShareToken200DataLineItemsItem } from "./getPublicInvoiceByShareToken200DataLineItemsItem.ts";
+import type { GetPublicInvoiceByShareToken200DataPaymentMethod } from "./getPublicInvoiceByShareToken200DataPaymentMethod.ts";
+import type { GetPublicInvoiceByShareToken200DataStatus } from "./getPublicInvoiceByShareToken200DataStatus.ts";
 
-export type GetPublicInvoiceByNumber200Data = {
+export type GetPublicInvoiceByShareToken200Data = {
   number: string;
-  business: GetPublicInvoiceByNumber200DataBusiness;
-  paymentMethod: GetPublicInvoiceByNumber200DataPaymentMethod;
-  status: GetPublicInvoiceByNumber200DataStatus;
+  business: GetPublicInvoiceByShareToken200DataBusiness;
+  paymentMethod: GetPublicInvoiceByShareToken200DataPaymentMethod;
+  status: GetPublicInvoiceByShareToken200DataStatus;
   currency: string;
   /**
    * @minimum -9007199254740991
@@ -30,5 +30,5 @@ export type GetPublicInvoiceByNumber200Data = {
   dueDate: string | null;
   /** @nullable */
   notes: string | null;
-  lineItems: GetPublicInvoiceByNumber200DataLineItemsItem[];
+  lineItems: GetPublicInvoiceByShareToken200DataLineItemsItem[];
 };

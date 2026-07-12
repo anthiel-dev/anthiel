@@ -6,6 +6,6 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export type GetPublicInvoiceByNumber404 = {
+export type GetPublicInvoiceByShareToken404 = {
   error: string;
 };

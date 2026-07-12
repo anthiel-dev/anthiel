@@ -134,9 +134,9 @@ export class InvoicesService {
     return this.toDto(row);
   }
 
-  async getPublicInvoiceByNumber(number: string): Promise<PublicInvoiceDto | null> {
+  async getPublicInvoiceByShareToken(shareToken: string): Promise<PublicInvoiceDto | null> {
     const row = await this.deps.db.query.invoices.findFirst({
-      where: and(eq(invoices.number, number), ne(invoices.status, "draft")),
+      where: and(eq(invoices.shareToken, shareToken), ne(invoices.status, "draft")),
       with: {
         lineItems: {
           orderBy: (table, { asc }) => [asc(table.sortOrder)],

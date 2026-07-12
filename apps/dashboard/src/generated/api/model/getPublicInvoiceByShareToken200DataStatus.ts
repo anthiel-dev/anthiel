@@ -6,10 +6,10 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export type GetPublicInvoiceByNumber200DataStatus =
-  (typeof GetPublicInvoiceByNumber200DataStatus)[keyof typeof GetPublicInvoiceByNumber200DataStatus];
+export type GetPublicInvoiceByShareToken200DataStatus =
+  (typeof GetPublicInvoiceByShareToken200DataStatus)[keyof typeof GetPublicInvoiceByShareToken200DataStatus];
 
-export const GetPublicInvoiceByNumber200DataStatus = {
+export const GetPublicInvoiceByShareToken200DataStatus = {
   draft: "draft",
   sent: "sent",
   paid: "paid",

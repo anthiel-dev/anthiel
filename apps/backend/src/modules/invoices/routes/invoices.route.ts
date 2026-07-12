@@ -8,7 +8,7 @@ import { isAdmin } from "@/modules/rbac";
 import {
   createInvoiceBodySchema,
   invoiceIdParamsSchema,
-  invoiceNumberParamsSchema,
+  invoiceShareTokenParamsSchema,
   listInvoicesQuerySchema,
   updateInvoiceBodySchema,
 } from "../contracts/request.contract";
@@ -27,21 +27,21 @@ export const invoicesRoutes = (db: AppDb) => {
   return new Elysia({ prefix: "/invoices", name: "invoices", tags: ["Invoices"] })
     .use(authGuardPlugin)
     .get(
-      "/public/:number",
+      "/public/:shareToken",
       async ({ params, status }) => {
-        const invoice = await invoicesService.getPublicInvoiceByNumber(params.number);
+        const invoice = await invoicesService.getPublicInvoiceByShareToken(params.shareToken);
         if (!invoice) return status(404, { error: "Invoice not found" });
         return { data: invoice };
       },
       {
-        params: invoiceNumberParamsSchema,
+        params: invoiceShareTokenParamsSchema,
         response: {
           200: getPublicInvoiceResponseSchema,
           404: invoiceErrorResponseSchema,
         },
         detail: {
-          summary: "Get public invoice by invoice number",
-          operationId: "getPublicInvoiceByNumber",
+          summary: "Get public invoice by share token",
+          operationId: "getPublicInvoiceByShareToken",
         },
       },
     )

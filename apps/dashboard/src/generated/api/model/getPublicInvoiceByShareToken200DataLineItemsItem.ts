@@ -5,11 +5,11 @@
  * Development documentation
  * OpenAPI spec version: 0.0.1
  */
-import type { GetPublicInvoiceByNumber200DataLineItemsItemServiceType } from "./getPublicInvoiceByNumber200DataLineItemsItemServiceType.ts";
+import type { GetPublicInvoiceByShareToken200DataLineItemsItemServiceType } from "./getPublicInvoiceByShareToken200DataLineItemsItemServiceType.ts";
 
-export type GetPublicInvoiceByNumber200DataLineItemsItem = {
+export type GetPublicInvoiceByShareToken200DataLineItemsItem = {
   id: string;
-  serviceType: GetPublicInvoiceByNumber200DataLineItemsItemServiceType;
+  serviceType: GetPublicInvoiceByShareToken200DataLineItemsItemServiceType;
   description: string;
   /**
    * @minimum -9007199254740991

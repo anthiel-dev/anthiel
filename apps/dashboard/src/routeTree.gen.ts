@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as GuestRouteRouteImport } from './routes/_guest/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as InvoiceNumberRouteImport } from './routes/invoice.$number'
+import { Route as InvoiceShareTokenRouteImport } from './routes/invoice.$shareToken'
 import { Route as AuthenticatedDashboardRouteRouteImport } from './routes/_authenticated/dashboard/route'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardUsersRouteImport } from './routes/_authenticated/dashboard/users'
@@ -36,9 +36,9 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const InvoiceNumberRoute = InvoiceNumberRouteImport.update({
-  id: '/invoice/$number',
-  path: '/invoice/$number',
+const InvoiceShareTokenRoute = InvoiceShareTokenRouteImport.update({
+  id: '/invoice/$shareToken',
+  path: '/invoice/$shareToken',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRouteRoute =
@@ -98,7 +98,7 @@ const GuestDashboardAuthLoginRoute = GuestDashboardAuthLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
-  '/invoice/$number': typeof InvoiceNumberRoute
+  '/invoice/$shareToken': typeof InvoiceShareTokenRoute
   '/dashboard/businesses': typeof AuthenticatedDashboardBusinessesRoute
   '/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
   '/dashboard/payment-methods': typeof AuthenticatedDashboardPaymentMethodsRoute
@@ -110,7 +110,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
-  '/invoice/$number': typeof InvoiceNumberRoute
+  '/invoice/$shareToken': typeof InvoiceShareTokenRoute
   '/dashboard/businesses': typeof AuthenticatedDashboardBusinessesRoute
   '/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
   '/dashboard/payment-methods': typeof AuthenticatedDashboardPaymentMethodsRoute
@@ -125,7 +125,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_guest': typeof GuestRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
-  '/invoice/$number': typeof InvoiceNumberRoute
+  '/invoice/$shareToken': typeof InvoiceShareTokenRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/dashboard/businesses': typeof AuthenticatedDashboardBusinessesRoute
   '/_authenticated/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
@@ -141,7 +141,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/invoice/$number'
+    | '/invoice/$shareToken'
     | '/dashboard/businesses'
     | '/dashboard/invoices'
     | '/dashboard/payment-methods'
@@ -153,7 +153,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/invoice/$number'
+    | '/invoice/$shareToken'
     | '/dashboard/businesses'
     | '/dashboard/invoices'
     | '/dashboard/payment-methods'
@@ -167,7 +167,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/_guest'
     | '/_authenticated/dashboard'
-    | '/invoice/$number'
+    | '/invoice/$shareToken'
     | '/_authenticated/'
     | '/_authenticated/dashboard/businesses'
     | '/_authenticated/dashboard/invoices'
@@ -182,7 +182,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   GuestRouteRoute: typeof GuestRouteRouteWithChildren
-  InvoiceNumberRoute: typeof InvoiceNumberRoute
+  InvoiceShareTokenRoute: typeof InvoiceShareTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -208,11 +208,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/invoice/$number': {
-      id: '/invoice/$number'
-      path: '/invoice/$number'
-      fullPath: '/invoice/$number'
-      preLoaderRoute: typeof InvoiceNumberRouteImport
+    '/invoice/$shareToken': {
+      id: '/invoice/$shareToken'
+      path: '/invoice/$shareToken'
+      fullPath: '/invoice/$shareToken'
+      preLoaderRoute: typeof InvoiceShareTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -339,7 +339,7 @@ const GuestRouteRouteWithChildren = GuestRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   GuestRouteRoute: GuestRouteRouteWithChildren,
-  InvoiceNumberRoute: InvoiceNumberRoute,
+  InvoiceShareTokenRoute: InvoiceShareTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

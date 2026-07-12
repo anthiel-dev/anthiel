@@ -67,8 +67,8 @@ import type {
   GetMe200,
   GetPaymentMethodById200,
   GetPaymentMethodById404,
-  GetPublicInvoiceByNumber200,
-  GetPublicInvoiceByNumber404,
+  GetPublicInvoiceByShareToken200,
+  GetPublicInvoiceByShareToken404,
   GetRoleById200,
   GetRoleById404,
   GetServiceRoot200,
@@ -2700,97 +2700,101 @@ export const useDeletePaymentMethod = <
   return useMutation(getDeletePaymentMethodMutationOptions(options), queryClient);
 };
 
-export type getPublicInvoiceByNumberResponse200 = {
-  data: GetPublicInvoiceByNumber200;
+export type getPublicInvoiceByShareTokenResponse200 = {
+  data: GetPublicInvoiceByShareToken200;
   status: 200;
 };
 
-export type getPublicInvoiceByNumberResponse404 = {
-  data: GetPublicInvoiceByNumber404;
+export type getPublicInvoiceByShareTokenResponse404 = {
+  data: GetPublicInvoiceByShareToken404;
   status: 404;
 };
 
-export type getPublicInvoiceByNumberResponseSuccess = getPublicInvoiceByNumberResponse200 & {
-  headers: Headers;
-};
-export type getPublicInvoiceByNumberResponseError = getPublicInvoiceByNumberResponse404 & {
+export type getPublicInvoiceByShareTokenResponseSuccess =
+  getPublicInvoiceByShareTokenResponse200 & {
+    headers: Headers;
+  };
+export type getPublicInvoiceByShareTokenResponseError = getPublicInvoiceByShareTokenResponse404 & {
   headers: Headers;
 };
 
-export type getPublicInvoiceByNumberResponse =
-  | getPublicInvoiceByNumberResponseSuccess
-  | getPublicInvoiceByNumberResponseError;
+export type getPublicInvoiceByShareTokenResponse =
+  | getPublicInvoiceByShareTokenResponseSuccess
+  | getPublicInvoiceByShareTokenResponseError;
 
-export const getGetPublicInvoiceByNumberUrl = (number: string) => {
-  return `/invoices/public/${number}`;
+export const getGetPublicInvoiceByShareTokenUrl = (shareToken: string) => {
+  return `/invoices/public/${shareToken}`;
 };
 
 /**
- * @summary Get public invoice by invoice number
+ * @summary Get public invoice by share token
  */
-export const getPublicInvoiceByNumber = async (
-  number: string,
+export const getPublicInvoiceByShareToken = async (
+  shareToken: string,
   options?: RequestInit,
-): Promise<getPublicInvoiceByNumberResponse> => {
-  return apiFetch<getPublicInvoiceByNumberResponse>(getGetPublicInvoiceByNumberUrl(number), {
-    ...options,
-    method: "GET",
-  });
+): Promise<getPublicInvoiceByShareTokenResponse> => {
+  return apiFetch<getPublicInvoiceByShareTokenResponse>(
+    getGetPublicInvoiceByShareTokenUrl(shareToken),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
-export const getGetPublicInvoiceByNumberQueryKey = (number: string) => {
-  return [`/invoices/public/${number}`] as const;
+export const getGetPublicInvoiceByShareTokenQueryKey = (shareToken: string) => {
+  return [`/invoices/public/${shareToken}`] as const;
 };
 
-export const getGetPublicInvoiceByNumberQueryOptions = <
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
-  TError = GetPublicInvoiceByNumber404,
+export const getGetPublicInvoiceByShareTokenQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>,
+  TError = GetPublicInvoiceByShareToken404,
 >(
-  number: string,
+  shareToken: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>, TError, TData>
     >;
     request?: SecondParameter<typeof apiFetch>;
   },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetPublicInvoiceByNumberQueryKey(number);
+  const queryKey = queryOptions?.queryKey ?? getGetPublicInvoiceByShareTokenQueryKey(shareToken);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>> = ({
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>> = ({
     signal,
-  }) => getPublicInvoiceByNumber(number, { signal, ...requestOptions });
+  }) => getPublicInvoiceByShareToken(shareToken, { signal, ...requestOptions });
 
   return {
     queryKey,
     queryFn,
-    enabled: number !== null && number !== undefined,
+    enabled: shareToken !== null && shareToken !== undefined,
     ...queryOptions,
-  } as UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData> & {
+  } as UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>, TError, TData> & {
     queryKey: DataTag<QueryKey, TData, TError>;
   };
 };
 
-export type GetPublicInvoiceByNumberQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getPublicInvoiceByNumber>>
+export type GetPublicInvoiceByShareTokenQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>
 >;
-export type GetPublicInvoiceByNumberQueryError = GetPublicInvoiceByNumber404;
+export type GetPublicInvoiceByShareTokenQueryError = GetPublicInvoiceByShareToken404;
 
-export function useGetPublicInvoiceByNumber<
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
-  TError = GetPublicInvoiceByNumber404,
+export function useGetPublicInvoiceByShareToken<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>,
+  TError = GetPublicInvoiceByShareToken404,
 >(
-  number: string,
+  shareToken: string,
   options: {
     query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>, TError, TData>
     > &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+          Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>,
           TError,
-          Awaited<ReturnType<typeof getPublicInvoiceByNumber>>
+          Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>
         >,
         "initialData"
       >;
@@ -2798,20 +2802,20 @@ export function useGetPublicInvoiceByNumber<
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetPublicInvoiceByNumber<
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
-  TError = GetPublicInvoiceByNumber404,
+export function useGetPublicInvoiceByShareToken<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>,
+  TError = GetPublicInvoiceByShareToken404,
 >(
-  number: string,
+  shareToken: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>, TError, TData>
     > &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
+          Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>,
           TError,
-          Awaited<ReturnType<typeof getPublicInvoiceByNumber>>
+          Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>
         >,
         "initialData"
       >;
@@ -2819,37 +2823,37 @@ export function useGetPublicInvoiceByNumber<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetPublicInvoiceByNumber<
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
-  TError = GetPublicInvoiceByNumber404,
+export function useGetPublicInvoiceByShareToken<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>,
+  TError = GetPublicInvoiceByShareToken404,
 >(
-  number: string,
+  shareToken: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>, TError, TData>
     >;
     request?: SecondParameter<typeof apiFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Get public invoice by invoice number
+ * @summary Get public invoice by share token
  */
 
-export function useGetPublicInvoiceByNumber<
-  TData = Awaited<ReturnType<typeof getPublicInvoiceByNumber>>,
-  TError = GetPublicInvoiceByNumber404,
+export function useGetPublicInvoiceByShareToken<
+  TData = Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>,
+  TError = GetPublicInvoiceByShareToken404,
 >(
-  number: string,
+  shareToken: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByNumber>>, TError, TData>
+      UseQueryOptions<Awaited<ReturnType<typeof getPublicInvoiceByShareToken>>, TError, TData>
     >;
     request?: SecondParameter<typeof apiFetch>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetPublicInvoiceByNumberQueryOptions(number, options);
+  const queryOptions = getGetPublicInvoiceByShareTokenQueryOptions(shareToken, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

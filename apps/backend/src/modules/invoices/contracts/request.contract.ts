@@ -6,8 +6,8 @@ export const invoiceIdParamsSchema = z.object({
   id: z.string().min(1),
 });
 
-export const invoiceNumberParamsSchema = z.object({
-  number: z.string().min(1),
+export const invoiceShareTokenParamsSchema = z.object({
+  shareToken: z.string().min(1).max(128),
 });
 
 export const listInvoicesQuerySchema = z.object({

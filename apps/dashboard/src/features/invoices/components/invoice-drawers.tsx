@@ -403,7 +403,7 @@ export function InvoiceDetailDrawer({
   error,
 }: InvoiceDetailDrawerProps) {
   const shareUrl =
-    invoice && invoice.status !== "draft" ? getInvoiceShareUrl(invoice.number) : null;
+    invoice && invoice.status !== "draft" ? getInvoiceShareUrl(invoice.shareToken) : null;
   const [copied, setCopied] = useState(false);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -487,6 +487,10 @@ export function InvoiceDetailDrawer({
                 <div className="space-y-3 border-t pt-4">
                   <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
                     Public share
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    Unguessable link. Recipients can scan the QR to load official amounts from
+                    Anthiel.
                   </p>
                   <p className="break-all text-muted-foreground text-xs">{shareUrl}</p>
                   <div className="flex flex-wrap items-center gap-4">

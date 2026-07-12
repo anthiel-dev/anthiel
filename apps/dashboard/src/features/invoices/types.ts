@@ -85,8 +85,8 @@ export function isoToDateInput(value: string | null | undefined) {
   return value.slice(0, 10);
 }
 
-export function getInvoiceShareUrl(invoiceNumber: string) {
-  const path = `/invoice/${encodeURIComponent(invoiceNumber)}`;
+export function getInvoiceShareUrl(shareToken: string) {
+  const path = `/invoice/${encodeURIComponent(shareToken)}`;
   if (typeof window === "undefined") return path;
   return `${window.location.origin}${path}`;
 }

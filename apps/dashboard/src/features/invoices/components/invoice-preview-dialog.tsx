@@ -7,8 +7,7 @@ import {
   DialogTitle,
 } from "@anthiel/ui/components/dialog";
 
-import type { InvoiceRecord } from "../types";
-
+import { getInvoiceShareUrl, type InvoiceRecord } from "../types";
 import { InvoiceCard } from "./invoice-card";
 
 type InvoicePreviewDialogProps = {
@@ -26,7 +25,9 @@ export function InvoicePreviewDialog({ open, onOpenChange, invoice }: InvoicePre
           <DialogDescription>Preview of the public invoice card.</DialogDescription>
         </DialogHeader>
         <DialogPanel className="p-4 sm:p-6">
-          {invoice ? <InvoiceCard invoice={invoice} /> : null}
+          {invoice ? (
+            <InvoiceCard invoice={invoice} shareUrl={getInvoiceShareUrl(invoice.shareToken)} />
+          ) : null}
         </DialogPanel>
       </DialogPopup>
     </Dialog>

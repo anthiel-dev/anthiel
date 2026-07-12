@@ -6,7 +6,7 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export type GetPublicInvoiceByNumber200DataBusiness = {
+export type GetPublicInvoiceByShareToken200DataBusiness = {
   id: string;
   name: string;
   /** @nullable */

@@ -1,19 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { InvoiceCard } from "#/features/invoices/components/invoice-card";
-import { useGetPublicInvoiceByNumber } from "#/generated/api";
+import { getInvoiceShareUrl } from "#/features/invoices/types";
+import { useGetPublicInvoiceByShareToken } from "#/generated/api";
 import { pageMeta } from "#lib/page-meta";
 
-export const Route = createFileRoute("/invoice/$number")({
+export const Route = createFileRoute("/invoice/$shareToken")({
   ssr: false,
-  head: ({ params }) => pageMeta("Invoice", `Invoice ${params.number}`),
+  head: () => pageMeta("Invoice", "Official Anthiel invoice"),
   component: PublicInvoicePage,
 });
 
 function PublicInvoicePage() {
-  const { number } = Route.useParams();
-  const invoiceNumber = decodeURIComponent(number);
-  const invoiceQuery = useGetPublicInvoiceByNumber(invoiceNumber);
+  const { shareToken } = Route.useParams();
+  const token = decodeURIComponent(shareToken);
+  const invoiceQuery = useGetPublicInvoiceByShareToken(token);
+  const shareUrl = getInvoiceShareUrl(token);
 
   if (invoiceQuery.isPending) {
     return (
@@ -41,7 +43,7 @@ function PublicInvoicePage() {
   return (
     <main className="relative min-h-svh overflow-hidden bg-background px-4 py-4">
       <div className="relative mx-auto max-w-3xl">
-        <InvoiceCard invoice={invoice} />
+        <InvoiceCard invoice={invoice} shareUrl={shareUrl} />
       </div>
     </main>
   );
