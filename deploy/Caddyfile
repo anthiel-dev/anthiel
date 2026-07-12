@@ -1,0 +1,38 @@
+# Anthiel reverse proxy (Caddy on the VPS).
+# Cloudflare terminates public TLS and proxies to this origin (HTTP :80).
+#
+# /etc/hosts on the VPS (and any machine that should hit .local directly):
+#   127.0.0.1 api.anthiel.local dashboard.anthiel.local
+#
+# Cloudflare DNS (orange cloud) example:
+#   api.yourdomain.com        → VPS IP  (Host header: api.yourdomain.com)
+#   dashboard.yourdomain.com  → VPS IP
+# Add matching site blocks below for those public names, or replace .local
+# hostnames with your real Cloudflare hostnames if you only use public DNS.
+#
+# Repo on VPS: /home/batamtoday/apps/anthiel
+# Install:
+#   sudo cp /home/batamtoday/apps/anthiel/deploy/Caddyfile /etc/caddy/Caddyfile
+#   sudo systemctl reload caddy
+
+{
+	auto_https off
+}
+
+# Internal / on-box names (no port in env URLs)
+http://api.anthiel.local {
+	reverse_proxy 127.0.0.1:3002
+}
+
+http://dashboard.anthiel.local {
+	reverse_proxy 127.0.0.1:3001
+}
+
+# --- Cloudflare public hostnames (uncomment + set your domains) ---
+# http://api.yourdomain.com {
+# 	reverse_proxy 127.0.0.1:3002
+# }
+#
+# http://dashboard.yourdomain.com {
+# 	reverse_proxy 127.0.0.1:3001
+# }

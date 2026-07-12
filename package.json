@@ -7,6 +7,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "deploy:backend": "./deploy/backend.sh",
+    "deploy:dashboard": "./deploy/dashboard.sh",
     "dev": "turbo run dev",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
