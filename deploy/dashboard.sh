@@ -46,12 +46,14 @@ bun_install
 
 cd "$DASHBOARD_DIR"
 
+# Build before reload so a failed build leaves the previous PM2 process running.
 log "Building dashboard (Vite + Nitro bun preset)"
 bun run build
 
 [[ -f "${DASHBOARD_DIR}/.output/server/index.mjs" ]] \
   || die "Build output missing: ${DASHBOARD_DIR}/.output/server/index.mjs"
 
-pm2_reload_app "$DASHBOARD_APP"
+# Serve the build from this deploy (avoid a second vite build inside `bun run start`).
+PM2_DASHBOARD_SCRIPT="run start:serve" pm2_reload_app "$DASHBOARD_APP"
 
 log "Dashboard deploy finished"

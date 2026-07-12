@@ -41,7 +41,9 @@ module.exports = {
       name: "anthiel-dashboard",
       cwd: path.join(APP_ROOT, "apps/dashboard"),
       script: "bun",
-      args: "run start",
+      // Default `start` builds then serves. Deploy script sets PM2_DASHBOARD_SCRIPT=run start:serve
+      // after a successful build so reload does not rebuild twice.
+      args: process.env.PM2_DASHBOARD_SCRIPT || "run start",
       interpreter: "none",
       instances: 1,
       exec_mode: "fork",

@@ -16,7 +16,8 @@
     "dev": "vite dev --port 3001",
     "generate-routes": "tsr generate",
     "preview": "vite preview",
-    "start": "bun run .output/server/index.mjs",
+    "start": "bun run build && bun .output/server/index.mjs",
+    "start:serve": "bun .output/server/index.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
