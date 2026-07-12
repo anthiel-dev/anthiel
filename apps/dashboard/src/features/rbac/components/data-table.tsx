@@ -6,13 +6,16 @@ import {
   TableHeader,
   TableRow,
 } from "@anthiel/ui/components/table";
+import { useIsMobile } from "@anthiel/ui/hooks/use-media-query";
 import { flexRender, type Table as TanStackTable } from "@tanstack/react-table";
+
+import { DataTableList } from "./data-table-list";
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
 };
 
-export function DataTable<TData>({ table }: DataTableProps<TData>) {
+function DataTableTable<TData>({ table }: DataTableProps<TData>) {
   const rows = table.getRowModel().rows;
 
   return (
@@ -54,4 +57,14 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
       </TableBody>
     </Table>
   );
+}
+
+export function DataTable<TData>({ table }: DataTableProps<TData>) {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return <DataTableList table={table} />;
+  }
+
+  return <DataTableTable table={table} />;
 }

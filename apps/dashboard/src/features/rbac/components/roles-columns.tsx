@@ -9,6 +9,7 @@ import { DataTableColumnHeader } from "./data-table-column-header";
 export const roleColumns: ColumnDef<ListRoles200DataItem>[] = [
   {
     accessorKey: "name",
+    meta: { label: "Role" },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Role" />,
     cell: ({ row }) => (
       <div className="flex flex-col gap-0.5">
@@ -19,6 +20,7 @@ export const roleColumns: ColumnDef<ListRoles200DataItem>[] = [
   },
   {
     accessorKey: "description",
+    meta: { label: "Description" },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Description" />,
     cell: ({ row }) => (
       <span className="text-muted-foreground whitespace-normal">
@@ -28,6 +30,7 @@ export const roleColumns: ColumnDef<ListRoles200DataItem>[] = [
   },
   {
     accessorKey: "permissionCount",
+    meta: { label: "Permissions" },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Permissions" />,
     cell: ({ row }) => (
       <span className="tabular-nums text-foreground">{row.original.permissionCount}</span>
@@ -36,6 +39,7 @@ export const roleColumns: ColumnDef<ListRoles200DataItem>[] = [
   {
     accessorKey: "resources",
     enableSorting: false,
+    meta: { label: "Resources" },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Resources" />,
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-1.5">

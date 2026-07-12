@@ -21,6 +21,7 @@ export function createPermissionColumns({
   const roleColumns: ColumnDef<ListPermissions200DataItem>[] = roles.map((role) => ({
     id: `role:${role.key}`,
     accessorFn: (row) => (row.roles.includes(role.key) ? 1 : 0),
+    meta: { label: role.name },
     header: ({ column }) => <DataTableColumnHeader column={column} title={role.name} />,
     cell: ({ row }) => {
       const granted = row.original.roles.includes(role.key);
@@ -47,6 +48,7 @@ export function createPermissionColumns({
   return [
     {
       accessorKey: "key",
+      meta: { label: "Permission" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Permission" />,
       cell: ({ row }) => (
         <code className="font-mono text-foreground text-xs">{row.original.key}</code>
@@ -54,6 +56,7 @@ export function createPermissionColumns({
     },
     {
       accessorKey: "resourceKey",
+      meta: { label: "Resource" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Resource" />,
       cell: ({ row }) => (
         <Badge variant="secondary" className="font-normal capitalize">
@@ -63,6 +66,7 @@ export function createPermissionColumns({
     },
     {
       accessorKey: "action",
+      meta: { label: "Action" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Action" />,
       cell: ({ row }) => (
         <span className="font-mono text-muted-foreground text-xs">{row.original.action}</span>

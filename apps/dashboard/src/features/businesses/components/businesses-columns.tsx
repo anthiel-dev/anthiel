@@ -29,21 +29,25 @@ export function createBusinessColumns({
   return [
     {
       accessorKey: "name",
+      meta: { label: "Name" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
       cell: ({ row }) => <span className="font-medium text-foreground">{row.original.name}</span>,
     },
     {
       accessorKey: "email",
+      meta: { label: "Email" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
       cell: ({ row }) => <span className="text-muted-foreground">{row.original.email ?? "—"}</span>,
     },
     {
       accessorKey: "phone",
+      meta: { label: "Phone" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
       cell: ({ row }) => <span className="text-muted-foreground">{row.original.phone ?? "—"}</span>,
     },
     {
       accessorKey: "createdAt",
+      meta: { label: "Created" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
       cell: ({ row }) => (
         <span className="whitespace-nowrap text-muted-foreground">

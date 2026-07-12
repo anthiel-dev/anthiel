@@ -41,12 +41,14 @@ export function InvoiceCard({ invoice, shareUrl }: { invoice: InvoiceCardData; s
       <Watermark text={watermarkText} />
 
       <div className="relative space-y-4">
-        <header className="flex items-end justify-between gap-4 border-b pb-2">
-          <div>
+        <header className="flex items-end justify-between gap-3 border-b pb-2">
+          <div className="min-w-0">
             <p className="text-muted-foreground text-sm">Invoice</p>
-            <h1 className="font-semibold text-xl tracking-tight">{invoice.number}</h1>
+            <h1 className="truncate font-semibold text-lg tracking-tight sm:text-xl">
+              {invoice.number}
+            </h1>
           </div>
-          <p className="font-semibold text-xl tracking-tight">
+          <p className="shrink-0 font-semibold text-lg tracking-tight sm:text-xl">
             Anthiel
             <span className="text-orange-500" aria-hidden>
               .
@@ -67,7 +69,7 @@ export function InvoiceCard({ invoice, shareUrl }: { invoice: InvoiceCardData; s
             ) : null}
           </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:justify-items-end">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:justify-items-end">
             <Info label="Invoice date" value={formatDate(invoice.issueDate)} />
             <Info label="Due" value={formatDate(invoice.dueDate)} align="end" />
           </div>
@@ -75,7 +77,35 @@ export function InvoiceCard({ invoice, shareUrl }: { invoice: InvoiceCardData; s
 
         <section className="space-y-1">
           <h2 className="font-medium text-sm tracking-tight">Items</h2>
-          <div className="overflow-hidden rounded-xl border">
+
+          <div className="overflow-hidden rounded-xl border sm:hidden">
+            <ul className="divide-y">
+              {invoice.lineItems.map((line) => (
+                <li key={line.id} className="space-y-1.5 px-3 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="min-w-0 font-medium text-sm capitalize">
+                      {serviceTypeLabel(line.serviceType)}
+                    </p>
+                    <p className="shrink-0 text-sm tabular-nums tracking-tight">
+                      {formatIdr(line.lineAmount)}
+                    </p>
+                  </div>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {line.description}
+                  </p>
+                  <p className="text-muted-foreground text-xs tabular-nums">Qty {line.quantity}</p>
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-center justify-between border-t bg-muted/50 px-3 py-3">
+              <span className="font-medium text-base">Total</span>
+              <span className="font-semibold text-base tabular-nums tracking-tight">
+                {formatIdr(invoice.totalAmount)}
+              </span>
+            </div>
+          </div>
+
+          <div className="hidden overflow-hidden rounded-xl border sm:block">
             <table className="w-full text-sm">
               <thead className="bg-muted/40 text-left text-muted-foreground">
                 <tr>
@@ -109,10 +139,10 @@ export function InvoiceCard({ invoice, shareUrl }: { invoice: InvoiceCardData; s
           </div>
         </section>
 
-        <div className="flex items-stretch gap-3 pt-2">
-          <Card className="h-18 min-w-0 flex-1 bg-transparent shadow-none before:hidden">
-            <CardPanel className="flex h-full items-center p-4">
-              <dl className="grid w-full gap-4 text-sm sm:grid-cols-3">
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-stretch">
+          <Card className="min-w-0 flex-1 bg-transparent shadow-none before:hidden sm:h-18">
+            <CardPanel className="flex h-full items-center p-3 sm:p-4">
+              <dl className="grid w-full gap-3 text-sm sm:grid-cols-3 sm:gap-4">
                 <div>
                   <dt className="text-muted-foreground text-xs">Method</dt>
                   <dd className="mt-0.5 font-medium">
@@ -132,8 +162,8 @@ export function InvoiceCard({ invoice, shareUrl }: { invoice: InvoiceCardData; s
               </dl>
             </CardPanel>
           </Card>
-          <div className="flex shrink-0 flex-col items-center gap-1">
-            <div className="aspect-square h-18 overflow-hidden rounded-2xl border bg-background p-1">
+          <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-center sm:gap-1">
+            <div className="aspect-square size-16 overflow-hidden rounded-2xl border bg-background p-1 sm:size-auto sm:h-18">
               <QRCodeSVG
                 value={shareUrl}
                 level="M"
@@ -141,7 +171,7 @@ export function InvoiceCard({ invoice, shareUrl }: { invoice: InvoiceCardData; s
                 className="size-full rounded-xl"
               />
             </div>
-            <p className="max-w-18 text-center text-[10px] text-muted-foreground leading-tight">
+            <p className="text-muted-foreground text-xs leading-tight sm:max-w-18 sm:text-center sm:text-[10px]">
               Scan to verify
             </p>
           </div>
@@ -157,7 +187,7 @@ export function InvoiceCard({ invoice, shareUrl }: { invoice: InvoiceCardData; s
         ) : null}
 
         <footer className="space-y-2 border-t pt-3 text-center">
-          <p className="text-muted-foreground text-xs">
+          <p className="text-muted-foreground text-xs leading-relaxed">
             Terima kasih atas bisnis Anda. Mohon cantumkan nomor invoice saat pembayaran.
           </p>
         </footer>

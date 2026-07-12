@@ -45,11 +45,13 @@ export function createUserColumns({
   return [
     {
       accessorKey: "name",
+      meta: { label: "Name" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
       cell: ({ row }) => <span className="font-medium text-foreground">{row.original.name}</span>,
     },
     {
       accessorKey: "username",
+      meta: { label: "Username" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Username" />,
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.original.username ?? "—"}</span>
@@ -57,12 +59,14 @@ export function createUserColumns({
     },
     {
       accessorKey: "email",
+      meta: { label: "Email" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
       cell: ({ row }) => <span className="text-muted-foreground">{row.original.email}</span>,
     },
     {
       id: "role",
       accessorFn: getRoleName,
+      meta: { label: "Role" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Role" />,
       cell: ({ row }) => (
         <Badge variant="secondary" className="font-normal capitalize">
@@ -72,6 +76,7 @@ export function createUserColumns({
     },
     {
       accessorKey: "emailVerified",
+      meta: { label: "Email status" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Email status" />,
       cell: ({ row }) => (
         <Badge variant={row.original.emailVerified ? "secondary" : "outline"}>
@@ -81,6 +86,7 @@ export function createUserColumns({
     },
     {
       accessorKey: "createdAt",
+      meta: { label: "Created" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
       cell: ({ row }) => (
         <span className="whitespace-nowrap text-muted-foreground">

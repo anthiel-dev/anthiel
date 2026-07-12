@@ -62,12 +62,14 @@ export function createInvoiceColumns({
   return [
     {
       accessorKey: "number",
+      meta: { label: "Number" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Number" />,
       cell: ({ row }) => <span className="font-medium text-foreground">{row.original.number}</span>,
     },
     {
       id: "business",
       accessorFn: (row) => row.business.name,
+      meta: { label: "Business" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Business" />,
       cell: ({ row }) => (
         <div className="min-w-0">
@@ -81,6 +83,7 @@ export function createInvoiceColumns({
     {
       id: "serviceType",
       accessorFn: (row) => formatServiceTypes(row.lineItems),
+      meta: { label: "Service type" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Service type" />,
       cell: ({ row }) => (
         <span className="text-muted-foreground">{formatServiceTypes(row.original.lineItems)}</span>
@@ -88,6 +91,7 @@ export function createInvoiceColumns({
     },
     {
       accessorKey: "status",
+      meta: { label: "Status" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
       cell: ({ row }) => (
         <Badge variant={statusVariant(row.original.status)} className="capitalize">
@@ -97,6 +101,7 @@ export function createInvoiceColumns({
     },
     {
       accessorKey: "totalAmount",
+      meta: { label: "Total" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Total" />,
       cell: ({ row }) => (
         <span className="whitespace-nowrap text-muted-foreground">
@@ -106,6 +111,7 @@ export function createInvoiceColumns({
     },
     {
       accessorKey: "issueDate",
+      meta: { label: "Issued" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Issued" />,
       cell: ({ row }) => (
         <span className="whitespace-nowrap text-muted-foreground">
@@ -115,6 +121,7 @@ export function createInvoiceColumns({
     },
     {
       accessorKey: "dueDate",
+      meta: { label: "Due" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Due" />,
       cell: ({ row }) => (
         <span className="whitespace-nowrap text-muted-foreground">

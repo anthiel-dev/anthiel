@@ -29,6 +29,7 @@ export function createPaymentMethodColumns({
   return [
     {
       accessorKey: "method",
+      meta: { label: "Method" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Method" />,
       cell: ({ row }) => (
         <span className="font-medium text-foreground">
@@ -38,11 +39,13 @@ export function createPaymentMethodColumns({
     },
     {
       accessorKey: "receiverName",
+      meta: { label: "Receiver" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Receiver" />,
       cell: ({ row }) => <span className="text-foreground">{row.original.receiverName}</span>,
     },
     {
       accessorKey: "accountNumber",
+      meta: { label: "Account no." },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Account no." />,
       cell: ({ row }) => (
         <span className="tabular-nums text-muted-foreground">
@@ -52,6 +55,7 @@ export function createPaymentMethodColumns({
     },
     {
       accessorKey: "createdAt",
+      meta: { label: "Created" },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
       cell: ({ row }) => (
         <span className="whitespace-nowrap text-muted-foreground">
