@@ -9,7 +9,7 @@ import type { CreateInvoiceBodyThreeLineItemsItem } from "./createInvoiceBodyThr
 
 export type CreateInvoiceBodyThree = {
   /** @minLength 1 */
-  businessId: string;
+  projectId: string;
   /** @minLength 1 */
   paymentMethodId: string;
   /**

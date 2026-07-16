@@ -107,7 +107,7 @@ async function seedRoles() {
     }
   }
 
-  console.log("Seeded roles: admin, client");
+  console.log("Seeded roles: admin, staff, client");
 }
 
 async function seedAdminUser() {

@@ -28,12 +28,12 @@ import {
   useCreateInvoice,
   useDeleteInvoice,
   useGetInvoiceById,
-  useListBusinesses,
   useListInvoices,
   useListPaymentMethods,
+  useListProjects,
   useUpdateInvoice,
 } from "#/generated/api";
-import { isAdminRole } from "#/lib/roles";
+import { canManageRole, isAdminRole } from "#/lib/roles";
 
 import type { InvoiceFormValues, InvoiceRecord, InvoiceStatus } from "./types";
 
@@ -68,6 +68,7 @@ function parseLineItems(values: InvoiceFormValues) {
 export function InvoicesPage() {
   const { session } = authenticatedRoute.useRouteContext();
   const isAdmin = isAdminRole(session.user.role);
+  const canManage = canManageRole(session.user.role);
   const queryClient = useQueryClient();
 
   const [sorting, setSorting] = useState<SortingState>([{ id: "issueDate", desc: true }]);
@@ -82,24 +83,25 @@ export function InvoicesPage() {
   const [previewInvoice, setPreviewInvoice] = useState<InvoiceRecord | null>(null);
 
   const invoicesQuery = useListInvoices();
-  const businessesQuery = useListBusinesses({
-    query: { enabled: isAdmin },
+  const projectsQuery = useListProjects(undefined, {
+    query: { enabled: canManage },
   });
   const paymentMethodsQuery = useListPaymentMethods({
-    query: { enabled: isAdmin },
+    query: { enabled: canManage },
   });
   const invoiceDetailQuery = useGetInvoiceById(selectedInvoice?.id ?? "", {
     query: { enabled: Boolean(selectedInvoice && (detailOpen || editOpen)) },
   });
 
   const rows = invoicesQuery.data?.data.data ?? EMPTY_INVOICES;
-  const businesses = businessesQuery.data?.data.data ?? [];
+  const projects = projectsQuery.data?.data.data ?? [];
   const paymentMethods = paymentMethodsQuery.data?.data.data ?? [];
 
   const searchableRows = useMemo(
     () =>
       rows.map((invoice) => ({
         ...invoice,
+        projectName: invoice.project.name,
         businessName: invoice.business.name,
         businessEmail: invoice.business.email ?? "",
       })),
@@ -109,6 +111,7 @@ export function InvoicesPage() {
     () =>
       createFuzzySearcher(searchableRows, [
         "number",
+        "projectName",
         "businessName",
         "businessEmail",
         "status",
@@ -187,7 +190,7 @@ export function InvoicesPage() {
   const columns = useMemo(
     () =>
       createInvoiceColumns({
-        isAdmin,
+        isAdmin: canManage,
         onDetail: openDetail,
         onShowInvoice: openShowInvoice,
         onEdit: openEdit,
@@ -195,7 +198,7 @@ export function InvoicesPage() {
         onStatusChange: changeStatus,
         onShare: openShare,
       }),
-    [isAdmin],
+    [canManage],
   );
 
   const table = useReactTable({
@@ -212,8 +215,8 @@ export function InvoicesPage() {
     invoiceDetailQuery.data?.status === 200 ? invoiceDetailQuery.data.data.data : selectedInvoice;
   const pageError =
     invoicesQuery.error ??
-    (isAdmin ? businessesQuery.error : null) ??
-    (isAdmin ? paymentMethodsQuery.error : null) ??
+    (canManage ? projectsQuery.error : null) ??
+    (canManage ? paymentMethodsQuery.error : null) ??
     deleteMutation.error;
 
   return (
@@ -222,8 +225,10 @@ export function InvoicesPage() {
         title="Invoices"
         description={
           isAdmin
-            ? "Create and manage invoices for client businesses."
-            : "View invoices issued to your business."
+            ? "Create and manage invoices for client projects."
+            : canManage
+              ? "Manage invoices for projects you are assigned to."
+              : "View invoices for projects you are assigned to."
         }
       />
       <DataTableFrame
@@ -237,7 +242,7 @@ export function InvoicesPage() {
               onValueChange={setQuery}
               placeholder="Search invoices…"
             />
-            {isAdmin ? (
+            {canManage ? (
               <Button onClick={() => setCreateOpen(true)}>
                 <PlusIcon />
                 Create invoice
@@ -251,7 +256,7 @@ export function InvoicesPage() {
         mode="create"
         open={createOpen}
         onOpenChange={setCreateOpen}
-        businesses={businesses}
+        projects={projects}
         paymentMethods={paymentMethods}
         pending={createMutation.isPending}
         error={
@@ -262,7 +267,7 @@ export function InvoicesPage() {
         onSubmit={(values) => {
           createMutation.mutate({
             data: {
-              businessId: values.businessId,
+              projectId: values.projectId,
               paymentMethodId: values.paymentMethodId,
               dueDate: dueDateToIso(values.dueDate),
               notes: values.notes || null,
@@ -279,7 +284,7 @@ export function InvoicesPage() {
           if (!open) setSelectedInvoice(null);
         }}
         invoice={detailInvoice}
-        businesses={businesses}
+        projects={projects}
         paymentMethods={paymentMethods}
         pending={updateMutation.isPending}
         error={
@@ -292,7 +297,7 @@ export function InvoicesPage() {
           updateMutation.mutate({
             id: selectedInvoice.id,
             data: {
-              businessId: values.businessId,
+              projectId: values.projectId,
               paymentMethodId: values.paymentMethodId,
               dueDate: dueDateToIso(values.dueDate),
               notes: values.notes || null,

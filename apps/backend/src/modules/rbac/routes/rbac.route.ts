@@ -43,7 +43,7 @@ export const rbacRoutes = (db: AppDb) => {
         data: await rbacService.listResources(),
       }),
       {
-        admin: true,
+        manage: true,
         response: listResourcesResponseSchema,
         detail: {
           summary: "List resources",
@@ -57,7 +57,7 @@ export const rbacRoutes = (db: AppDb) => {
         data: await rbacService.listPermissions(),
       }),
       {
-        admin: true,
+        manage: true,
         response: listPermissionsResponseSchema,
         detail: {
           summary: "List permissions",
@@ -71,7 +71,7 @@ export const rbacRoutes = (db: AppDb) => {
         data: await rbacService.listRoles(),
       }),
       {
-        admin: true,
+        manage: true,
         response: listRolesResponseSchema,
         detail: {
           summary: "List roles",
@@ -87,7 +87,7 @@ export const rbacRoutes = (db: AppDb) => {
         return { data: role };
       },
       {
-        admin: true,
+        manage: true,
         params: roleIdParamsSchema,
         response: {
           200: getRoleResponseSchema,
@@ -114,7 +114,7 @@ export const rbacRoutes = (db: AppDb) => {
         return { data: result.data };
       },
       {
-        admin: true,
+        manage: true,
         params: roleIdParamsSchema,
         body: updateRolePermissionBodySchema,
         response: {

@@ -3,7 +3,7 @@ import { Elysia } from "elysia";
 import type { AppDb } from "@/database";
 
 import { authGuardPlugin } from "@/core/better-auth.plugin";
-import { isAdmin } from "@/modules/rbac";
+import { bypassesInvoiceScope } from "@/modules/rbac";
 
 import {
   createInvoiceBodySchema,
@@ -48,12 +48,12 @@ export const invoicesRoutes = (db: AppDb) => {
     .get(
       "",
       async ({ query, user }) => {
-        const admin = isAdmin(user.role);
+        const unrestricted = bypassesInvoiceScope(user.role);
         return {
           data: await invoicesService.listInvoices({
-            isAdmin: admin,
+            isAdmin: unrestricted,
             currentUserId: user.id,
-            query: admin ? query : { status: query.status },
+            query: unrestricted ? query : { status: query.status },
           }),
         };
       },
@@ -71,7 +71,7 @@ export const invoicesRoutes = (db: AppDb) => {
       "/:id",
       async ({ params, status, user }) => {
         const invoice = await invoicesService.getInvoiceById(params.id, {
-          isAdmin: isAdmin(user.role),
+          isAdmin: bypassesInvoiceScope(user.role),
           currentUserId: user.id,
         });
         if (!invoice) return status(404, { error: "Invoice not found" });
@@ -96,8 +96,8 @@ export const invoicesRoutes = (db: AppDb) => {
         const result = await invoicesService.createInvoice(body, user.id);
 
         if ("error" in result) {
-          if (result.error === "business_not_found") {
-            return status(404, { error: "Business not found" });
+          if (result.error === "project_not_found") {
+            return status(404, { error: "Project not found" });
           }
           if (result.error === "payment_method_not_found") {
             return status(404, { error: "Payment method not found" });
@@ -108,7 +108,7 @@ export const invoicesRoutes = (db: AppDb) => {
         return status(201, { data: result.data });
       },
       {
-        admin: true,
+        manage: true,
         body: createInvoiceBodySchema,
         response: {
           201: getInvoiceResponseSchema,
@@ -130,8 +130,8 @@ export const invoicesRoutes = (db: AppDb) => {
           if (result.error === "invoice_not_found") {
             return status(404, { error: "Invoice not found" });
           }
-          if (result.error === "business_not_found") {
-            return status(404, { error: "Business not found" });
+          if (result.error === "project_not_found") {
+            return status(404, { error: "Project not found" });
           }
           if (result.error === "payment_method_not_found") {
             return status(404, { error: "Payment method not found" });
@@ -148,7 +148,7 @@ export const invoicesRoutes = (db: AppDb) => {
         return { data: result.data };
       },
       {
-        admin: true,
+        manage: true,
         params: invoiceIdParamsSchema,
         body: updateInvoiceBodySchema,
         response: {
@@ -177,7 +177,7 @@ export const invoicesRoutes = (db: AppDb) => {
         return { success: true as const };
       },
       {
-        admin: true,
+        manage: true,
         params: invoiceIdParamsSchema,
         response: {
           200: deleteInvoiceResponseSchema,

@@ -44,6 +44,12 @@ export const RESOURCE_CATALOG = {
     description: "Business (client company) administration",
     actions: ["list", "get", "create", "update", "delete"],
   },
+  project: {
+    key: "project",
+    name: "Project",
+    description: "Project administration and membership",
+    actions: ["list", "get", "create", "update", "delete", "manage-members"],
+  },
   "payment-method": {
     key: "payment-method",
     name: "Payment method",
@@ -60,6 +66,7 @@ export function permissionKey(resource: string, action: string): string {
 
 export const ROLE = {
   admin: "admin",
+  staff: "staff",
   client: "client",
 } as const;
 
@@ -77,19 +84,35 @@ export const ROLE_CATALOG = {
       dashboard: [...RESOURCE_CATALOG.dashboard.actions],
       invoice: [...RESOURCE_CATALOG.invoice.actions],
       business: [...RESOURCE_CATALOG.business.actions],
+      project: [...RESOURCE_CATALOG.project.actions],
+      "payment-method": [...RESOURCE_CATALOG["payment-method"].actions],
+    },
+  },
+  staff: {
+    key: ROLE.staff,
+    name: "Staff",
+    description: "Full manage access; invoices are limited to projects they are assigned to.",
+    permissions: {
+      user: [...RESOURCE_CATALOG.user.actions],
+      session: [...RESOURCE_CATALOG.session.actions],
+      dashboard: [...RESOURCE_CATALOG.dashboard.actions],
+      invoice: [...RESOURCE_CATALOG.invoice.actions],
+      business: [...RESOURCE_CATALOG.business.actions],
+      project: [...RESOURCE_CATALOG.project.actions],
       "payment-method": [...RESOURCE_CATALOG["payment-method"].actions],
     },
   },
   client: {
     key: ROLE.client,
     name: "Client",
-    description: "Invoice access only — can list and view own invoices.",
+    description: "Invoice and project access for assigned memberships only.",
     permissions: {
       user: [] as const,
       session: [] as const,
       dashboard: [] as const,
       invoice: ["list", "get"] as const,
       business: [] as const,
+      project: ["list", "get"] as const,
       "payment-method": [] as const,
     },
   },
@@ -111,4 +134,18 @@ export function hasRole(userRole: string | string[] | null | undefined, role: Ro
 
 export function isAdmin(userRole: string | string[] | null | undefined): boolean {
   return hasRole(userRole, ROLE.admin);
+}
+
+export function isStaff(userRole: string | string[] | null | undefined): boolean {
+  return hasRole(userRole, ROLE.staff);
+}
+
+/** Admin or staff — can use manage features. Does not bypass invoice project scope. */
+export function canManage(userRole: string | string[] | null | undefined): boolean {
+  return isAdmin(userRole) || isStaff(userRole);
+}
+
+/** Only admins bypass project membership filters on invoices. */
+export function bypassesInvoiceScope(userRole: string | string[] | null | undefined): boolean {
+  return isAdmin(userRole);
 }

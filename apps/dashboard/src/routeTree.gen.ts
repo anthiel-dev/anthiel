@@ -17,6 +17,7 @@ import { Route as AuthenticatedDashboardRouteRouteImport } from './routes/_authe
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardUsersRouteImport } from './routes/_authenticated/dashboard/users'
 import { Route as AuthenticatedDashboardRolesRouteImport } from './routes/_authenticated/dashboard/roles'
+import { Route as AuthenticatedDashboardProjectsRouteImport } from './routes/_authenticated/dashboard/projects'
 import { Route as AuthenticatedDashboardPermissionsRouteImport } from './routes/_authenticated/dashboard/permissions'
 import { Route as AuthenticatedDashboardPaymentMethodsRouteImport } from './routes/_authenticated/dashboard/payment-methods'
 import { Route as AuthenticatedDashboardInvoicesRouteImport } from './routes/_authenticated/dashboard/invoices'
@@ -65,6 +66,12 @@ const AuthenticatedDashboardRolesRoute =
     path: '/roles',
     getParentRoute: () => AuthenticatedDashboardRouteRoute,
   } as any)
+const AuthenticatedDashboardProjectsRoute =
+  AuthenticatedDashboardProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => AuthenticatedDashboardRouteRoute,
+  } as any)
 const AuthenticatedDashboardPermissionsRoute =
   AuthenticatedDashboardPermissionsRouteImport.update({
     id: '/permissions',
@@ -103,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
   '/dashboard/payment-methods': typeof AuthenticatedDashboardPaymentMethodsRoute
   '/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
+  '/dashboard/projects': typeof AuthenticatedDashboardProjectsRoute
   '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/dashboard/users': typeof AuthenticatedDashboardUsersRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -115,6 +123,7 @@ export interface FileRoutesByTo {
   '/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
   '/dashboard/payment-methods': typeof AuthenticatedDashboardPaymentMethodsRoute
   '/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
+  '/dashboard/projects': typeof AuthenticatedDashboardProjectsRoute
   '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/dashboard/users': typeof AuthenticatedDashboardUsersRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
@@ -131,6 +140,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/invoices': typeof AuthenticatedDashboardInvoicesRoute
   '/_authenticated/dashboard/payment-methods': typeof AuthenticatedDashboardPaymentMethodsRoute
   '/_authenticated/dashboard/permissions': typeof AuthenticatedDashboardPermissionsRoute
+  '/_authenticated/dashboard/projects': typeof AuthenticatedDashboardProjectsRoute
   '/_authenticated/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/_authenticated/dashboard/users': typeof AuthenticatedDashboardUsersRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/dashboard/invoices'
     | '/dashboard/payment-methods'
     | '/dashboard/permissions'
+    | '/dashboard/projects'
     | '/dashboard/roles'
     | '/dashboard/users'
     | '/dashboard/'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/dashboard/invoices'
     | '/dashboard/payment-methods'
     | '/dashboard/permissions'
+    | '/dashboard/projects'
     | '/dashboard/roles'
     | '/dashboard/users'
     | '/dashboard'
@@ -173,6 +185,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/invoices'
     | '/_authenticated/dashboard/payment-methods'
     | '/_authenticated/dashboard/permissions'
+    | '/_authenticated/dashboard/projects'
     | '/_authenticated/dashboard/roles'
     | '/_authenticated/dashboard/users'
     | '/_authenticated/dashboard/'
@@ -243,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRolesRouteImport
       parentRoute: typeof AuthenticatedDashboardRouteRoute
     }
+    '/_authenticated/dashboard/projects': {
+      id: '/_authenticated/dashboard/projects'
+      path: '/projects'
+      fullPath: '/dashboard/projects'
+      preLoaderRoute: typeof AuthenticatedDashboardProjectsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRouteRoute
+    }
     '/_authenticated/dashboard/permissions': {
       id: '/_authenticated/dashboard/permissions'
       path: '/permissions'
@@ -286,6 +306,7 @@ interface AuthenticatedDashboardRouteRouteChildren {
   AuthenticatedDashboardInvoicesRoute: typeof AuthenticatedDashboardInvoicesRoute
   AuthenticatedDashboardPaymentMethodsRoute: typeof AuthenticatedDashboardPaymentMethodsRoute
   AuthenticatedDashboardPermissionsRoute: typeof AuthenticatedDashboardPermissionsRoute
+  AuthenticatedDashboardProjectsRoute: typeof AuthenticatedDashboardProjectsRoute
   AuthenticatedDashboardRolesRoute: typeof AuthenticatedDashboardRolesRoute
   AuthenticatedDashboardUsersRoute: typeof AuthenticatedDashboardUsersRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
@@ -300,6 +321,7 @@ const AuthenticatedDashboardRouteRouteChildren: AuthenticatedDashboardRouteRoute
       AuthenticatedDashboardPaymentMethodsRoute,
     AuthenticatedDashboardPermissionsRoute:
       AuthenticatedDashboardPermissionsRoute,
+    AuthenticatedDashboardProjectsRoute: AuthenticatedDashboardProjectsRoute,
     AuthenticatedDashboardRolesRoute: AuthenticatedDashboardRolesRoute,
     AuthenticatedDashboardUsersRoute: AuthenticatedDashboardUsersRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,

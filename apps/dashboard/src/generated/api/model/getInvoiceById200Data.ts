@@ -8,6 +8,7 @@
 import type { GetInvoiceById200DataBusiness } from "./getInvoiceById200DataBusiness.ts";
 import type { GetInvoiceById200DataLineItemsItem } from "./getInvoiceById200DataLineItemsItem.ts";
 import type { GetInvoiceById200DataPaymentMethod } from "./getInvoiceById200DataPaymentMethod.ts";
+import type { GetInvoiceById200DataProject } from "./getInvoiceById200DataProject.ts";
 import type { GetInvoiceById200DataStatus } from "./getInvoiceById200DataStatus.ts";
 
 export type GetInvoiceById200Data = {
@@ -16,6 +17,8 @@ export type GetInvoiceById200Data = {
   shareToken: string;
   businessId: string;
   business: GetInvoiceById200DataBusiness;
+  projectId: string;
+  project: GetInvoiceById200DataProject;
   paymentMethodId: string;
   paymentMethod: GetInvoiceById200DataPaymentMethod;
   createdByUserId: string;

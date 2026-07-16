@@ -1,7 +1,7 @@
 import { redirect } from "@tanstack/react-router";
 
 import { fetchSession, type AuthSession } from "#/lib/auth-session";
-import { getAppHome, isAdminRole } from "#/lib/roles";
+import { canManageRole, getAppHome } from "#/lib/roles";
 
 const LOGIN_PATH = "/dashboard/auth/login";
 
@@ -24,14 +24,14 @@ export async function requireAuth(location: {
   return { session };
 }
 
-/** Require an admin session; redirect non-admins to their home. */
+/** Require admin or staff; redirect clients to their home. */
 export async function requireAdmin(location: {
   pathname: string;
   searchStr: string;
 }): Promise<{ session: AuthSession }> {
   const { session } = await requireAuth(location);
 
-  if (!isAdminRole(session.user.role)) {
+  if (!canManageRole(session.user.role)) {
     throw redirect({ to: getAppHome(session.user.role) });
   }
 

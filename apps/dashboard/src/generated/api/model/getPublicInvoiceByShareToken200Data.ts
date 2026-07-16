@@ -8,11 +8,13 @@
 import type { GetPublicInvoiceByShareToken200DataBusiness } from "./getPublicInvoiceByShareToken200DataBusiness.ts";
 import type { GetPublicInvoiceByShareToken200DataLineItemsItem } from "./getPublicInvoiceByShareToken200DataLineItemsItem.ts";
 import type { GetPublicInvoiceByShareToken200DataPaymentMethod } from "./getPublicInvoiceByShareToken200DataPaymentMethod.ts";
+import type { GetPublicInvoiceByShareToken200DataProject } from "./getPublicInvoiceByShareToken200DataProject.ts";
 import type { GetPublicInvoiceByShareToken200DataStatus } from "./getPublicInvoiceByShareToken200DataStatus.ts";
 
 export type GetPublicInvoiceByShareToken200Data = {
   number: string;
   business: GetPublicInvoiceByShareToken200DataBusiness;
+  project: GetPublicInvoiceByShareToken200DataProject;
   paymentMethod: GetPublicInvoiceByShareToken200DataPaymentMethod;
   status: GetPublicInvoiceByShareToken200DataStatus;
   currency: string;

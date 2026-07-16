@@ -8,6 +8,7 @@
 import type { CreateInvoice201DataBusiness } from "./createInvoice201DataBusiness.ts";
 import type { CreateInvoice201DataLineItemsItem } from "./createInvoice201DataLineItemsItem.ts";
 import type { CreateInvoice201DataPaymentMethod } from "./createInvoice201DataPaymentMethod.ts";
+import type { CreateInvoice201DataProject } from "./createInvoice201DataProject.ts";
 import type { CreateInvoice201DataStatus } from "./createInvoice201DataStatus.ts";
 
 export type CreateInvoice201Data = {
@@ -16,6 +17,8 @@ export type CreateInvoice201Data = {
   shareToken: string;
   businessId: string;
   business: CreateInvoice201DataBusiness;
+  projectId: string;
+  project: CreateInvoice201DataProject;
   paymentMethodId: string;
   paymentMethod: CreateInvoice201DataPaymentMethod;
   createdByUserId: string;

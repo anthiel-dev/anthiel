@@ -172,8 +172,8 @@ export class UsersService {
       changes.roleId = role.id;
     }
 
-    if (nextRoleKey === ROLE.admin) {
-      if (input.businessId !== undefined || role?.key === ROLE.admin) {
+    if (nextRoleKey === ROLE.admin || nextRoleKey === ROLE.staff) {
+      if (input.businessId !== undefined || role?.key === ROLE.admin || role?.key === ROLE.staff) {
         changes.businessId = null;
       }
     } else if (input.businessId !== undefined || role?.key === ROLE.client) {

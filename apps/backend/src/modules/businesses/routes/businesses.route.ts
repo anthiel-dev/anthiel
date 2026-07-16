@@ -28,7 +28,7 @@ export const businessesRoutes = (db: AppDb) => {
         data: await businessesService.listBusinesses(),
       }),
       {
-        admin: true,
+        manage: true,
         response: listBusinessesResponseSchema,
         detail: {
           summary: "List businesses",
@@ -44,7 +44,7 @@ export const businessesRoutes = (db: AppDb) => {
         return { data: business };
       },
       {
-        admin: true,
+        manage: true,
         params: businessIdParamsSchema,
         response: {
           200: getBusinessResponseSchema,
@@ -66,7 +66,7 @@ export const businessesRoutes = (db: AppDb) => {
         return status(201, { data: result.data });
       },
       {
-        admin: true,
+        manage: true,
         body: createBusinessBodySchema,
         response: {
           201: getBusinessResponseSchema,
@@ -88,7 +88,7 @@ export const businessesRoutes = (db: AppDb) => {
         return { data: result.data };
       },
       {
-        admin: true,
+        manage: true,
         params: businessIdParamsSchema,
         body: updateBusinessBodySchema,
         response: {
@@ -109,6 +109,9 @@ export const businessesRoutes = (db: AppDb) => {
           if (result.error === "has_users") {
             return status(409, { error: "Business still has assigned users" });
           }
+          if (result.error === "has_projects") {
+            return status(409, { error: "Business still has projects" });
+          }
           if (result.error === "has_invoices") {
             return status(409, { error: "Business still has invoices" });
           }
@@ -117,7 +120,7 @@ export const businessesRoutes = (db: AppDb) => {
         return { success: true as const };
       },
       {
-        admin: true,
+        manage: true,
         params: businessIdParamsSchema,
         response: {
           200: deleteBusinessResponseSchema,

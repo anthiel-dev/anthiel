@@ -32,7 +32,7 @@ export const paymentMethodsRoutes = (db: AppDb) => {
         data: await paymentMethodsService.listPaymentMethods(),
       }),
       {
-        admin: true,
+        manage: true,
         response: listPaymentMethodsResponseSchema,
         detail: {
           summary: "List payment methods",
@@ -48,7 +48,7 @@ export const paymentMethodsRoutes = (db: AppDb) => {
         return { data: paymentMethod };
       },
       {
-        admin: true,
+        manage: true,
         params: paymentMethodIdParamsSchema,
         response: {
           200: getPaymentMethodResponseSchema,
@@ -70,7 +70,7 @@ export const paymentMethodsRoutes = (db: AppDb) => {
         return status(201, { data: result.data });
       },
       {
-        admin: true,
+        manage: true,
         body: createPaymentMethodBodySchema,
         response: {
           201: getPaymentMethodResponseSchema,
@@ -92,7 +92,7 @@ export const paymentMethodsRoutes = (db: AppDb) => {
         return { data: result.data };
       },
       {
-        admin: true,
+        manage: true,
         params: paymentMethodIdParamsSchema,
         body: updatePaymentMethodBodySchema,
         response: {
@@ -118,7 +118,7 @@ export const paymentMethodsRoutes = (db: AppDb) => {
         return { success: true as const };
       },
       {
-        admin: true,
+        manage: true,
         params: paymentMethodIdParamsSchema,
         response: {
           200: deletePaymentMethodResponseSchema,

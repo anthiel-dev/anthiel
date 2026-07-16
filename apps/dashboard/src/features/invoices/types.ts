@@ -23,7 +23,7 @@ export const invoiceLineFormSchema = z.object({
 });
 
 export const invoiceFormSchema = z.object({
-  businessId: z.string().min(1, "Business is required"),
+  projectId: z.string().min(1, "Project is required"),
   paymentMethodId: z.string().min(1, "Payment method is required"),
   dueDate: z.string(),
   notes: z.string(),

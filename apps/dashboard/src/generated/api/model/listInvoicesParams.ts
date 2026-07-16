@@ -13,4 +13,8 @@ export type ListInvoicesParams = {
    * @minLength 1
    */
   businessId?: string;
+  /**
+   * @minLength 1
+   */
+  projectId?: string;
 };

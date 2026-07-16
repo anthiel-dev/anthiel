@@ -14,6 +14,7 @@ import { Link } from "@tanstack/react-router";
 import {
   Building2Icon,
   FileTextIcon,
+  FolderKanbanIcon,
   GalleryVerticalEndIcon,
   KeyRoundIcon,
   LayoutDashboardIcon,
@@ -22,7 +23,7 @@ import {
   WalletCardsIcon,
 } from "lucide-react";
 
-import { getAppHome, isAdminRole } from "#/lib/roles";
+import { canManageRole, getAppHome } from "#/lib/roles";
 import { NavSection, type NavItem } from "#components/nav-section";
 import { NavUser } from "#components/nav-user";
 
@@ -45,6 +46,12 @@ const manageItems: NavItem[] = [
     title: "Businesses",
     to: "/dashboard/businesses",
     icon: Building2Icon,
+    adminOnly: true,
+  },
+  {
+    title: "Projects",
+    to: "/dashboard/projects",
+    icon: FolderKanbanIcon,
     adminOnly: true,
   },
   {
@@ -83,10 +90,10 @@ type AppSidebarProps = ComponentProps<typeof Sidebar> & {
 };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
-  const admin = isAdminRole(user.role);
+  const canManage = canManageRole(user.role);
   const home = getAppHome(user.role);
-  const visiblePlatform = platformItems.filter((item) => admin || !item.adminOnly);
-  const visibleManage = admin ? manageItems : [];
+  const visiblePlatform = platformItems.filter((item) => canManage || !item.adminOnly);
+  const visibleManage = canManage ? manageItems : [];
 
   return (
     <Sidebar collapsible="icon" {...props}>

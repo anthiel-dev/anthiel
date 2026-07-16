@@ -10,7 +10,7 @@ import type { UpdateInvoiceBodyThreeStatus } from "./updateInvoiceBodyThreeStatu
 
 export type UpdateInvoiceBodyThree = {
   /** @minLength 1 */
-  businessId?: string;
+  projectId?: string;
   /** @minLength 1 */
   paymentMethodId?: string;
   /**

@@ -16,6 +16,12 @@ export {
 } from "./invoices.schema";
 export { paymentMethods, paymentMethodsRelations } from "./payment-methods.schema";
 export {
+  projectMembers,
+  projectMembersRelations,
+  projects,
+  projectsRelations,
+} from "./projects.schema";
+export {
   permissions,
   permissionsRelations,
   resources,

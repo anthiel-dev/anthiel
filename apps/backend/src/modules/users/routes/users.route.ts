@@ -28,7 +28,7 @@ export const usersRoutes = (db: AppDb) => {
         data: await usersService.listUsers(),
       }),
       {
-        admin: true,
+        manage: true,
         response: listUsersResponseSchema,
         detail: {
           summary: "List users",
@@ -44,7 +44,7 @@ export const usersRoutes = (db: AppDb) => {
         return { data: user };
       },
       {
-        admin: true,
+        manage: true,
         params: userIdParamsSchema,
         response: {
           200: getUserResponseSchema,
@@ -83,7 +83,7 @@ export const usersRoutes = (db: AppDb) => {
         return status(201, { data: result.data });
       },
       {
-        admin: true,
+        manage: true,
         body: createUserBodySchema,
         response: {
           201: getUserResponseSchema,
@@ -127,7 +127,7 @@ export const usersRoutes = (db: AppDb) => {
         return { data: result.data };
       },
       {
-        admin: true,
+        manage: true,
         params: userIdParamsSchema,
         body: updateUserBodySchema,
         response: {
@@ -159,7 +159,7 @@ export const usersRoutes = (db: AppDb) => {
         return { success: true as const };
       },
       {
-        admin: true,
+        manage: true,
         params: userIdParamsSchema,
         response: {
           200: deleteUserResponseSchema,

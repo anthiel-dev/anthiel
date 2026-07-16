@@ -67,6 +67,15 @@ export function createInvoiceColumns({
       cell: ({ row }) => <span className="font-medium text-foreground">{row.original.number}</span>,
     },
     {
+      id: "project",
+      accessorFn: (row) => row.project.name,
+      meta: { label: "Project" },
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Project" />,
+      cell: ({ row }) => (
+        <span className="truncate font-medium text-foreground">{row.original.project.name}</span>
+      ),
+    },
+    {
       id: "business",
       accessorFn: (row) => row.business.name,
       meta: { label: "Business" },

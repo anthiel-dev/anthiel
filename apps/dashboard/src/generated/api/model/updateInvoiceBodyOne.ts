@@ -10,7 +10,7 @@ import type { UpdateInvoiceBodyOneStatus } from "./updateInvoiceBodyOneStatus.ts
 
 export type UpdateInvoiceBodyOne = {
   /** @minLength 1 */
-  businessId?: string;
+  projectId?: string;
   /** @minLength 1 */
   paymentMethodId?: string;
   /**

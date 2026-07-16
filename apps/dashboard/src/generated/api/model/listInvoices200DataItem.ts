@@ -8,6 +8,7 @@
 import type { ListInvoices200DataItemBusiness } from "./listInvoices200DataItemBusiness.ts";
 import type { ListInvoices200DataItemLineItemsItem } from "./listInvoices200DataItemLineItemsItem.ts";
 import type { ListInvoices200DataItemPaymentMethod } from "./listInvoices200DataItemPaymentMethod.ts";
+import type { ListInvoices200DataItemProject } from "./listInvoices200DataItemProject.ts";
 import type { ListInvoices200DataItemStatus } from "./listInvoices200DataItemStatus.ts";
 
 export type ListInvoices200DataItem = {
@@ -16,6 +17,8 @@ export type ListInvoices200DataItem = {
   shareToken: string;
   businessId: string;
   business: ListInvoices200DataItemBusiness;
+  projectId: string;
+  project: ListInvoices200DataItemProject;
   paymentMethodId: string;
   paymentMethod: ListInvoices200DataItemPaymentMethod;
   createdByUserId: string;

@@ -23,10 +23,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 
-import type {
-  ListBusinesses200DataItem,
-  ListPaymentMethods200DataItem,
-} from "#/generated/api/model";
+import type { ListPaymentMethods200DataItem, ListProjects200DataItem } from "#/generated/api/model";
 
 import { formatPaymentMethodOption } from "#/features/payment-methods/types";
 
@@ -50,7 +47,7 @@ type InvoiceFormDrawerProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   invoice?: InvoiceRecord | null;
-  businesses: ListBusinesses200DataItem[];
+  projects: ListProjects200DataItem[];
   paymentMethods: ListPaymentMethods200DataItem[];
   pending: boolean;
   error: string | null;
@@ -71,7 +68,7 @@ export function InvoiceFormDrawer({
   open,
   onOpenChange,
   invoice,
-  businesses,
+  projects,
   paymentMethods,
   pending,
   error,
@@ -89,7 +86,7 @@ export function InvoiceFormDrawer({
   } = useForm<InvoiceFormValues>({
     resolver: zodResolver(invoiceFormSchema),
     defaultValues: {
-      businessId: "",
+      projectId: "",
       paymentMethodId: "",
       dueDate: "",
       notes: "",
@@ -102,16 +99,16 @@ export function InvoiceFormDrawer({
     name: "lineItems",
   });
 
-  const businessId = useWatch({ control, name: "businessId" });
+  const projectId = useWatch({ control, name: "projectId" });
   const paymentMethodId = useWatch({ control, name: "paymentMethodId" });
-  const selectedBusiness = businesses.find((business) => business.id === businessId);
+  const selectedProject = projects.find((project) => project.id === projectId);
   const selectedPaymentMethod = paymentMethods.find((method) => method.id === paymentMethodId);
 
   useEffect(() => {
     if (!open) return;
     if (mode === "edit" && invoice) {
       reset({
-        businessId: invoice.businessId,
+        projectId: invoice.projectId,
         paymentMethodId: invoice.paymentMethodId,
         dueDate: isoToDateInput(invoice.dueDate),
         notes: invoice.notes ?? "",
@@ -125,7 +122,7 @@ export function InvoiceFormDrawer({
       return;
     }
     reset({
-      businessId: "",
+      projectId: "",
       paymentMethodId: "",
       dueDate: "",
       notes: "",
@@ -140,7 +137,7 @@ export function InvoiceFormDrawer({
           <SheetTitle>{title}</SheetTitle>
           <SheetDescription>
             {mode === "create"
-              ? "Create a draft invoice for a business with one or more line items."
+              ? "Create a draft invoice for a project with one or more line items."
               : "Update draft invoice details and line items."}
           </SheetDescription>
         </SheetHeader>
@@ -148,34 +145,38 @@ export function InvoiceFormDrawer({
           <form id={formId} onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
-                <FieldLabel>Business</FieldLabel>
+                <FieldLabel>Project</FieldLabel>
                 <Controller
                   control={control}
-                  name="businessId"
+                  name="projectId"
                   render={({ field }) => (
                     <Select
                       value={field.value || null}
                       onValueChange={(value) => field.onChange(value ?? "")}
                     >
-                      <SelectTrigger
-                        aria-label="Business"
-                        aria-invalid={Boolean(errors.businessId)}
-                      >
-                        <SelectValue placeholder="Select a business">
-                          {selectedBusiness?.name ?? null}
+                      <SelectTrigger aria-label="Project" aria-invalid={Boolean(errors.projectId)}>
+                        <SelectValue placeholder="Select a project">
+                          {selectedProject
+                            ? `${selectedProject.name} · ${selectedProject.business.name}`
+                            : null}
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        {businesses.map((business) => (
-                          <SelectItem key={business.id} value={business.id}>
-                            {business.name}
+                        {projects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            {project.name} · {project.business.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   )}
                 />
-                <FieldMessage message={errors.businessId?.message} />
+                <FieldMessage message={errors.projectId?.message} />
+                {selectedProject ? (
+                  <p className="text-muted-foreground text-xs">
+                    Business: {selectedProject.business.name}
+                  </p>
+                ) : null}
               </Field>
               <Field>
                 <FieldLabel>Payment method</FieldLabel>
@@ -437,6 +438,7 @@ export function InvoiceDetailDrawer({
             <div className="space-y-2">
               <dl>
                 <DetailRow label="Number" value={invoice.number} />
+                <DetailRow label="Project" value={invoice.project.name} />
                 <DetailRow
                   label="Business"
                   value={`${invoice.business.name}${invoice.business.email ? ` (${invoice.business.email})` : ""}`}

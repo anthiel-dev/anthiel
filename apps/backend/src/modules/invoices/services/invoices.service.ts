@@ -1,15 +1,15 @@
-import { and, desc, eq, like, ne } from "drizzle-orm";
+import { and, desc, eq, inArray, like, ne } from "drizzle-orm";
 
 import type { AppDb } from "@/database";
 import type { InvoiceStatus, ServiceType } from "@/database/schema/invoices.schema";
 import type { PaymentMethodType } from "@/database/schema/payment-methods.schema";
 
 import {
-  businesses,
   invoiceLineItems,
   invoices,
   paymentMethods,
-  user as userTable,
+  projectMembers,
+  projects,
 } from "@/database/schema";
 
 import type {
@@ -28,6 +28,11 @@ type BusinessRow = {
   email: string | null;
   address: string | null;
 };
+type ProjectRow = {
+  id: string;
+  name: string;
+  status: string;
+};
 type PaymentMethodRow = {
   id: string;
   method: PaymentMethodType;
@@ -36,6 +41,7 @@ type PaymentMethodRow = {
 };
 
 const businessColumns = { id: true, name: true, email: true, address: true } as const;
+const projectColumns = { id: true, name: true, status: true } as const;
 const paymentMethodColumns = {
   id: true,
   method: true,
@@ -46,11 +52,12 @@ const paymentMethodColumns = {
 type InvoiceWithRelations = InvoiceRow & {
   lineItems: LineItemRow[];
   business: BusinessRow | null;
+  project: ProjectRow | null;
   paymentMethod: PaymentMethodRow | null;
 };
 
 type InvoiceMutationError =
-  | "business_not_found"
+  | "project_not_found"
   | "payment_method_not_found"
   | "invoice_not_found"
   | "not_editable"
@@ -91,11 +98,16 @@ export class InvoicesService {
     const conditions = [];
 
     if (!options.isAdmin) {
-      const membership = await this.getUserBusinessId(options.currentUserId);
-      if (!membership) return [];
-      conditions.push(eq(invoices.businessId, membership));
-    } else if (options.query.businessId) {
-      conditions.push(eq(invoices.businessId, options.query.businessId));
+      const memberProjectIds = await this.getMemberProjectIds(options.currentUserId);
+      if (memberProjectIds.length === 0) return [];
+      conditions.push(inArray(invoices.projectId, memberProjectIds));
+    } else {
+      if (options.query.businessId) {
+        conditions.push(eq(invoices.businessId, options.query.businessId));
+      }
+      if (options.query.projectId) {
+        conditions.push(eq(invoices.projectId, options.query.projectId));
+      }
     }
 
     if (options.query.status) {
@@ -110,6 +122,9 @@ export class InvoicesService {
         },
         business: {
           columns: businessColumns,
+        },
+        project: {
+          columns: projectColumns,
         },
         paymentMethod: {
           columns: paymentMethodColumns,
@@ -128,8 +143,8 @@ export class InvoicesService {
     const row = await this.findInvoiceById(id);
     if (!row) return null;
     if (!options.isAdmin) {
-      const membership = await this.getUserBusinessId(options.currentUserId);
-      if (!membership || row.businessId !== membership) return null;
+      const isMember = await this.isProjectMember(row.projectId, options.currentUserId);
+      if (!isMember) return null;
     }
     return this.toDto(row);
   }
@@ -143,6 +158,9 @@ export class InvoicesService {
         },
         business: {
           columns: businessColumns,
+        },
+        project: {
+          columns: projectColumns,
         },
         paymentMethod: {
           columns: paymentMethodColumns,
@@ -158,8 +176,8 @@ export class InvoicesService {
     input: CreateInvoiceBody,
     createdByUserId: string,
   ): Promise<InvoiceMutationResult> {
-    const business = await this.findBusiness(input.businessId);
-    if (!business) return { error: "business_not_found" };
+    const project = await this.findProject(input.projectId);
+    if (!project) return { error: "project_not_found" };
 
     const paymentMethod = await this.findPaymentMethod(input.paymentMethodId);
     if (!paymentMethod) return { error: "payment_method_not_found" };
@@ -174,7 +192,8 @@ export class InvoicesService {
       id: invoiceId,
       number,
       shareToken: newShareToken(),
-      businessId: input.businessId,
+      businessId: project.businessId,
+      projectId: project.id,
       paymentMethodId: input.paymentMethodId,
       createdByUserId,
       status: "draft",
@@ -215,7 +234,7 @@ export class InvoicesService {
     }
 
     const isContentUpdate =
-      input.businessId !== undefined ||
+      input.projectId !== undefined ||
       input.paymentMethodId !== undefined ||
       input.dueDate !== undefined ||
       input.notes !== undefined ||
@@ -225,9 +244,11 @@ export class InvoicesService {
       return { error: "not_editable" };
     }
 
-    if (input.businessId !== undefined) {
-      const business = await this.findBusiness(input.businessId);
-      if (!business) return { error: "business_not_found" };
+    let nextBusinessId: string | undefined;
+    if (input.projectId !== undefined) {
+      const project = await this.findProject(input.projectId);
+      if (!project) return { error: "project_not_found" };
+      nextBusinessId = project.businessId;
     }
 
     if (input.paymentMethodId !== undefined) {
@@ -236,6 +257,7 @@ export class InvoicesService {
     }
 
     const changes: {
+      projectId?: string;
       businessId?: string;
       paymentMethodId?: string;
       dueDate?: Date | null;
@@ -244,7 +266,10 @@ export class InvoicesService {
       totalAmount?: number;
     } = {};
 
-    if (input.businessId !== undefined) changes.businessId = input.businessId;
+    if (input.projectId !== undefined) {
+      changes.projectId = input.projectId;
+      changes.businessId = nextBusinessId;
+    }
     if (input.paymentMethodId !== undefined) changes.paymentMethodId = input.paymentMethodId;
     if (input.dueDate !== undefined) {
       changes.dueDate = input.dueDate ? new Date(input.dueDate) : null;
@@ -313,10 +338,10 @@ export class InvoicesService {
     return `${prefix}${String(nextSeq).padStart(4, "0")}`;
   }
 
-  private findBusiness(id: string) {
-    return this.deps.db.query.businesses.findFirst({
-      where: eq(businesses.id, id),
-      columns: businessColumns,
+  private findProject(id: string) {
+    return this.deps.db.query.projects.findFirst({
+      where: eq(projects.id, id),
+      columns: { id: true, businessId: true, name: true, status: true },
     });
   }
 
@@ -327,12 +352,20 @@ export class InvoicesService {
     });
   }
 
-  private async getUserBusinessId(userId: string) {
-    const row = await this.deps.db.query.user.findFirst({
-      where: eq(userTable.id, userId),
-      columns: { businessId: true },
+  private async getMemberProjectIds(userId: string) {
+    const rows = await this.deps.db.query.projectMembers.findMany({
+      where: eq(projectMembers.userId, userId),
+      columns: { projectId: true },
     });
-    return row?.businessId ?? null;
+    return rows.map((row) => row.projectId);
+  }
+
+  private async isProjectMember(projectId: string, userId: string) {
+    const row = await this.deps.db.query.projectMembers.findFirst({
+      where: and(eq(projectMembers.projectId, projectId), eq(projectMembers.userId, userId)),
+      columns: { userId: true },
+    });
+    return Boolean(row);
   }
 
   private findInvoiceById(id: string): Promise<InvoiceWithRelations | undefined> {
@@ -345,6 +378,9 @@ export class InvoicesService {
         business: {
           columns: businessColumns,
         },
+        project: {
+          columns: projectColumns,
+        },
         paymentMethod: {
           columns: paymentMethodColumns,
         },
@@ -354,6 +390,7 @@ export class InvoicesService {
 
   private toDto(row: InvoiceWithRelations): InvoiceDto {
     const business = row.business;
+    const project = row.project;
     const paymentMethod = row.paymentMethod;
     return {
       id: row.id,
@@ -365,6 +402,12 @@ export class InvoicesService {
         name: business?.name ?? "Unknown",
         email: business?.email ?? null,
         address: business?.address ?? null,
+      },
+      projectId: row.projectId,
+      project: {
+        id: project?.id ?? row.projectId,
+        name: project?.name ?? "Unknown",
+        status: project?.status ?? "active",
       },
       paymentMethodId: row.paymentMethodId,
       paymentMethod: {
@@ -399,6 +442,7 @@ export class InvoicesService {
     return {
       number: full.number,
       business: full.business,
+      project: full.project,
       paymentMethod: full.paymentMethod,
       status: full.status,
       currency: full.currency,

@@ -2,7 +2,7 @@ import { asc, eq } from "drizzle-orm";
 
 import type { AppDb } from "@/database";
 
-import { businesses, invoices, user as userTable } from "@/database/schema";
+import { businesses, invoices, projects, user as userTable } from "@/database/schema";
 
 import type { CreateBusinessBody, UpdateBusinessBody } from "../contracts/request.contract";
 import type { BusinessDto } from "../contracts/response.contract";
@@ -13,7 +13,7 @@ type BusinessMutationResult = { data: BusinessDto } | { error: "business_not_fou
 
 type DeleteBusinessResult =
   | { success: true }
-  | { error: "business_not_found" | "has_users" | "has_invoices" };
+  | { error: "business_not_found" | "has_users" | "has_invoices" | "has_projects" };
 
 function newId() {
   return crypto.randomUUID();
@@ -88,6 +88,12 @@ export class BusinessesService {
       columns: { id: true },
     });
     if (linkedUser) return { error: "has_users" };
+
+    const linkedProject = await this.deps.db.query.projects.findFirst({
+      where: eq(projects.businessId, id),
+      columns: { id: true },
+    });
+    if (linkedProject) return { error: "has_projects" };
 
     const linkedInvoice = await this.deps.db.query.invoices.findFirst({
       where: eq(invoices.businessId, id),

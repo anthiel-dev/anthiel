@@ -10,6 +10,12 @@ export const invoiceBusinessSchema = z.object({
   address: z.string().nullable(),
 });
 
+export const invoiceProjectSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  status: z.string(),
+});
+
 export const invoicePaymentMethodSchema = z.object({
   id: z.string(),
   method: z.enum(PAYMENT_METHOD_TYPES),
@@ -33,6 +39,8 @@ export const invoiceSchema = z.object({
   shareToken: z.string(),
   businessId: z.string(),
   business: invoiceBusinessSchema,
+  projectId: z.string(),
+  project: invoiceProjectSchema,
   paymentMethodId: z.string(),
   paymentMethod: invoicePaymentMethodSchema,
   createdByUserId: z.string(),
@@ -50,6 +58,7 @@ export const invoiceSchema = z.object({
 export const publicInvoiceSchema = z.object({
   number: z.string(),
   business: invoiceBusinessSchema,
+  project: invoiceProjectSchema,
   paymentMethod: invoicePaymentMethodSchema,
   status: z.enum(INVOICE_STATUSES),
   currency: z.string(),

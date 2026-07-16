@@ -9,7 +9,7 @@ import type { CreateInvoiceBodyTwoLineItemsItem } from "./createInvoiceBodyTwoLi
 
 export type CreateInvoiceBodyTwo = {
   /** @minLength 1 */
-  businessId: string;
+  projectId: string;
   /** @minLength 1 */
   paymentMethodId: string;
   /**
