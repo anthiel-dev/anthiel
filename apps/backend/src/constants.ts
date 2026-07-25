@@ -6,4 +6,5 @@ export const CORS_ORIGINS = [
   "https://dash.an-thiel.com",
   "https://an-thiel.com",
   "https://www.an-thiel.com",
+  "https://anthiel.berli-rumapea.workers.dev",
 ];
