@@ -8,6 +8,7 @@ export {
   verification,
 } from "./auth.schema";
 export { businesses, businessesRelations } from "./businesses.schema";
+export { contactQueries } from "./contact-queries.schema";
 export {
   invoiceLineItems,
   invoiceLineItemsRelations,

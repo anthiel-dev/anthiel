@@ -1,0 +1,2 @@
+export const CONTACT_QUERY_RATE_LIMIT = 5;
+export const CONTACT_QUERY_WINDOW_MS = 60 * 60 * 1000;

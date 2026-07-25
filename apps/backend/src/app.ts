@@ -7,6 +7,7 @@ import { CORS_ORIGINS } from "./constants";
 import { betterAuthPlugin } from "./core/better-auth.plugin";
 import { db } from "./database";
 import { businessesRoutes } from "./modules/businesses";
+import { contactQueriesRoutes } from "./modules/contact-queries";
 import { invoicesRoutes } from "./modules/invoices";
 import { paymentMethodsRoutes } from "./modules/payment-methods";
 import { projectsRoutes } from "./modules/projects";
@@ -40,6 +41,7 @@ export const app = new Elysia()
           { name: "Projects", description: "Project and membership administration" },
           { name: "Payment methods", description: "Invoice payment destinations" },
           { name: "Invoices", description: "Invoice management" },
+          { name: "Contact queries", description: "Landing page chat contact submissions" },
         ],
       },
       mapJsonSchema: {
@@ -49,6 +51,7 @@ export const app = new Elysia()
     }),
   )
   .use(betterAuthPlugin)
+  .use(contactQueriesRoutes(db))
   .use(rbacRoutes(db))
   .use(usersRoutes(db))
   .use(businessesRoutes(db))
