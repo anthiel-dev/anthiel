@@ -2,7 +2,7 @@ import { PageSection } from "./page-section";
 
 export function IntroSection() {
   return (
-    <PageSection>
+    <PageSection id="intro">
       <p className="text-xs text-white/90" data-reveal-item data-stagger="1">
         A collective of software engineers based in Jakarta, Indonesia.
       </p>

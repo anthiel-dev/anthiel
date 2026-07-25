@@ -74,12 +74,22 @@ cd ../.. && bun install && cd apps/landing && bun run build
 3. **Build command:** `bun run build`
 4. **Publish directory:** `dist/client`
 
-### Cloudflare Pages
+### Cloudflare Workers / Pages (Git + Wrangler)
 
-1. Connect the repo in [Cloudflare Pages](https://pages.cloudflare.com).
-2. **Root directory:** `apps/landing`
-3. **Build command:** `bun run build`
-4. **Build output directory:** `dist/client`
+Connect the repo in the Cloudflare dashboard. Use the **repository root** so workspace packages resolve.
+
+| Setting              | Value                                                       |
+| -------------------- | ----------------------------------------------------------- |
+| Production branch    | `main`                                                      |
+| Root directory       | _(leave empty)_                                             |
+| Build command        | `cd apps/landing && bun run build`                          |
+| Deploy command       | `bunx wrangler deploy --config apps/landing/wrangler.jsonc` |
+| Environment variable | `VITE_API_URL=https://dash-be.an-thiel.com`                 |
+| Environment variable | `HUSKY=0`                                                   |
+
+Cloudflare already runs `bun install` when it detects `bun.lock` — don’t run `npm install` (this repo’s `devEngines` requires Bun).
+
+`apps/landing/wrangler.jsonc` points assets at `dist/client`. Ensure `https://an-thiel.com` is in backend `CORS_ORIGINS`.
 
 ### Manual / S3 / any static host
 

@@ -1,35 +1,32 @@
-import type { BuiltCardProps } from "./built-card";
+import type { BuiltProject } from "./types";
 
-const caritempatImages = [
-  "/caritempat/home.png",
-  "/caritempat/restaurant.png",
-  "/caritempat/search.png",
-  "/caritempat/room.png",
-] as const;
-
-export const builtItems: BuiltCardProps[] = [
+export const builtItems: BuiltProject[] = [
   {
     title: "Batam Today",
     description: "Local news and stories from Batam, Indonesia.",
     href: "https://batamtoday.com",
-    image: caritempatImages[0],
+    image: "/caritempat/home.png",
+    tag: "Media",
   },
   {
     title: "Cari Tempat",
     description: "Discover and explore places around you.",
     href: "https://caritempat.com",
-    image: caritempatImages[1],
+    image: "/caritempat/restaurant.png",
+    tag: "Discovery",
   },
   {
     title: "Aksanova",
     description: "Digital products built for modern businesses.",
     href: "https://aksanova.com",
-    image: caritempatImages[2],
+    image: "/caritempat/search.png",
+    tag: "Product",
   },
   {
     title: "DNI",
     description: "Software solutions for growing teams.",
     href: "https://dni.id",
-    image: caritempatImages[3],
+    image: "/caritempat/room.png",
+    tag: "Platform",
   },
 ];

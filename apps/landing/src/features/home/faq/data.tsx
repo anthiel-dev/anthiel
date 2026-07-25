@@ -122,3 +122,17 @@ export const invalidEmailReplyText =
   "Hmm, that doesn't look quite right. Mind checking the email and trying again?";
 
 export const invalidEmailReply: ReactNode = invalidEmailReplyText;
+
+export function rateLimitReplyText(minutes: number) {
+  const wait = Math.max(1, minutes);
+  return `You've sent a few questions already. Please wait about ${wait} minute${wait === 1 ? "" : "s"} before sending another custom message.`;
+}
+
+export function rateLimitReply(minutes: number): ReactNode {
+  return rateLimitReplyText(minutes);
+}
+
+export const submitFailedReplyText =
+  "Something went wrong sending that. Please try again in a moment.";
+
+export const submitFailedReply: ReactNode = submitFailedReplyText;

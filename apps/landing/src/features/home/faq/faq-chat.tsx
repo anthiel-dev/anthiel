@@ -23,6 +23,7 @@ import {
   MessageScrollerViewport,
   useMessageScroller,
 } from "#components/ui/message-scroller";
+import { createContactQuery, getContactQueryRateLimit } from "#lib/api";
 import { cn } from "#lib/utils";
 
 import type { ChatMessage, FaqItem } from "./types";
@@ -39,12 +40,18 @@ import {
   INITIAL_SUGGESTION_COUNT,
   invalidEmailReply,
   invalidEmailReplyText,
+  rateLimitReply,
+  rateLimitReplyText,
+  submitFailedReply,
+  submitFailedReplyText,
   SUGGESTION_COUNT,
 } from "./data";
 import { FaqChip } from "./faq-chip";
 import { FaqStreamingContent } from "./faq-streaming-content";
 import { FaqTypingIndicator } from "./faq-typing-indicator";
 import { isValidEmail, refillSuggestions } from "./utils";
+
+const CAPTURED_EMAIL_KEY = "anthiel.faq.email";
 
 function FaqMessageBubble({
   message,
@@ -142,9 +149,15 @@ function FaqChatMessages({
   );
 }
 
+function applyRateLimitState(resetAt: string | null, retryAfterMinutes: number) {
+  if (resetAt) return new Date(resetAt);
+  return new Date(Date.now() + Math.max(1, retryAfterMinutes) * 60_000);
+}
+
 export function FaqChat() {
   const inputId = useId();
   const answerTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const pendingMessageRef = useRef<string | null>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -160,7 +173,18 @@ export function FaqChat() {
   );
   const [draft, setDraft] = useState("");
   const [awaitingEmail, setAwaitingEmail] = useState(false);
-  const [capturedEmail, setCapturedEmail] = useState<string | null>(null);
+  const [capturedEmail, setCapturedEmail] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem(CAPTURED_EMAIL_KEY);
+  });
+  const [rateLimitedUntil, setRateLimitedUntil] = useState<Date | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  const [isSubmittingQuery, setIsSubmittingQuery] = useState(false);
+
+  const isRateLimited = rateLimitedUntil !== null && rateLimitedUntil.getTime() > now;
+  const retryAfterMinutes = isRateLimited
+    ? Math.max(1, Math.ceil((rateLimitedUntil.getTime() - now) / 60_000))
+    : 0;
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -177,6 +201,33 @@ export function FaqChat() {
       if (answerTimeoutRef.current) clearTimeout(answerTimeoutRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void getContactQueryRateLimit()
+      .then((limit) => {
+        if (cancelled || limit.allowed) return;
+        setRateLimitedUntil(applyRateLimitState(limit.resetAt, limit.retryAfterMinutes));
+      })
+      .catch(() => {
+        // Ignore — chat still works for FAQ chips offline.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!rateLimitedUntil) return;
+    const id = window.setInterval(() => {
+      const current = Date.now();
+      setNow(current);
+      if (rateLimitedUntil.getTime() <= current) {
+        setRateLimitedUntil(null);
+      }
+    }, 15_000);
+    return () => window.clearInterval(id);
+  }, [rateLimitedUntil]);
 
   const completeMessage = useCallback((messageId: string) => {
     setMessages((prev) =>
@@ -247,11 +298,104 @@ export function FaqChat() {
     [askQuestion, askedFaqIds, markFaqAsked],
   );
 
+  const revealAssistantReply = useCallback(
+    (assistantId: string, answer: ReactNode, streamText: string) => {
+      const shouldAnimate = !prefersReducedMotion;
+
+      if (!shouldAnimate) {
+        setMessages((prev) =>
+          prev.map((message) =>
+            message.id === assistantId
+              ? {
+                  ...message,
+                  status: "complete",
+                  content: answer,
+                  streamText,
+                }
+              : message,
+          ),
+        );
+        return;
+      }
+
+      if (answerTimeoutRef.current) clearTimeout(answerTimeoutRef.current);
+      answerTimeoutRef.current = setTimeout(() => {
+        setMessages((prev) =>
+          prev.map((message) =>
+            message.id === assistantId
+              ? {
+                  ...message,
+                  status: "streaming",
+                  content: answer,
+                  streamText,
+                }
+              : message,
+          ),
+        );
+      }, ANSWER_REVEAL_DELAY_MS);
+    },
+    [prefersReducedMotion],
+  );
+
+  const submitCustomQuery = useCallback(
+    async (
+      email: string,
+      message: string,
+      userDisplay: string,
+      success: { answer: ReactNode; streamText: string },
+    ) => {
+      setIsSubmittingQuery(true);
+
+      const turnId = crypto.randomUUID();
+      const userId = `${turnId}-user`;
+      const assistantId = `${turnId}-assistant`;
+
+      setMessages((prev) => [
+        ...prev,
+        { id: userId, role: "user", content: userDisplay, isNew: true },
+        {
+          id: assistantId,
+          role: "assistant",
+          status: "typing",
+          isNew: true,
+        },
+      ]);
+
+      try {
+        const result = await createContactQuery({ email, message });
+        if (result.ok) {
+          if (result.remaining <= 0 && result.resetAt) {
+            setRateLimitedUntil(new Date(result.resetAt));
+          }
+          revealAssistantReply(assistantId, success.answer, success.streamText);
+          return true;
+        }
+
+        if (result.status === 429) {
+          const until = applyRateLimitState(result.resetAt, result.retryAfterMinutes);
+          setRateLimitedUntil(until);
+          const minutes = Math.max(1, result.retryAfterMinutes);
+          revealAssistantReply(assistantId, rateLimitReply(minutes), rateLimitReplyText(minutes));
+          return false;
+        }
+
+        revealAssistantReply(assistantId, submitFailedReply, submitFailedReplyText);
+        return false;
+      } catch {
+        revealAssistantReply(assistantId, submitFailedReply, submitFailedReplyText);
+        return false;
+      } finally {
+        setIsSubmittingQuery(false);
+      }
+    },
+    [revealAssistantReply],
+  );
+
   const handleSubmit = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const value = draft.trim();
-      if (!value) return;
+      if (!value || isSubmittingQuery) return;
 
       if (awaitingEmail) {
         if (!isValidEmail(value)) {
@@ -260,10 +404,24 @@ export function FaqChat() {
           return;
         }
 
-        askQuestion(value, customQueryConfirmed, customQueryConfirmedText);
-        setCapturedEmail(value);
-        setAwaitingEmail(false);
+        const pendingMessage = pendingMessageRef.current;
         setDraft("");
+        setAwaitingEmail(false);
+
+        if (!pendingMessage) {
+          askQuestion(value, submitFailedReply, submitFailedReplyText);
+          return;
+        }
+
+        const ok = await submitCustomQuery(value, pendingMessage, value, {
+          answer: customQueryConfirmed,
+          streamText: customQueryConfirmedText,
+        });
+        if (ok) {
+          setCapturedEmail(value);
+          sessionStorage.setItem(CAPTURED_EMAIL_KEY, value);
+          pendingMessageRef.current = null;
+        }
         return;
       }
 
@@ -272,26 +430,67 @@ export function FaqChat() {
       if (matchedFaq && !askedFaqIds.has(matchedFaq.id)) {
         askQuestion(matchedFaq.question, matchedFaq.answer, matchedFaq.streamText);
         markFaqAsked(matchedFaq.id);
-      } else if (capturedEmail) {
-        askQuestion(value, customQueryAcknowledged, customQueryAcknowledgedText);
-      } else {
-        askQuestion(value, customQueryEmailPrompt, customQueryEmailPromptText);
-        setAwaitingEmail(true);
+        setDraft("");
+        return;
       }
 
+      if (isRateLimited) {
+        askQuestion(
+          value,
+          rateLimitReply(retryAfterMinutes),
+          rateLimitReplyText(retryAfterMinutes),
+        );
+        setDraft("");
+        return;
+      }
+
+      if (capturedEmail) {
+        setDraft("");
+        await submitCustomQuery(capturedEmail, value, value, {
+          answer: customQueryAcknowledged,
+          streamText: customQueryAcknowledgedText,
+        });
+        return;
+      }
+
+      pendingMessageRef.current = value;
+      askQuestion(value, customQueryEmailPrompt, customQueryEmailPromptText);
+      setAwaitingEmail(true);
       setDraft("");
     },
-    [askQuestion, askedFaqIds, awaitingEmail, capturedEmail, draft, markFaqAsked],
+    [
+      askQuestion,
+      askedFaqIds,
+      awaitingEmail,
+      capturedEmail,
+      draft,
+      isRateLimited,
+      isSubmittingQuery,
+      markFaqAsked,
+      retryAfterMinutes,
+      submitCustomQuery,
+    ],
   );
 
-  const isAssistantBusy = messages.some(
-    (message) =>
-      message.role === "assistant" &&
-      (message.status === "typing" || message.status === "streaming"),
-  );
+  const isAssistantBusy =
+    isSubmittingQuery ||
+    messages.some(
+      (message) =>
+        message.role === "assistant" &&
+        (message.status === "typing" || message.status === "streaming"),
+    );
 
-  const inputPlaceholder = awaitingEmail ? "your@email.com" : "Type your own question...";
-  const inputLabel = awaitingEmail ? "Your email address" : "Ask a question";
+  const customInputLocked = isRateLimited && !awaitingEmail;
+  const inputPlaceholder = awaitingEmail
+    ? "your@email.com"
+    : customInputLocked
+      ? `Try again in ~${retryAfterMinutes} min`
+      : "Type your own question...";
+  const inputLabel = awaitingEmail
+    ? "Your email address"
+    : customInputLocked
+      ? "Custom questions temporarily limited"
+      : "Ask a question";
 
   const visibleSuggestions = visibleSuggestionIds
     .map((id) => faqs.find((faq) => faq.id === id))
@@ -328,6 +527,13 @@ export function FaqChat() {
         </div>
       ) : null}
 
+      {isRateLimited ? (
+        <p className="border-t border-card px-4 py-2 text-xxs text-white/45">
+          Custom messages paused — try again in about {retryAfterMinutes} minute
+          {retryAfterMinutes === 1 ? "" : "s"}. FAQ chips still work.
+        </p>
+      ) : null}
+
       <form
         onSubmit={handleSubmit}
         className="flex items-center gap-2 border-t border-card px-4 py-3"
@@ -345,12 +551,12 @@ export function FaqChat() {
           placeholder={inputPlaceholder}
           className="text-xs"
           size="lg"
-          disabled={isAssistantBusy}
+          disabled={isAssistantBusy || customInputLocked}
         />
         <Button
           type="submit"
           size="icon-lg"
-          disabled={!draft.trim() || isAssistantBusy}
+          disabled={!draft.trim() || isAssistantBusy || customInputLocked}
           aria-label="Send message"
         >
           <ArrowUpIcon />

@@ -1,18 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-import { FaqSection } from "#features/home/components/faq-section";
-import { PageLayout } from "#features/home/components/page-layout";
-import { pageMeta } from "#lib/page-meta";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/faq")({
-  head: () => pageMeta("FAQ — Anthiel", "Learn more about Anthiel and get in touch."),
-  component: FaqPage,
+  beforeLoad: () => {
+    throw redirect({ to: "/", hash: "faq" });
+  },
 });
-
-function FaqPage() {
-  return (
-    <PageLayout>
-      <FaqSection />
-    </PageLayout>
-  );
-}

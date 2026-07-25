@@ -1,21 +1,29 @@
-import { useRouterState } from "@tanstack/react-router";
+import { useLayoutEffect } from "react";
 
+import { HomeFooter } from "./home-footer";
 import { HomeHeader } from "./home-header";
-import { HomeNav, HomeNavLinks } from "./home-nav";
+
+function scrollToHash() {
+  const id = window.location.hash.replace(/^#/, "");
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+}
 
 export function PageLayout({ children }: { children: React.ReactNode }) {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  });
-  const isHome = pathname === "/";
+  useLayoutEffect(() => {
+    if (!window.location.hash) return;
+    const frame = requestAnimationFrame(scrollToHash);
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col pt-32 pb-16" data-reveal="true">
-      <HomeHeader nav={isHome ? undefined : <HomeNavLinks revealStaggerStart={1} />} />
-      <main className="flex flex-col sm:px-10 px-6">
-        {children}
-        {isHome ? <HomeNav /> : null}
-      </main>
+    <div className="mx-auto flex max-w-3xl flex-col pt-32 pb-4" data-reveal="true">
+      <HomeHeader />
+      <main className="mt-8 flex flex-col gap-20 px-6 sm:gap-28 sm:px-10">{children}</main>
+      <HomeFooter />
     </div>
   );
 }

@@ -18,7 +18,7 @@ export function SectionHeader({
         ? { "data-reveal-item": true, "data-stagger": revealStagger }
         : {})}
     >
-      <h2 className="text-sm text-white/90">{title}</h2>
+      <h2 className="text-base tracking-tight text-white/90">{title}</h2>
       {description ? <p className="mt-0.5 text-xxs text-white/60">{description}</p> : null}
     </header>
   );

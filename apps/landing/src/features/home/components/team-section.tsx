@@ -18,18 +18,15 @@ export function TeamSection() {
   const [imageReady, setImageReady] = useState(false);
 
   return (
-    <PageSection>
+    <PageSection id="team">
       <SectionHeader
         title="Meet the team"
         description="Hover on each character's head to see their details"
         className="mb-4"
-        revealStagger={4}
       />
       <figure
         className="team-photo-container relative m-0 -mx-10 w-[calc(100%+5rem)]"
         style={{ aspectRatio: `${TEAM_IMAGE_WIDTH} / ${TEAM_IMAGE_HEIGHT}` }}
-        data-reveal-item
-        data-stagger="5"
       >
         <ProgressiveImage
           src={TEAM_IMAGE_SRC}

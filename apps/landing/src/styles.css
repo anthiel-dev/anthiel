@@ -17,6 +17,51 @@ body {
 
 @source "../../../packages/ui/src";
 
+/* Built project — image hover gated to fine pointers */
+.built-project-image {
+  transition:
+    filter 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform, filter;
+}
+
+.built-project-shade {
+  opacity: 0.8;
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .built-project:hover .built-project-image {
+    filter: grayscale(0);
+    transform: scale(1.02);
+  }
+
+  .built-project:hover .built-project-shade {
+    opacity: 0.35;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .built-project-image {
+    filter: grayscale(0.35);
+  }
+
+  .built-project-shade {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .built-project-image,
+  .built-project-shade {
+    transition: none;
+  }
+
+  .built-project:hover .built-project-image {
+    transform: none;
+  }
+}
+
 /* Team tooltip card — origin-aware popover from trigger */
 .team-tooltip-card {
   position: absolute;
