@@ -7,25 +7,32 @@ import { canManage } from "@/modules/rbac";
 
 import {
   addProjectMemberBodySchema,
+  createProjectApiKeyBodySchema,
   createProjectBodySchema,
   listProjectsQuerySchema,
+  projectApiKeyParamsSchema,
   projectIdParamsSchema,
   projectMemberParamsSchema,
   updateProjectBodySchema,
 } from "../contracts/request.contract";
 import {
   addProjectMemberResponseSchema,
+  createProjectApiKeyResponseSchema,
+  deleteProjectApiKeyResponseSchema,
   deleteProjectResponseSchema,
   getProjectResponseSchema,
+  listProjectApiKeysResponseSchema,
   listProjectMembersResponseSchema,
   listProjectsResponseSchema,
   projectErrorResponseSchema,
   removeProjectMemberResponseSchema,
 } from "../contracts/response.contract";
+import { ProjectApiKeysService } from "../services/project-api-keys.service";
 import { ProjectsService } from "../services/projects.service";
 
 export const projectsRoutes = (db: AppDb) => {
   const projectsService = new ProjectsService({ db });
+  const projectApiKeysService = new ProjectApiKeysService({ db });
 
   return new Elysia({ prefix: "/projects", name: "projects", tags: ["Projects"] })
     .use(authGuardPlugin)
@@ -232,6 +239,74 @@ export const projectsRoutes = (db: AppDb) => {
         detail: {
           summary: "Remove project member",
           operationId: "removeProjectMember",
+        },
+      },
+    )
+    .get(
+      "/:id/api-keys",
+      async ({ params, status }) => {
+        const keys = await projectApiKeysService.listApiKeys(params.id);
+        if (!keys) return status(404, { error: "Project not found" });
+        return { data: keys };
+      },
+      {
+        manage: true,
+        params: projectIdParamsSchema,
+        response: {
+          200: listProjectApiKeysResponseSchema,
+          404: projectErrorResponseSchema,
+        },
+        detail: {
+          summary: "List project API keys",
+          operationId: "listProjectApiKeys",
+        },
+      },
+    )
+    .post(
+      "/:id/api-keys",
+      async ({ body, params, status, user }) => {
+        const result = await projectApiKeysService.createApiKey(params.id, body, user.id);
+        if ("error" in result) {
+          return status(404, { error: "Project not found" });
+        }
+        return status(201, { data: result.data });
+      },
+      {
+        manage: true,
+        params: projectIdParamsSchema,
+        body: createProjectApiKeyBodySchema,
+        response: {
+          201: createProjectApiKeyResponseSchema,
+          404: projectErrorResponseSchema,
+        },
+        detail: {
+          summary: "Create project API key",
+          operationId: "createProjectApiKey",
+        },
+      },
+    )
+    .delete(
+      "/:id/api-keys/:apiKeyId",
+      async ({ params, status }) => {
+        const result = await projectApiKeysService.deleteApiKey(params.id, params.apiKeyId);
+        if ("error" in result) {
+          if (result.error === "api_key_not_found") {
+            return status(404, { error: "API key not found" });
+          }
+          return status(404, { error: "Project not found" });
+        }
+        return { success: true as const };
+      },
+      {
+        manage: true,
+        params: projectApiKeyParamsSchema,
+        response: {
+          200: deleteProjectApiKeyResponseSchema,
+          404: projectErrorResponseSchema,
+        },
+        detail: {
+          summary: "Delete project API key",
+          operationId: "deleteProjectApiKey",
         },
       },
     );

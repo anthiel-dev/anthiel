@@ -81,6 +81,17 @@ export const getPublicInvoiceResponseSchema = z.object({
   data: publicInvoiceSchema,
 });
 
+export const unpaidInvoiceSummarySchema = z.object({
+  totalAmount: z.number().int(),
+  createdAt: z.string().datetime(),
+  dueDate: z.string().datetime().nullable(),
+  invoiceUrl: z.string().url(),
+});
+
+export const getLatestUnpaidInvoiceResponseSchema = z.object({
+  data: unpaidInvoiceSummarySchema,
+});
+
 export const deleteInvoiceResponseSchema = z.object({
   success: z.literal(true),
 });
@@ -92,3 +103,4 @@ export const invoiceErrorResponseSchema = z.object({
 export type InvoiceDto = z.infer<typeof invoiceSchema>;
 export type PublicInvoiceDto = z.infer<typeof publicInvoiceSchema>;
 export type InvoiceLineItemDto = z.infer<typeof invoiceLineItemSchema>;
+export type UnpaidInvoiceSummaryDto = z.infer<typeof unpaidInvoiceSummarySchema>;

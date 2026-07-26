@@ -34,6 +34,11 @@ import type {
   CreateBusinessBodyOne,
   CreateBusinessBodyThree,
   CreateBusinessBodyTwo,
+  CreateContactQuery201,
+  CreateContactQuery429,
+  CreateContactQueryBodyOne,
+  CreateContactQueryBodyThree,
+  CreateContactQueryBodyTwo,
   CreateInvoice201,
   CreateInvoice404,
   CreateInvoice500,
@@ -48,6 +53,11 @@ import type {
   CreateProject201,
   CreateProject404,
   CreateProject500,
+  CreateProjectApiKey201,
+  CreateProjectApiKey404,
+  CreateProjectApiKeyBodyOne,
+  CreateProjectApiKeyBodyThree,
+  CreateProjectApiKeyBodyTwo,
   CreateProjectBodyOne,
   CreateProjectBodyThree,
   CreateProjectBodyTwo,
@@ -70,6 +80,8 @@ import type {
   DeleteProject200,
   DeleteProject404,
   DeleteProject409,
+  DeleteProjectApiKey200,
+  DeleteProjectApiKey404,
   DeleteUser200,
   DeleteUser403,
   DeleteUser404,
@@ -77,8 +89,12 @@ import type {
   GetAdminHealth200,
   GetBusinessById200,
   GetBusinessById404,
+  GetContactQueryRateLimit200,
   GetInvoiceById200,
   GetInvoiceById404,
+  GetLatestUnpaidInvoice200,
+  GetLatestUnpaidInvoice401,
+  GetLatestUnpaidInvoice404,
   GetMe200,
   GetPaymentMethodById200,
   GetPaymentMethodById404,
@@ -97,6 +113,8 @@ import type {
   ListMyPermissions200,
   ListPaymentMethods200,
   ListPermissions200,
+  ListProjectApiKeys200,
+  ListProjectApiKeys404,
   ListProjectMembers200,
   ListProjectMembers404,
   ListProjects200,
@@ -156,6 +174,253 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
     });
   }
   return result;
+};
+
+export type getContactQueryRateLimitResponse200 = {
+  data: GetContactQueryRateLimit200;
+  status: 200;
+};
+
+export type getContactQueryRateLimitResponseSuccess = getContactQueryRateLimitResponse200 & {
+  headers: Headers;
+};
+
+export type getContactQueryRateLimitResponse = getContactQueryRateLimitResponseSuccess;
+
+export const getGetContactQueryRateLimitUrl = () => {
+  return `/contact-queries/rate-limit`;
+};
+
+/**
+ * @summary Get contact query rate limit for caller IP
+ */
+export const getContactQueryRateLimit = async (
+  options?: RequestInit,
+): Promise<getContactQueryRateLimitResponse> => {
+  return apiFetch<getContactQueryRateLimitResponse>(getGetContactQueryRateLimitUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetContactQueryRateLimitQueryKey = () => {
+  return [`/contact-queries/rate-limit`] as const;
+};
+
+export const getGetContactQueryRateLimitQueryOptions = <
+  TData = Awaited<ReturnType<typeof getContactQueryRateLimit>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getContactQueryRateLimit>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetContactQueryRateLimitQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getContactQueryRateLimit>>> = ({
+    signal,
+  }) => getContactQueryRateLimit({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getContactQueryRateLimit>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetContactQueryRateLimitQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getContactQueryRateLimit>>
+>;
+export type GetContactQueryRateLimitQueryError = unknown;
+
+export function useGetContactQueryRateLimit<
+  TData = Awaited<ReturnType<typeof getContactQueryRateLimit>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getContactQueryRateLimit>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getContactQueryRateLimit>>,
+          TError,
+          Awaited<ReturnType<typeof getContactQueryRateLimit>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetContactQueryRateLimit<
+  TData = Awaited<ReturnType<typeof getContactQueryRateLimit>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getContactQueryRateLimit>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getContactQueryRateLimit>>,
+          TError,
+          Awaited<ReturnType<typeof getContactQueryRateLimit>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetContactQueryRateLimit<
+  TData = Awaited<ReturnType<typeof getContactQueryRateLimit>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getContactQueryRateLimit>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get contact query rate limit for caller IP
+ */
+
+export function useGetContactQueryRateLimit<
+  TData = Awaited<ReturnType<typeof getContactQueryRateLimit>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getContactQueryRateLimit>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetContactQueryRateLimitQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createContactQueryResponse201 = {
+  data: CreateContactQuery201;
+  status: 201;
+};
+
+export type createContactQueryResponse429 = {
+  data: CreateContactQuery429;
+  status: 429;
+};
+
+export type createContactQueryResponseSuccess = createContactQueryResponse201 & {
+  headers: Headers;
+};
+export type createContactQueryResponseError = createContactQueryResponse429 & {
+  headers: Headers;
+};
+
+export type createContactQueryResponse =
+  | createContactQueryResponseSuccess
+  | createContactQueryResponseError;
+
+export const getCreateContactQueryUrl = () => {
+  return `/contact-queries`;
+};
+
+/**
+ * @summary Submit a custom contact query from the landing chat
+ */
+export const createContactQuery = async (
+  createContactQueryBody:
+    | CreateContactQueryBodyOne
+    | CreateContactQueryBodyTwo
+    | CreateContactQueryBodyThree,
+  options?: RequestInit,
+): Promise<createContactQueryResponse> => {
+  return apiFetch<createContactQueryResponse>(getCreateContactQueryUrl(), {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(createContactQueryBody),
+  });
+};
+
+export const getCreateContactQueryMutationOptions = <
+  TError = CreateContactQuery429,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createContactQuery>>,
+    TError,
+    { data: CreateContactQueryBodyOne | CreateContactQueryBodyTwo | CreateContactQueryBodyThree },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createContactQuery>>,
+  TError,
+  { data: CreateContactQueryBodyOne | CreateContactQueryBodyTwo | CreateContactQueryBodyThree },
+  TContext
+> => {
+  const mutationKey = ["createContactQuery"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createContactQuery>>,
+    { data: CreateContactQueryBodyOne | CreateContactQueryBodyTwo | CreateContactQueryBodyThree }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createContactQuery(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateContactQueryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createContactQuery>>
+>;
+export type CreateContactQueryMutationBody =
+  | CreateContactQueryBodyOne
+  | CreateContactQueryBodyTwo
+  | CreateContactQueryBodyThree;
+export type CreateContactQueryMutationError = CreateContactQuery429;
+
+/**
+ * @summary Submit a custom contact query from the landing chat
+ */
+export const useCreateContactQuery = <TError = CreateContactQuery429, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createContactQuery>>,
+      TError,
+      { data: CreateContactQueryBodyOne | CreateContactQueryBodyTwo | CreateContactQueryBodyThree },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createContactQuery>>,
+  TError,
+  { data: CreateContactQueryBodyOne | CreateContactQueryBodyTwo | CreateContactQueryBodyThree },
+  TContext
+> => {
+  return useMutation(getCreateContactQueryMutationOptions(options), queryClient);
 };
 
 export type listMyPermissionsResponse200 = {
@@ -3061,6 +3326,388 @@ export const useRemoveProjectMember = <TError = RemoveProjectMember404, TContext
   return useMutation(getRemoveProjectMemberMutationOptions(options), queryClient);
 };
 
+export type listProjectApiKeysResponse200 = {
+  data: ListProjectApiKeys200;
+  status: 200;
+};
+
+export type listProjectApiKeysResponse404 = {
+  data: ListProjectApiKeys404;
+  status: 404;
+};
+
+export type listProjectApiKeysResponseSuccess = listProjectApiKeysResponse200 & {
+  headers: Headers;
+};
+export type listProjectApiKeysResponseError = listProjectApiKeysResponse404 & {
+  headers: Headers;
+};
+
+export type listProjectApiKeysResponse =
+  | listProjectApiKeysResponseSuccess
+  | listProjectApiKeysResponseError;
+
+export const getListProjectApiKeysUrl = (id: string) => {
+  return `/projects/${id}/api-keys`;
+};
+
+/**
+ * @summary List project API keys
+ */
+export const listProjectApiKeys = async (
+  id: string,
+  options?: RequestInit,
+): Promise<listProjectApiKeysResponse> => {
+  return apiFetch<listProjectApiKeysResponse>(getListProjectApiKeysUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListProjectApiKeysQueryKey = (id: string) => {
+  return [`/projects/${id}/api-keys`] as const;
+};
+
+export const getListProjectApiKeysQueryOptions = <
+  TData = Awaited<ReturnType<typeof listProjectApiKeys>>,
+  TError = ListProjectApiKeys404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listProjectApiKeys>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListProjectApiKeysQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listProjectApiKeys>>> = ({ signal }) =>
+    listProjectApiKeys(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: id !== null && id !== undefined,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof listProjectApiKeys>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
+
+export type ListProjectApiKeysQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listProjectApiKeys>>
+>;
+export type ListProjectApiKeysQueryError = ListProjectApiKeys404;
+
+export function useListProjectApiKeys<
+  TData = Awaited<ReturnType<typeof listProjectApiKeys>>,
+  TError = ListProjectApiKeys404,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listProjectApiKeys>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listProjectApiKeys>>,
+          TError,
+          Awaited<ReturnType<typeof listProjectApiKeys>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListProjectApiKeys<
+  TData = Awaited<ReturnType<typeof listProjectApiKeys>>,
+  TError = ListProjectApiKeys404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listProjectApiKeys>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listProjectApiKeys>>,
+          TError,
+          Awaited<ReturnType<typeof listProjectApiKeys>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListProjectApiKeys<
+  TData = Awaited<ReturnType<typeof listProjectApiKeys>>,
+  TError = ListProjectApiKeys404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listProjectApiKeys>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List project API keys
+ */
+
+export function useListProjectApiKeys<
+  TData = Awaited<ReturnType<typeof listProjectApiKeys>>,
+  TError = ListProjectApiKeys404,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listProjectApiKeys>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListProjectApiKeysQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createProjectApiKeyResponse201 = {
+  data: CreateProjectApiKey201;
+  status: 201;
+};
+
+export type createProjectApiKeyResponse404 = {
+  data: CreateProjectApiKey404;
+  status: 404;
+};
+
+export type createProjectApiKeyResponseSuccess = createProjectApiKeyResponse201 & {
+  headers: Headers;
+};
+export type createProjectApiKeyResponseError = createProjectApiKeyResponse404 & {
+  headers: Headers;
+};
+
+export type createProjectApiKeyResponse =
+  | createProjectApiKeyResponseSuccess
+  | createProjectApiKeyResponseError;
+
+export const getCreateProjectApiKeyUrl = (id: string) => {
+  return `/projects/${id}/api-keys`;
+};
+
+/**
+ * @summary Create project API key
+ */
+export const createProjectApiKey = async (
+  id: string,
+  createProjectApiKeyBody:
+    | CreateProjectApiKeyBodyOne
+    | CreateProjectApiKeyBodyTwo
+    | CreateProjectApiKeyBodyThree,
+  options?: RequestInit,
+): Promise<createProjectApiKeyResponse> => {
+  return apiFetch<createProjectApiKeyResponse>(getCreateProjectApiKeyUrl(id), {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(createProjectApiKeyBody),
+  });
+};
+
+export const getCreateProjectApiKeyMutationOptions = <
+  TError = CreateProjectApiKey404,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createProjectApiKey>>,
+    TError,
+    {
+      id: string;
+      data: CreateProjectApiKeyBodyOne | CreateProjectApiKeyBodyTwo | CreateProjectApiKeyBodyThree;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createProjectApiKey>>,
+  TError,
+  {
+    id: string;
+    data: CreateProjectApiKeyBodyOne | CreateProjectApiKeyBodyTwo | CreateProjectApiKeyBodyThree;
+  },
+  TContext
+> => {
+  const mutationKey = ["createProjectApiKey"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createProjectApiKey>>,
+    {
+      id: string;
+      data: CreateProjectApiKeyBodyOne | CreateProjectApiKeyBodyTwo | CreateProjectApiKeyBodyThree;
+    }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return createProjectApiKey(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateProjectApiKeyMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createProjectApiKey>>
+>;
+export type CreateProjectApiKeyMutationBody =
+  | CreateProjectApiKeyBodyOne
+  | CreateProjectApiKeyBodyTwo
+  | CreateProjectApiKeyBodyThree;
+export type CreateProjectApiKeyMutationError = CreateProjectApiKey404;
+
+/**
+ * @summary Create project API key
+ */
+export const useCreateProjectApiKey = <TError = CreateProjectApiKey404, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createProjectApiKey>>,
+      TError,
+      {
+        id: string;
+        data:
+          | CreateProjectApiKeyBodyOne
+          | CreateProjectApiKeyBodyTwo
+          | CreateProjectApiKeyBodyThree;
+      },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createProjectApiKey>>,
+  TError,
+  {
+    id: string;
+    data: CreateProjectApiKeyBodyOne | CreateProjectApiKeyBodyTwo | CreateProjectApiKeyBodyThree;
+  },
+  TContext
+> => {
+  return useMutation(getCreateProjectApiKeyMutationOptions(options), queryClient);
+};
+
+export type deleteProjectApiKeyResponse200 = {
+  data: DeleteProjectApiKey200;
+  status: 200;
+};
+
+export type deleteProjectApiKeyResponse404 = {
+  data: DeleteProjectApiKey404;
+  status: 404;
+};
+
+export type deleteProjectApiKeyResponseSuccess = deleteProjectApiKeyResponse200 & {
+  headers: Headers;
+};
+export type deleteProjectApiKeyResponseError = deleteProjectApiKeyResponse404 & {
+  headers: Headers;
+};
+
+export type deleteProjectApiKeyResponse =
+  | deleteProjectApiKeyResponseSuccess
+  | deleteProjectApiKeyResponseError;
+
+export const getDeleteProjectApiKeyUrl = (id: string, apiKeyId: string) => {
+  return `/projects/${id}/api-keys/${apiKeyId}`;
+};
+
+/**
+ * @summary Delete project API key
+ */
+export const deleteProjectApiKey = async (
+  id: string,
+  apiKeyId: string,
+  options?: RequestInit,
+): Promise<deleteProjectApiKeyResponse> => {
+  return apiFetch<deleteProjectApiKeyResponse>(getDeleteProjectApiKeyUrl(id, apiKeyId), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteProjectApiKeyMutationOptions = <
+  TError = DeleteProjectApiKey404,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteProjectApiKey>>,
+    TError,
+    { id: string; apiKeyId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteProjectApiKey>>,
+  TError,
+  { id: string; apiKeyId: string },
+  TContext
+> => {
+  const mutationKey = ["deleteProjectApiKey"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteProjectApiKey>>,
+    { id: string; apiKeyId: string }
+  > = (props) => {
+    const { id, apiKeyId } = props ?? {};
+
+    return deleteProjectApiKey(id, apiKeyId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteProjectApiKeyMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteProjectApiKey>>
+>;
+
+export type DeleteProjectApiKeyMutationError = DeleteProjectApiKey404;
+
+/**
+ * @summary Delete project API key
+ */
+export const useDeleteProjectApiKey = <TError = DeleteProjectApiKey404, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteProjectApiKey>>,
+      TError,
+      { id: string; apiKeyId: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteProjectApiKey>>,
+  TError,
+  { id: string; apiKeyId: string },
+  TContext
+> => {
+  return useMutation(getDeleteProjectApiKeyMutationOptions(options), queryClient);
+};
+
 export type listPaymentMethodsResponse200 = {
   data: ListPaymentMethods200;
   status: 200;
@@ -4105,6 +4752,162 @@ export const useCreateInvoice = <TError = CreateInvoice404 | CreateInvoice500, T
 > => {
   return useMutation(getCreateInvoiceMutationOptions(options), queryClient);
 };
+
+export type getLatestUnpaidInvoiceResponse200 = {
+  data: GetLatestUnpaidInvoice200;
+  status: 200;
+};
+
+export type getLatestUnpaidInvoiceResponse401 = {
+  data: GetLatestUnpaidInvoice401;
+  status: 401;
+};
+
+export type getLatestUnpaidInvoiceResponse404 = {
+  data: GetLatestUnpaidInvoice404;
+  status: 404;
+};
+
+export type getLatestUnpaidInvoiceResponseSuccess = getLatestUnpaidInvoiceResponse200 & {
+  headers: Headers;
+};
+export type getLatestUnpaidInvoiceResponseError = (
+  | getLatestUnpaidInvoiceResponse401
+  | getLatestUnpaidInvoiceResponse404
+) & {
+  headers: Headers;
+};
+
+export type getLatestUnpaidInvoiceResponse =
+  | getLatestUnpaidInvoiceResponseSuccess
+  | getLatestUnpaidInvoiceResponseError;
+
+export const getGetLatestUnpaidInvoiceUrl = () => {
+  return `/invoices/unpaid/latest`;
+};
+
+/**
+ * @summary Get latest unpaid invoice for the API key's project
+ */
+export const getLatestUnpaidInvoice = async (
+  options?: RequestInit,
+): Promise<getLatestUnpaidInvoiceResponse> => {
+  return apiFetch<getLatestUnpaidInvoiceResponse>(getGetLatestUnpaidInvoiceUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetLatestUnpaidInvoiceQueryKey = () => {
+  return [`/invoices/unpaid/latest`] as const;
+};
+
+export const getGetLatestUnpaidInvoiceQueryOptions = <
+  TData = Awaited<ReturnType<typeof getLatestUnpaidInvoice>>,
+  TError = GetLatestUnpaidInvoice401 | GetLatestUnpaidInvoice404,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getLatestUnpaidInvoice>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetLatestUnpaidInvoiceQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getLatestUnpaidInvoice>>> = ({ signal }) =>
+    getLatestUnpaidInvoice({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getLatestUnpaidInvoice>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetLatestUnpaidInvoiceQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getLatestUnpaidInvoice>>
+>;
+export type GetLatestUnpaidInvoiceQueryError =
+  | GetLatestUnpaidInvoice401
+  | GetLatestUnpaidInvoice404;
+
+export function useGetLatestUnpaidInvoice<
+  TData = Awaited<ReturnType<typeof getLatestUnpaidInvoice>>,
+  TError = GetLatestUnpaidInvoice401 | GetLatestUnpaidInvoice404,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getLatestUnpaidInvoice>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getLatestUnpaidInvoice>>,
+          TError,
+          Awaited<ReturnType<typeof getLatestUnpaidInvoice>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetLatestUnpaidInvoice<
+  TData = Awaited<ReturnType<typeof getLatestUnpaidInvoice>>,
+  TError = GetLatestUnpaidInvoice401 | GetLatestUnpaidInvoice404,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getLatestUnpaidInvoice>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getLatestUnpaidInvoice>>,
+          TError,
+          Awaited<ReturnType<typeof getLatestUnpaidInvoice>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetLatestUnpaidInvoice<
+  TData = Awaited<ReturnType<typeof getLatestUnpaidInvoice>>,
+  TError = GetLatestUnpaidInvoice401 | GetLatestUnpaidInvoice404,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getLatestUnpaidInvoice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get latest unpaid invoice for the API key's project
+ */
+
+export function useGetLatestUnpaidInvoice<
+  TData = Awaited<ReturnType<typeof getLatestUnpaidInvoice>>,
+  TError = GetLatestUnpaidInvoice401 | GetLatestUnpaidInvoice404,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getLatestUnpaidInvoice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetLatestUnpaidInvoiceQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
 
 export type getInvoiceByIdResponse200 = {
   data: GetInvoiceById200;

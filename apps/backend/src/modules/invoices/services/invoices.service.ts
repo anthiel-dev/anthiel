@@ -11,6 +11,7 @@ import {
   projectMembers,
   projects,
 } from "@/database/schema";
+import { env } from "@/env";
 
 import type {
   CreateInvoiceBody,
@@ -18,7 +19,11 @@ import type {
   ListInvoicesQuery,
   UpdateInvoiceBody,
 } from "../contracts/request.contract";
-import type { InvoiceDto, PublicInvoiceDto } from "../contracts/response.contract";
+import type {
+  InvoiceDto,
+  PublicInvoiceDto,
+  UnpaidInvoiceSummaryDto,
+} from "../contracts/response.contract";
 
 type InvoiceRow = typeof invoices.$inferSelect;
 type LineItemRow = typeof invoiceLineItems.$inferSelect;
@@ -170,6 +175,31 @@ export class InvoicesService {
 
     if (!row) return null;
     return this.toPublicDto(row as InvoiceWithRelations);
+  }
+
+  async getLatestUnpaidInvoiceForProject(
+    projectId: string,
+  ): Promise<UnpaidInvoiceSummaryDto | null> {
+    const row = await this.deps.db.query.invoices.findFirst({
+      where: and(eq(invoices.status, "sent"), eq(invoices.projectId, projectId)),
+      columns: {
+        totalAmount: true,
+        createdAt: true,
+        dueDate: true,
+        shareToken: true,
+      },
+      orderBy: [desc(invoices.createdAt)],
+    });
+
+    if (!row) return null;
+
+    const dashboardUrl = env.DASHBOARD_URL.replace(/\/$/, "");
+    return {
+      totalAmount: row.totalAmount,
+      createdAt: row.createdAt.toISOString(),
+      dueDate: toIso(row.dueDate),
+      invoiceUrl: `${dashboardUrl}/invoice/${encodeURIComponent(row.shareToken)}`,
+    };
   }
 
   async createInvoice(

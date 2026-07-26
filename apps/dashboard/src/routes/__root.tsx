@@ -1,3 +1,4 @@
+import { ToastProvider } from "@anthiel/ui/components/toast";
 import { TooltipProvider } from "@anthiel/ui/components/tooltip";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
@@ -77,7 +78,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans">
         <div className="isolate relative flex min-h-svh flex-col">
-          <TooltipProvider>{children}</TooltipProvider>
+          <TooltipProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </TooltipProvider>
           <ClientDevtools />
           <Scripts />
         </div>

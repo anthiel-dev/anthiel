@@ -16,16 +16,20 @@ import type { ProjectRecord } from "../types";
 import { STATUS_LABELS, formatDate } from "../types";
 
 type ProjectColumnActions = {
+  isAdmin: boolean;
   onDetail: (project: ProjectRecord) => void;
   onEdit: (project: ProjectRecord) => void;
   onMembers: (project: ProjectRecord) => void;
+  onApiKeys: (project: ProjectRecord) => void;
   onDelete: (project: ProjectRecord) => void;
 };
 
 export function createProjectColumns({
+  isAdmin,
   onDetail,
   onEdit,
   onMembers,
+  onApiKeys,
   onDelete,
 }: ProjectColumnActions): ColumnDef<ProjectRecord>[] {
   return [
@@ -91,6 +95,9 @@ export function createProjectColumns({
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem onClick={() => onDetail(row.original)}>Detail</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onMembers(row.original)}>Members</DropdownMenuItem>
+              {isAdmin ? (
+                <DropdownMenuItem onClick={() => onApiKeys(row.original)}>API Key</DropdownMenuItem>
+              ) : null}
               <DropdownMenuItem onClick={() => onEdit(row.original)}>Edit</DropdownMenuItem>
               <DropdownMenuItem variant="destructive" onClick={() => onDelete(row.original)}>
                 Delete

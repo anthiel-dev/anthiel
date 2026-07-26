@@ -9,6 +9,7 @@ import {
   AlertDialogTitle,
 } from "@anthiel/ui/components/alert-dialog";
 import { useQueryClient } from "@tanstack/react-query";
+import { getRouteApi } from "@tanstack/react-router";
 import {
   getCoreRowModel,
   getSortedRowModel,
@@ -32,14 +33,17 @@ import {
   useListUsers,
   useUpdateProject,
 } from "#/generated/api";
+import { isAdminRole } from "#/lib/roles";
 
 import type { ProjectRecord } from "./types";
 
+import { ProjectApiKeyDialog } from "./components/project-api-key-dialog";
 import { ProjectDetailDrawer, ProjectFormDrawer } from "./components/project-drawers";
 import { ProjectMembersDrawer } from "./components/project-members-drawer";
 import { createProjectColumns } from "./components/projects-columns";
 
 const EMPTY_PROJECTS: ProjectRecord[] = [];
+const authenticatedRoute = getRouteApi("/_authenticated");
 
 function getErrorMessage(error: unknown, fallback: string) {
   if (error instanceof Error) return error.message;
@@ -53,6 +57,8 @@ function getErrorMessage(error: unknown, fallback: string) {
 }
 
 export function ProjectsPage() {
+  const { session } = authenticatedRoute.useRouteContext();
+  const isAdmin = isAdminRole(session.user.role);
   const queryClient = useQueryClient();
   const [sorting, setSorting] = useState<SortingState>([{ id: "name", desc: false }]);
   const [query, setQuery] = useState("");
@@ -60,6 +66,7 @@ export function ProjectsPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [membersOpen, setMembersOpen] = useState(false);
+  const [apiKeysOpen, setApiKeysOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<ProjectRecord | null>(null);
@@ -138,6 +145,11 @@ export function ProjectsPage() {
     setMembersOpen(true);
   }
 
+  function openApiKeys(project: ProjectRecord) {
+    setSelectedProject(project);
+    setApiKeysOpen(true);
+  }
+
   function openDelete(project: ProjectRecord) {
     setProjectToDelete(project);
     setDeleteOpen(true);
@@ -146,12 +158,14 @@ export function ProjectsPage() {
   const columns = useMemo(
     () =>
       createProjectColumns({
+        isAdmin,
         onDetail: openDetail,
         onEdit: openEdit,
         onMembers: openMembers,
+        onApiKeys: openApiKeys,
         onDelete: openDelete,
       }),
-    [],
+    [isAdmin],
   );
 
   const table = useReactTable({
@@ -266,6 +280,16 @@ export function ProjectsPage() {
         project={selectedProject}
         users={users}
       />
+      {isAdmin ? (
+        <ProjectApiKeyDialog
+          open={apiKeysOpen}
+          onOpenChange={(open) => {
+            setApiKeysOpen(open);
+            if (!open) setSelectedProject(null);
+          }}
+          project={selectedProject}
+        />
+      ) : null}
 
       <AlertDialog
         open={deleteOpen}

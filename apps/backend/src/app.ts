@@ -20,7 +20,7 @@ export const app = new Elysia()
       origin: CORS_ORIGINS,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       credentials: true,
-      allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+      allowedHeaders: ["Content-Type", "Authorization", "Cookie", "X-Api-Key"],
       exposeHeaders: ["Set-Cookie"],
     }),
   )

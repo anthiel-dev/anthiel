@@ -17,6 +17,8 @@ export {
 } from "./invoices.schema";
 export { paymentMethods, paymentMethodsRelations } from "./payment-methods.schema";
 export {
+  projectApiKeys,
+  projectApiKeysRelations,
   projectMembers,
   projectMembersRelations,
   projects,

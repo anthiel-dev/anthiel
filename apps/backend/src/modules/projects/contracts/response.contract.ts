@@ -52,9 +52,35 @@ export const removeProjectMemberResponseSchema = z.object({
   success: z.literal(true),
 });
 
+export const projectApiKeySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  keyPrefix: z.string(),
+  lastUsedAt: z.string().datetime().nullable(),
+  createdAt: z.string().datetime(),
+});
+
+export const createdProjectApiKeySchema = projectApiKeySchema.extend({
+  apiKey: z.string(),
+});
+
+export const listProjectApiKeysResponseSchema = z.object({
+  data: z.array(projectApiKeySchema),
+});
+
+export const createProjectApiKeyResponseSchema = z.object({
+  data: createdProjectApiKeySchema,
+});
+
+export const deleteProjectApiKeyResponseSchema = z.object({
+  success: z.literal(true),
+});
+
 export const projectErrorResponseSchema = z.object({
   error: z.string(),
 });
 
 export type ProjectDto = z.infer<typeof projectSchema>;
 export type ProjectMemberDto = z.infer<typeof projectMemberSchema>;
+export type ProjectApiKeyDto = z.infer<typeof projectApiKeySchema>;
+export type CreatedProjectApiKeyDto = z.infer<typeof createdProjectApiKeySchema>;

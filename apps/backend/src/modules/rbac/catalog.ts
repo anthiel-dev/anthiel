@@ -48,7 +48,7 @@ export const RESOURCE_CATALOG = {
     key: "project",
     name: "Project",
     description: "Project administration and membership",
-    actions: ["list", "get", "create", "update", "delete", "manage-members"],
+    actions: ["list", "get", "create", "update", "delete", "manage-members", "manage-api-keys"],
   },
   "payment-method": {
     key: "payment-method",

@@ -37,7 +37,17 @@ export const addProjectMemberBodySchema = z.object({
   userId: z.string().min(1),
 });
 
+export const projectApiKeyParamsSchema = z.object({
+  id: z.string().min(1),
+  apiKeyId: z.string().min(1),
+});
+
+export const createProjectApiKeyBodySchema = z.object({
+  name: z.string().trim().min(1).max(100),
+});
+
 export type CreateProjectBody = z.infer<typeof createProjectBodySchema>;
 export type UpdateProjectBody = z.infer<typeof updateProjectBodySchema>;
 export type ListProjectsQuery = z.infer<typeof listProjectsQuerySchema>;
 export type AddProjectMemberBody = z.infer<typeof addProjectMemberBodySchema>;
+export type CreateProjectApiKeyBody = z.infer<typeof createProjectApiKeyBodySchema>;

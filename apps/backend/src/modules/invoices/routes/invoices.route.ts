@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 
 import type { AppDb } from "@/database";
 
+import { apiKeyGuardPlugin } from "@/core/api-key.plugin";
 import { authGuardPlugin } from "@/core/better-auth.plugin";
 import { bypassesInvoiceScope } from "@/modules/rbac";
 
@@ -15,6 +16,7 @@ import {
 import {
   deleteInvoiceResponseSchema,
   getInvoiceResponseSchema,
+  getLatestUnpaidInvoiceResponseSchema,
   getPublicInvoiceResponseSchema,
   invoiceErrorResponseSchema,
   listInvoicesResponseSchema,
@@ -26,6 +28,7 @@ export const invoicesRoutes = (db: AppDb) => {
 
   return new Elysia({ prefix: "/invoices", name: "invoices", tags: ["Invoices"] })
     .use(authGuardPlugin)
+    .use(apiKeyGuardPlugin)
     .get(
       "/public/:shareToken",
       async ({ params, status }) => {
@@ -64,6 +67,26 @@ export const invoicesRoutes = (db: AppDb) => {
         detail: {
           summary: "List invoices",
           operationId: "listInvoices",
+        },
+      },
+    )
+    .get(
+      "/unpaid/latest",
+      async ({ status, apiKey }) => {
+        const invoice = await invoicesService.getLatestUnpaidInvoiceForProject(apiKey.projectId);
+        if (!invoice) return status(404, { error: "No unpaid invoice found" });
+        return { data: invoice };
+      },
+      {
+        apiKey: true,
+        response: {
+          200: getLatestUnpaidInvoiceResponseSchema,
+          401: invoiceErrorResponseSchema,
+          404: invoiceErrorResponseSchema,
+        },
+        detail: {
+          summary: "Get latest unpaid invoice for the API key's project",
+          operationId: "getLatestUnpaidInvoice",
         },
       },
     )

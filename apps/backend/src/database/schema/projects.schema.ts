@@ -47,12 +47,39 @@ export const projectMembers = pgTable(
   ],
 );
 
+export const projectApiKeys = pgTable(
+  "project_api_keys",
+  {
+    id: text("id").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    keyPrefix: text("key_prefix").notNull(),
+    keyHash: text("key_hash").notNull().unique(),
+    createdByUserId: text("created_by_user_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    lastUsedAt: timestamp("last_used_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("project_api_keys_project_id_idx").on(table.projectId),
+    index("project_api_keys_key_prefix_idx").on(table.keyPrefix),
+  ],
+);
+
 export const projectsRelations = relations(projects, ({ many, one }) => ({
   business: one(businesses, {
     fields: [projects.businessId],
     references: [businesses.id],
   }),
   members: many(projectMembers),
+  apiKeys: many(projectApiKeys),
 }));
 
 export const projectMembersRelations = relations(projectMembers, ({ one }) => ({
@@ -62,6 +89,17 @@ export const projectMembersRelations = relations(projectMembers, ({ one }) => ({
   }),
   user: one(user, {
     fields: [projectMembers.userId],
+    references: [user.id],
+  }),
+}));
+
+export const projectApiKeysRelations = relations(projectApiKeys, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectApiKeys.projectId],
+    references: [projects.id],
+  }),
+  createdByUser: one(user, {
+    fields: [projectApiKeys.createdByUserId],
     references: [user.id],
   }),
 }));
