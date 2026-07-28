@@ -407,7 +407,144 @@ body {
   }
 }
 
-/* Staggered reveal on load — wire with data-reveal-item + data-stagger */
+/* FAQ alternatives — expand, icon swap, answer enter, text swap */
+:root {
+  --faq-expand-dur: 240ms;
+  --faq-expand-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --icon-swap-dur: 200ms;
+  --icon-swap-blur: 2px;
+  --icon-swap-start-scale: 0.25;
+  --icon-swap-ease: ease-in-out;
+  --text-swap-dur: 150ms;
+  --text-swap-translate-y: 4px;
+  --text-swap-blur: 2px;
+  --text-swap-ease: ease-in-out;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.faq-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--faq-expand-dur) var(--faq-expand-ease);
+}
+
+.faq-expand[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.faq-expand-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.faq-expand-inner > * {
+  opacity: 0;
+  transform: translateY(6px);
+  filter: blur(2px);
+  transition:
+    opacity var(--faq-expand-dur) var(--faq-expand-ease),
+    transform var(--faq-expand-dur) var(--faq-expand-ease),
+    filter var(--faq-expand-dur) var(--faq-expand-ease);
+}
+
+.faq-expand[data-open="true"] .faq-expand-inner > * {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.faq-accordion-trigger {
+  transition: transform 160ms var(--ease-out-strong);
+}
+
+.t-icon-swap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.t-icon-swap .t-icon {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  transition:
+    opacity var(--icon-swap-dur) var(--icon-swap-ease),
+    filter var(--icon-swap-dur) var(--icon-swap-ease),
+    transform var(--icon-swap-dur) var(--icon-swap-ease);
+  will-change: opacity, filter, transform;
+}
+
+.t-icon-swap[data-state="a"] .t-icon[data-icon="a"],
+.t-icon-swap[data-state="b"] .t-icon[data-icon="b"] {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+
+.t-icon-swap[data-state="a"] .t-icon[data-icon="b"],
+.t-icon-swap[data-state="b"] .t-icon[data-icon="a"] {
+  opacity: 0;
+  filter: blur(var(--icon-swap-blur));
+  transform: scale(var(--icon-swap-start-scale));
+}
+
+.faq-answer-enter {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition:
+    opacity 220ms var(--ease-out-strong),
+    transform 220ms var(--ease-out-strong),
+    filter 220ms var(--ease-out-strong);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+}
+
+.t-text-swap {
+  display: block;
+  transform: translateY(0);
+  filter: blur(0);
+  opacity: 1;
+  transition:
+    transform var(--text-swap-dur) var(--text-swap-ease),
+    filter var(--text-swap-dur) var(--text-swap-ease),
+    opacity var(--text-swap-dur) var(--text-swap-ease);
+  will-change: transform, filter, opacity;
+}
+
+.t-text-swap.is-exit {
+  transform: translateY(calc(var(--text-swap-translate-y) * -1));
+  filter: blur(var(--text-swap-blur));
+  opacity: 0;
+}
+
+.t-text-swap.is-enter-start {
+  transform: translateY(var(--text-swap-translate-y));
+  filter: blur(var(--text-swap-blur));
+  opacity: 0;
+  transition: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .faq-editorial:has(.faq-editorial-item:hover) .faq-editorial-item {
+    opacity: 0.4;
+  }
+
+  .faq-editorial:has(.faq-editorial-item:hover) .faq-editorial-item:hover,
+  .faq-editorial-item[data-open="true"] {
+    opacity: 1;
+  }
+
+  .faq-editorial-item {
+    transition: opacity 180ms var(--ease-out-strong);
+  }
+}
+
+/* Staggered reveal on scroll — wire with data-reveal-item + data-stagger.
+   Items stay hidden until data-revealed="true" (set by IntersectionObserver). */
 :root {
   --reveal-dur: 600ms;
   --reveal-delay: 0.12s;
@@ -421,6 +558,9 @@ body {
   opacity: 0;
   transform: translateY(var(--reveal-distance));
   filter: blur(var(--reveal-blur));
+}
+
+[data-reveal-item][data-revealed="true"] {
   animation: reveal-in var(--reveal-dur) both;
   animation-delay: calc(var(--stagger) * var(--reveal-delay) + var(--reveal-start));
 }
@@ -481,6 +621,10 @@ body {
     filter: none;
   }
 
+  [data-reveal-item][data-revealed="true"] {
+    animation: none;
+  }
+
   .team-tooltip-card {
     transition: opacity 100ms ease;
     filter: none !important;
@@ -513,5 +657,39 @@ body {
   .faq-typewriter-cursor {
     animation: none;
     display: none;
+  }
+
+  .faq-expand {
+    transition: none !important;
+  }
+
+  .faq-expand-inner > * {
+    transition: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .t-icon-swap .t-icon {
+    transition: none !important;
+  }
+
+  .faq-answer-enter {
+    transition: opacity 120ms ease;
+
+    @starting-style {
+      opacity: 0;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .t-text-swap {
+    transition: none !important;
+  }
+
+  .faq-editorial-item {
+    transition: none;
+    opacity: 1;
   }
 }

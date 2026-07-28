@@ -10,9 +10,9 @@ export function WorkSection() {
         title="Work"
         description="Projects we've shipped, and past work from the team."
         className="mb-8"
-        revealStagger={4}
+        revealStagger={1}
       />
-      <div className="work-list flex flex-col gap-10" data-reveal-item data-stagger="5">
+      <div className="work-list flex flex-col gap-10" data-reveal-item data-stagger="2">
         {workGroups.map((group) => (
           <div key={group.id}>
             <p className="mb-4 text-xxs text-white/40">{group.label}</p>

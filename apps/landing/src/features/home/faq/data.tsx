@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
 
+import { differenceInCalendarMonths } from "date-fns";
+import { ArrowRight, Mail } from "lucide-react";
+
 import type { FaqItem } from "./types";
 
 export const INITIAL_SUGGESTION_COUNT = 4;
@@ -7,12 +10,31 @@ export const SUGGESTION_COUNT = 3;
 export const ANSWER_REVEAL_DELAY_MS = 480;
 export const TYPEWRITER_CHAR_MS = 16;
 
+/** Anthiel was established on 23 May 2026. */
+export const ESTABLISHED_AT = new Date(2026, 4, 23);
+
+export function formatEstablishedAgo(now = new Date()): string {
+  const months = Math.max(0, differenceInCalendarMonths(now, ESTABLISHED_AT));
+
+  if (months < 1) return "less than a month ago";
+  if (months === 1) return "a month ago";
+  if (months < 12) return `${months} months ago`;
+
+  const years = Math.floor(months / 12);
+  if (years === 1) return "a year ago";
+  return `${years} years ago`;
+}
+
+function experienceAnswer(now = new Date()) {
+  return `We knew each other for a long time but decided to create a group ${formatEstablishedAgo(now)}.`;
+}
+
 export const faqs: FaqItem[] = [
   {
     id: "experience",
     question: "How long have you been working together?",
-    answer: "We are running for 2 years now.",
-    streamText: "We are running for 2 years now.",
+    answer: experienceAnswer(),
+    streamText: experienceAnswer(),
   },
   {
     id: "process",
@@ -76,13 +98,31 @@ export const faqs: FaqItem[] = [
     id: "start",
     question: "How do we get started?",
     streamText:
-      "Tell us what you're building or the problem you're trying to solve.\n\nWe'll discuss the idea, define the scope, and figure out the best way forward together.",
+      "Tell us what you're building or the problem you're trying to solve.\n\nWe'll discuss the idea, define the scope, and figure out the best way forward together.\n\nContact us now",
     answer: (
       <>
         Tell us what you&apos;re building or the problem you&apos;re trying to solve.
         <br />
         <br />
         We&apos;ll discuss the idea, define the scope, and figure out the best way forward together.
+        <br />
+        <br />
+        <a
+          href="mailto:hi@an-thiel.com"
+          className="group inline-flex items-center gap-1.5 text-orange-500 transition-transform duration-150 ease-out active:scale-[0.97]"
+        >
+          <span className="relative size-3 shrink-0" aria-hidden>
+            <Mail
+              className="absolute inset-0 size-3 transition-[opacity,transform] duration-150 ease-out group-hover:scale-75 group-hover:opacity-0"
+              strokeWidth={1.5}
+            />
+            <ArrowRight
+              className="absolute inset-0 size-3 translate-x-[-3px] opacity-0 transition-[opacity,transform] duration-150 ease-out group-hover:translate-x-0 group-hover:opacity-100"
+              strokeWidth={1.5}
+            />
+          </span>
+          Contact us now
+        </a>
       </>
     ),
   },

@@ -6,7 +6,8 @@ export function IntroSection() {
   return (
     <PageSection id="intro">
       <p className="text-xs text-white/90" data-reveal-item data-stagger="1">
-        A collective of software engineers based in Jakarta, Indonesia.
+        A collective of software engineers based in Batam{" "}
+        <span className="font-semibold text-orange-500">&</span> Jakarta, Indonesia.
       </p>
       <p className="mt-2 text-xs text-white/90" data-reveal-item data-stagger="2">
         We help founders go from <span className="font-semibold text-orange-500">0</span> →{" "}

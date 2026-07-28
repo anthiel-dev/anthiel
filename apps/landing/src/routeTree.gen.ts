@@ -12,7 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as BuiltRouteImport } from './routes/built'
-import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FaqIndexRouteImport } from './routes/faq/index'
+import { Route as Faq1RouteImport } from './routes/faq/1'
+import { Route as Faq2RouteImport } from './routes/faq/2'
+import { Route as Faq3RouteImport } from './routes/faq/3'
+import { Route as Faq4RouteImport } from './routes/faq/4'
+import { Route as Faq5RouteImport } from './routes/faq/5'
 import { Route as TeamIndexRouteImport } from './routes/team/index'
 import { Route as Team2RouteImport } from './routes/team/2'
 import { Route as Team3RouteImport } from './routes/team/3'
@@ -34,9 +39,34 @@ const BuiltRoute = BuiltRouteImport.update({
   path: '/built',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
+const FaqIndexRoute = FaqIndexRouteImport.update({
+  id: '/faq/',
+  path: '/faq/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Faq1Route = Faq1RouteImport.update({
+  id: '/faq/1',
+  path: '/faq/1',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Faq2Route = Faq2RouteImport.update({
+  id: '/faq/2',
+  path: '/faq/2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Faq3Route = Faq3RouteImport.update({
+  id: '/faq/3',
+  path: '/faq/3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Faq4Route = Faq4RouteImport.update({
+  id: '/faq/4',
+  path: '/faq/4',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Faq5Route = Faq5RouteImport.update({
+  id: '/faq/5',
+  path: '/faq/5',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeamIndexRoute = TeamIndexRouteImport.update({
@@ -69,22 +99,32 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
-  '/faq': typeof FaqRoute
+  '/faq/1': typeof Faq1Route
+  '/faq/2': typeof Faq2Route
+  '/faq/3': typeof Faq3Route
+  '/faq/4': typeof Faq4Route
+  '/faq/5': typeof Faq5Route
   '/team/2': typeof Team2Route
   '/team/3': typeof Team3Route
   '/team/4': typeof Team4Route
   '/team/5': typeof Team5Route
+  '/faq/': typeof FaqIndexRoute
   '/team/': typeof TeamIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
-  '/faq': typeof FaqRoute
+  '/faq/1': typeof Faq1Route
+  '/faq/2': typeof Faq2Route
+  '/faq/3': typeof Faq3Route
+  '/faq/4': typeof Faq4Route
+  '/faq/5': typeof Faq5Route
   '/team/2': typeof Team2Route
   '/team/3': typeof Team3Route
   '/team/4': typeof Team4Route
   '/team/5': typeof Team5Route
+  '/faq': typeof FaqIndexRoute
   '/team': typeof TeamIndexRoute
 }
 export interface FileRoutesById {
@@ -92,11 +132,16 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
-  '/faq': typeof FaqRoute
+  '/faq/1': typeof Faq1Route
+  '/faq/2': typeof Faq2Route
+  '/faq/3': typeof Faq3Route
+  '/faq/4': typeof Faq4Route
+  '/faq/5': typeof Faq5Route
   '/team/2': typeof Team2Route
   '/team/3': typeof Team3Route
   '/team/4': typeof Team4Route
   '/team/5': typeof Team5Route
+  '/faq/': typeof FaqIndexRoute
   '/team/': typeof TeamIndexRoute
 }
 export interface FileRouteTypes {
@@ -105,33 +150,48 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/built'
-    | '/faq'
+    | '/faq/1'
+    | '/faq/2'
+    | '/faq/3'
+    | '/faq/4'
+    | '/faq/5'
     | '/team/2'
     | '/team/3'
     | '/team/4'
     | '/team/5'
+    | '/faq/'
     | '/team/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/built'
-    | '/faq'
+    | '/faq/1'
+    | '/faq/2'
+    | '/faq/3'
+    | '/faq/4'
+    | '/faq/5'
     | '/team/2'
     | '/team/3'
     | '/team/4'
     | '/team/5'
+    | '/faq'
     | '/team'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/built'
-    | '/faq'
+    | '/faq/1'
+    | '/faq/2'
+    | '/faq/3'
+    | '/faq/4'
+    | '/faq/5'
     | '/team/2'
     | '/team/3'
     | '/team/4'
     | '/team/5'
+    | '/faq/'
     | '/team/'
   fileRoutesById: FileRoutesById
 }
@@ -139,11 +199,16 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BuiltRoute: typeof BuiltRoute
-  FaqRoute: typeof FaqRoute
+  Faq1Route: typeof Faq1Route
+  Faq2Route: typeof Faq2Route
+  Faq3Route: typeof Faq3Route
+  Faq4Route: typeof Faq4Route
+  Faq5Route: typeof Faq5Route
   Team2Route: typeof Team2Route
   Team3Route: typeof Team3Route
   Team4Route: typeof Team4Route
   Team5Route: typeof Team5Route
+  FaqIndexRoute: typeof FaqIndexRoute
   TeamIndexRoute: typeof TeamIndexRoute
 }
 
@@ -170,11 +235,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuiltRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/faq': {
-      id: '/faq'
+    '/faq/': {
+      id: '/faq/'
       path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
+      fullPath: '/faq/'
+      preLoaderRoute: typeof FaqIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq/1': {
+      id: '/faq/1'
+      path: '/faq/1'
+      fullPath: '/faq/1'
+      preLoaderRoute: typeof Faq1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq/2': {
+      id: '/faq/2'
+      path: '/faq/2'
+      fullPath: '/faq/2'
+      preLoaderRoute: typeof Faq2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq/3': {
+      id: '/faq/3'
+      path: '/faq/3'
+      fullPath: '/faq/3'
+      preLoaderRoute: typeof Faq3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq/4': {
+      id: '/faq/4'
+      path: '/faq/4'
+      fullPath: '/faq/4'
+      preLoaderRoute: typeof Faq4RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq/5': {
+      id: '/faq/5'
+      path: '/faq/5'
+      fullPath: '/faq/5'
+      preLoaderRoute: typeof Faq5RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/team/': {
@@ -219,11 +319,16 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BuiltRoute: BuiltRoute,
-  FaqRoute: FaqRoute,
+  Faq1Route: Faq1Route,
+  Faq2Route: Faq2Route,
+  Faq3Route: Faq3Route,
+  Faq4Route: Faq4Route,
+  Faq5Route: Faq5Route,
   Team2Route: Team2Route,
   Team3Route: Team3Route,
   Team4Route: Team4Route,
   Team5Route: Team5Route,
+  FaqIndexRoute: FaqIndexRoute,
   TeamIndexRoute: TeamIndexRoute,
 }
 export const routeTree = rootRouteImport
