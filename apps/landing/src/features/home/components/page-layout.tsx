@@ -4,6 +4,8 @@ import { useRevealOnScroll } from "#hooks/use-reveal-on-scroll";
 
 import { HomeFooter } from "./home-footer";
 import { HomeHeader } from "./home-header";
+import { PremiumScrollbar } from "./premium-scrollbar";
+import { ScrollEdgeFades } from "./scroll-edge-fades";
 
 function scrollToHash() {
   const id = window.location.hash.replace(/^#/, "");
@@ -14,7 +16,13 @@ function scrollToHash() {
   el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 }
 
-export function PageLayout({ children }: { children: React.ReactNode }) {
+export function PageLayout({
+  children,
+  showTeamPhoto = false,
+}: {
+  children: React.ReactNode;
+  showTeamPhoto?: boolean;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useRevealOnScroll(rootRef);
@@ -27,9 +35,11 @@ export function PageLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div ref={rootRef} className="mx-auto flex max-w-3xl flex-col pt-32 pb-4" data-reveal="true">
+      <ScrollEdgeFades />
+      <PremiumScrollbar />
       <HomeHeader />
       <main className="mt-8 flex flex-col gap-20 px-6 sm:gap-28 sm:px-10">{children}</main>
-      <HomeFooter />
+      <HomeFooter showTeamPhoto={showTeamPhoto} />
     </div>
   );
 }

@@ -16,6 +16,14 @@ body,
   min-height: 100%;
 }
 
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   margin: 0;
 }
@@ -551,10 +559,10 @@ body {
 /* Staggered reveal on scroll — wire with data-reveal-item + data-stagger.
    Items stay hidden until data-revealed="true" (set by IntersectionObserver). */
 :root {
-  --reveal-dur: 600ms;
-  --reveal-delay: 0.12s;
+  --reveal-dur: 680ms;
+  --reveal-delay: 0.175s;
   --reveal-start: 0ms;
-  --reveal-distance: 10px;
+  --reveal-distance: 12px;
   --reveal-blur: 2px;
 }
 

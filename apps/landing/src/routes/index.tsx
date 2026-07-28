@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   return (
-    <PageLayout>
+    <PageLayout showTeamPhoto>
       <IntroSection />
       <WorkSection />
       <FaqSection />
