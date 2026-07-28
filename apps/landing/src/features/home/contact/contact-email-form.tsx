@@ -80,7 +80,7 @@ export function ContactEmailForm() {
             if (status !== "idle" && status !== "submitting") setStatus("idle");
           }}
           placeholder="you@company.com"
-          className="min-w-0 flex-1 rounded-2xl text-base sm:text-sm [&_[data-slot=input]]:h-12 [&_[data-slot=input]]:px-4 [&_[data-slot=input]]:text-base [&_[data-slot=input]]:leading-12 sm:[&_[data-slot=input]]:h-12 sm:[&_[data-slot=input]]:text-base sm:[&_[data-slot=input]]:leading-12"
+          className="min-w-0 flex-1 rounded-full text-base before:rounded-full sm:text-sm [&_[data-slot=input]]:h-12 [&_[data-slot=input]]:px-4 [&_[data-slot=input]]:text-base [&_[data-slot=input]]:leading-12 sm:[&_[data-slot=input]]:h-12 sm:[&_[data-slot=input]]:text-base sm:[&_[data-slot=input]]:leading-12"
           size="lg"
           disabled={isBusy}
           aria-invalid={status === "invalid" || undefined}
@@ -91,7 +91,7 @@ export function ContactEmailForm() {
           loading={isBusy}
           disabled={!email.trim() || isBusy}
           aria-label="Send email"
-          className="size-12 shrink-0 rounded-2xl active:scale-[0.97] sm:size-12"
+          className="size-12 shrink-0 rounded-full active:scale-[0.97] sm:size-12"
         >
           <ArrowUpIcon strokeWidth={1.5} />
         </Button>

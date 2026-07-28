@@ -10,8 +10,8 @@ export const SUGGESTION_COUNT = 3;
 export const ANSWER_REVEAL_DELAY_MS = 480;
 export const TYPEWRITER_CHAR_MS = 16;
 
-/** Anthiel was established on 23 May 2026. */
-export const ESTABLISHED_AT = new Date(2026, 4, 23);
+/** Anthiel was established on 23 March 2026. */
+export const ESTABLISHED_AT = new Date(2026, 2, 23);
 
 export function formatEstablishedAgo(now = new Date()): string {
   const months = Math.max(0, differenceInCalendarMonths(now, ESTABLISHED_AT));

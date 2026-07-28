@@ -7,7 +7,7 @@ export function ContactEmailSection() {
     <PageSection id="contact">
       <SectionHeader
         title="Get in touch"
-        description="Drop your email — we'll get in touch."
+        description="You know what to do."
         className="mb-5"
         revealStagger={1}
       />

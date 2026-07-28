@@ -1,5 +1,10 @@
 @import "tailwindcss";
 @import "@anthiel/ui/styles.css";
+@import "@fontsource/sacramento";
+
+@theme inline {
+  --font-brand: "Sacramento", cursive;
+}
 
 * {
   box-sizing: border-box;
