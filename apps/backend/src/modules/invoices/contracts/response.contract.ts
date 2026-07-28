@@ -50,6 +50,7 @@ export const invoiceSchema = z.object({
   issueDate: z.string().datetime(),
   dueDate: z.string().datetime().nullable(),
   notes: z.string().nullable(),
+  emailSentAt: z.string().datetime().nullable(),
   lineItems: z.array(invoiceLineItemSchema),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
@@ -94,6 +95,10 @@ export const getLatestUnpaidInvoiceResponseSchema = z.object({
 
 export const deleteInvoiceResponseSchema = z.object({
   success: z.literal(true),
+});
+
+export const sendInvoiceEmailResponseSchema = z.object({
+  data: invoiceSchema,
 });
 
 export const invoiceErrorResponseSchema = z.object({

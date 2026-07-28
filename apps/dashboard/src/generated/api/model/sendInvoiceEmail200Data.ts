@@ -5,24 +5,24 @@
  * Development documentation
  * OpenAPI spec version: 0.0.1
  */
-import type { CreateInvoice201DataBusiness } from "./createInvoice201DataBusiness.ts";
-import type { CreateInvoice201DataLineItemsItem } from "./createInvoice201DataLineItemsItem.ts";
-import type { CreateInvoice201DataPaymentMethod } from "./createInvoice201DataPaymentMethod.ts";
-import type { CreateInvoice201DataProject } from "./createInvoice201DataProject.ts";
-import type { CreateInvoice201DataStatus } from "./createInvoice201DataStatus.ts";
+import type { SendInvoiceEmail200DataBusiness } from "./sendInvoiceEmail200DataBusiness.ts";
+import type { SendInvoiceEmail200DataLineItemsItem } from "./sendInvoiceEmail200DataLineItemsItem.ts";
+import type { SendInvoiceEmail200DataPaymentMethod } from "./sendInvoiceEmail200DataPaymentMethod.ts";
+import type { SendInvoiceEmail200DataProject } from "./sendInvoiceEmail200DataProject.ts";
+import type { SendInvoiceEmail200DataStatus } from "./sendInvoiceEmail200DataStatus.ts";
 
-export type CreateInvoice201Data = {
+export type SendInvoiceEmail200Data = {
   id: string;
   number: string;
   shareToken: string;
   businessId: string;
-  business: CreateInvoice201DataBusiness;
+  business: SendInvoiceEmail200DataBusiness;
   projectId: string;
-  project: CreateInvoice201DataProject;
+  project: SendInvoiceEmail200DataProject;
   paymentMethodId: string;
-  paymentMethod: CreateInvoice201DataPaymentMethod;
+  paymentMethod: SendInvoiceEmail200DataPaymentMethod;
   createdByUserId: string;
-  status: CreateInvoice201DataStatus;
+  status: SendInvoiceEmail200DataStatus;
   currency: string;
   /**
    * @minimum -9007199254740991
@@ -43,7 +43,7 @@ export type CreateInvoice201Data = {
    * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
    */
   emailSentAt: string | null;
-  lineItems: CreateInvoice201DataLineItemsItem[];
+  lineItems: SendInvoiceEmail200DataLineItemsItem[];
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
   createdAt: string;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */

@@ -11,6 +11,7 @@ import {
   invoiceIdParamsSchema,
   invoiceShareTokenParamsSchema,
   listInvoicesQuerySchema,
+  sendInvoiceEmailBodySchema,
   updateInvoiceBodySchema,
 } from "../contracts/request.contract";
 import {
@@ -20,6 +21,7 @@ import {
   getPublicInvoiceResponseSchema,
   invoiceErrorResponseSchema,
   listInvoicesResponseSchema,
+  sendInvoiceEmailResponseSchema,
 } from "../contracts/response.contract";
 import { InvoicesService } from "../services/invoices.service";
 
@@ -210,6 +212,57 @@ export const invoicesRoutes = (db: AppDb) => {
         detail: {
           summary: "Delete invoice",
           operationId: "deleteInvoice",
+        },
+      },
+    )
+    .post(
+      "/:id/send-email",
+      async ({ body, params, status }) => {
+        const result = await invoicesService.sendInvoiceEmail(params.id, body);
+
+        if ("error" in result) {
+          if (result.error === "invoice_not_found") {
+            return status(404, { error: "Invoice not found" });
+          }
+          if (result.error === "already_sent") {
+            return status(409, { error: "Invoice email has already been sent" });
+          }
+          if (result.error === "cancelled") {
+            return status(409, { error: "Cancelled invoices cannot be emailed" });
+          }
+          if (result.error === "missing_business_email") {
+            return status(422, { error: "Business email is required before sending" });
+          }
+          if (result.error === "invalid_primary_email") {
+            return status(422, {
+              error: "The first email must match the business email address",
+            });
+          }
+          if (result.error === "email_not_configured") {
+            return status(503, { error: "Email sending is not configured" });
+          }
+          return status(502, {
+            error: result.message ?? "Failed to send invoice email",
+          });
+        }
+
+        return { data: result.data };
+      },
+      {
+        manage: true,
+        params: invoiceIdParamsSchema,
+        body: sendInvoiceEmailBodySchema,
+        response: {
+          200: sendInvoiceEmailResponseSchema,
+          404: invoiceErrorResponseSchema,
+          409: invoiceErrorResponseSchema,
+          422: invoiceErrorResponseSchema,
+          502: invoiceErrorResponseSchema,
+          503: invoiceErrorResponseSchema,
+        },
+        detail: {
+          summary: "Send invoice email",
+          operationId: "sendInvoiceEmail",
         },
       },
     );

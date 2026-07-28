@@ -44,7 +44,21 @@ export const updateInvoiceBodySchema = z
     message: "At least one field is required",
   });
 
+export const sendInvoiceEmailBodySchema = z.object({
+  emails: z
+    .array(z.string().trim().email().max(254))
+    .min(1)
+    .max(5)
+    .refine(
+      (emails) => new Set(emails.map((email) => email.toLowerCase())).size === emails.length,
+      {
+        message: "Email addresses must be unique",
+      },
+    ),
+});
+
 export type CreateInvoiceBody = z.infer<typeof createInvoiceBodySchema>;
 export type UpdateInvoiceBody = z.infer<typeof updateInvoiceBodySchema>;
+export type SendInvoiceEmailBody = z.infer<typeof sendInvoiceEmailBodySchema>;
 export type ListInvoicesQuery = z.infer<typeof listInvoicesQuerySchema>;
 export type InvoiceLineItemInput = z.infer<typeof invoiceLineItemInputSchema>;

@@ -1,6 +1,7 @@
 export type {
   CreateInvoiceBody,
   ListInvoicesQuery,
+  SendInvoiceEmailBody,
   UpdateInvoiceBody,
 } from "./contracts/request.contract";
 export type {

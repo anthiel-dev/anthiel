@@ -124,6 +124,15 @@ import type {
   ListUsers200,
   RemoveProjectMember200,
   RemoveProjectMember404,
+  SendInvoiceEmail200,
+  SendInvoiceEmail404,
+  SendInvoiceEmail409,
+  SendInvoiceEmail422,
+  SendInvoiceEmail502,
+  SendInvoiceEmail503,
+  SendInvoiceEmailBodyOne,
+  SendInvoiceEmailBodyThree,
+  SendInvoiceEmailBodyTwo,
   UpdateBusiness200,
   UpdateBusiness404,
   UpdateBusinessBodyOne,
@@ -5262,6 +5271,176 @@ export const useDeleteInvoice = <TError = DeleteInvoice404 | DeleteInvoice409, T
   TContext
 > => {
   return useMutation(getDeleteInvoiceMutationOptions(options), queryClient);
+};
+
+export type sendInvoiceEmailResponse200 = {
+  data: SendInvoiceEmail200;
+  status: 200;
+};
+
+export type sendInvoiceEmailResponse404 = {
+  data: SendInvoiceEmail404;
+  status: 404;
+};
+
+export type sendInvoiceEmailResponse409 = {
+  data: SendInvoiceEmail409;
+  status: 409;
+};
+
+export type sendInvoiceEmailResponse422 = {
+  data: SendInvoiceEmail422;
+  status: 422;
+};
+
+export type sendInvoiceEmailResponse502 = {
+  data: SendInvoiceEmail502;
+  status: 502;
+};
+
+export type sendInvoiceEmailResponse503 = {
+  data: SendInvoiceEmail503;
+  status: 503;
+};
+
+export type sendInvoiceEmailResponseSuccess = sendInvoiceEmailResponse200 & {
+  headers: Headers;
+};
+export type sendInvoiceEmailResponseError = (
+  | sendInvoiceEmailResponse404
+  | sendInvoiceEmailResponse409
+  | sendInvoiceEmailResponse422
+  | sendInvoiceEmailResponse502
+  | sendInvoiceEmailResponse503
+) & {
+  headers: Headers;
+};
+
+export type sendInvoiceEmailResponse =
+  | sendInvoiceEmailResponseSuccess
+  | sendInvoiceEmailResponseError;
+
+export const getSendInvoiceEmailUrl = (id: string) => {
+  return `/invoices/${id}/send-email`;
+};
+
+/**
+ * @summary Send invoice email
+ */
+export const sendInvoiceEmail = async (
+  id: string,
+  sendInvoiceEmailBody:
+    | SendInvoiceEmailBodyOne
+    | SendInvoiceEmailBodyTwo
+    | SendInvoiceEmailBodyThree,
+  options?: RequestInit,
+): Promise<sendInvoiceEmailResponse> => {
+  return apiFetch<sendInvoiceEmailResponse>(getSendInvoiceEmailUrl(id), {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(sendInvoiceEmailBody),
+  });
+};
+
+export const getSendInvoiceEmailMutationOptions = <
+  TError =
+    | SendInvoiceEmail404
+    | SendInvoiceEmail409
+    | SendInvoiceEmail422
+    | SendInvoiceEmail502
+    | SendInvoiceEmail503,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof sendInvoiceEmail>>,
+    TError,
+    {
+      id: string;
+      data: SendInvoiceEmailBodyOne | SendInvoiceEmailBodyTwo | SendInvoiceEmailBodyThree;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof sendInvoiceEmail>>,
+  TError,
+  {
+    id: string;
+    data: SendInvoiceEmailBodyOne | SendInvoiceEmailBodyTwo | SendInvoiceEmailBodyThree;
+  },
+  TContext
+> => {
+  const mutationKey = ["sendInvoiceEmail"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof sendInvoiceEmail>>,
+    {
+      id: string;
+      data: SendInvoiceEmailBodyOne | SendInvoiceEmailBodyTwo | SendInvoiceEmailBodyThree;
+    }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return sendInvoiceEmail(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SendInvoiceEmailMutationResult = NonNullable<
+  Awaited<ReturnType<typeof sendInvoiceEmail>>
+>;
+export type SendInvoiceEmailMutationBody =
+  | SendInvoiceEmailBodyOne
+  | SendInvoiceEmailBodyTwo
+  | SendInvoiceEmailBodyThree;
+export type SendInvoiceEmailMutationError =
+  | SendInvoiceEmail404
+  | SendInvoiceEmail409
+  | SendInvoiceEmail422
+  | SendInvoiceEmail502
+  | SendInvoiceEmail503;
+
+/**
+ * @summary Send invoice email
+ */
+export const useSendInvoiceEmail = <
+  TError =
+    | SendInvoiceEmail404
+    | SendInvoiceEmail409
+    | SendInvoiceEmail422
+    | SendInvoiceEmail502
+    | SendInvoiceEmail503,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof sendInvoiceEmail>>,
+      TError,
+      {
+        id: string;
+        data: SendInvoiceEmailBodyOne | SendInvoiceEmailBodyTwo | SendInvoiceEmailBodyThree;
+      },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof sendInvoiceEmail>>,
+  TError,
+  {
+    id: string;
+    data: SendInvoiceEmailBodyOne | SendInvoiceEmailBodyTwo | SendInvoiceEmailBodyThree;
+  },
+  TContext
+> => {
+  return useMutation(getSendInvoiceEmailMutationOptions(options), queryClient);
 };
 
 export type getServiceRootResponse200 = {

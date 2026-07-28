@@ -12,11 +12,13 @@ import {
   projects,
 } from "@/database/schema";
 import { env } from "@/env";
+import { getResendClient } from "@/lib/resend";
 
 import type {
   CreateInvoiceBody,
   InvoiceLineItemInput,
   ListInvoicesQuery,
+  SendInvoiceEmailBody,
   UpdateInvoiceBody,
 } from "../contracts/request.contract";
 import type {
@@ -69,7 +71,20 @@ type InvoiceMutationError =
   | "invalid_status_transition"
   | "not_draft";
 
+type SendInvoiceEmailError =
+  | "invoice_not_found"
+  | "already_sent"
+  | "cancelled"
+  | "missing_business_email"
+  | "invalid_primary_email"
+  | "email_not_configured"
+  | "send_failed";
+
 type InvoiceMutationResult = { data: InvoiceDto } | { error: InvoiceMutationError };
+
+type SendInvoiceEmailResult =
+  | { data: InvoiceDto }
+  | { error: SendInvoiceEmailError; message?: string };
 
 type DeleteInvoiceResult = { success: true } | { error: "invoice_not_found" | "not_draft" };
 
@@ -90,6 +105,54 @@ function newShareToken() {
 
 function toIso(value: Date | null | undefined) {
   return value ? value.toISOString() : null;
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function buildInvoiceEmailHtml(options: {
+  invoiceNumber: string;
+  businessName: string;
+  projectName: string;
+  totalFormatted: string;
+  invoiceUrl: string;
+  dueDate: string | null;
+}) {
+  const dueLabel = options.dueDate
+    ? new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }).format(new Date(options.dueDate))
+    : "—";
+
+  return `
+    <div style="font-family: ui-sans-serif, system-ui, sans-serif; line-height: 1.5; color: #111;">
+      <p>Hello ${escapeHtml(options.businessName)},</p>
+      <p>
+        Please find invoice <strong>${escapeHtml(options.invoiceNumber)}</strong>
+        for project <strong>${escapeHtml(options.projectName)}</strong>.
+      </p>
+      <p>
+        <strong>Total:</strong> ${escapeHtml(options.totalFormatted)}<br />
+        <strong>Due:</strong> ${escapeHtml(dueLabel)}
+      </p>
+      <p>
+        <a href="${escapeHtml(options.invoiceUrl)}" style="display:inline-block;padding:10px 16px;background:#111;color:#fff;text-decoration:none;border-radius:8px;">
+          View invoice
+        </a>
+      </p>
+      <p style="color:#666;font-size:12px;">
+        If the button does not work, open this link:<br />
+        ${escapeHtml(options.invoiceUrl)}
+      </p>
+    </div>
+  `.trim();
 }
 
 export class InvoicesService {
@@ -344,6 +407,65 @@ export class InvoicesService {
     return { success: true };
   }
 
+  async sendInvoiceEmail(id: string, input: SendInvoiceEmailBody): Promise<SendInvoiceEmailResult> {
+    const existing = await this.findInvoiceById(id);
+    if (!existing) return { error: "invoice_not_found" };
+    if (existing.emailSentAt) return { error: "already_sent" };
+    if (existing.status === "cancelled") return { error: "cancelled" };
+
+    const businessEmail = existing.business?.email?.trim().toLowerCase() ?? "";
+    if (!businessEmail) return { error: "missing_business_email" };
+
+    const emails = input.emails.map((email) => email.trim());
+    if (emails[0]?.toLowerCase() !== businessEmail) {
+      return { error: "invalid_primary_email" };
+    }
+
+    const resend = getResendClient();
+    const from = env.RESEND_FROM_EMAIL;
+    if (!resend || !from) return { error: "email_not_configured" };
+
+    const dto = this.toDto(existing);
+    const dashboardUrl = env.DASHBOARD_URL.replace(/\/$/, "");
+    const invoiceUrl = `${dashboardUrl}/invoice/${encodeURIComponent(dto.shareToken)}`;
+    const totalFormatted = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: dto.currency || "IDR",
+      maximumFractionDigits: 0,
+    }).format(dto.totalAmount);
+
+    const { error } = await resend.emails.send({
+      from,
+      to: emails,
+      ...(env.RESEND_REPLY_TO ? { replyTo: env.RESEND_REPLY_TO } : {}),
+      subject: `Invoice ${dto.number} — ${dto.project.name}`,
+      html: buildInvoiceEmailHtml({
+        invoiceNumber: dto.number,
+        businessName: dto.business.name,
+        projectName: dto.project.name,
+        totalFormatted,
+        invoiceUrl,
+        dueDate: dto.dueDate,
+      }),
+    });
+
+    if (error) {
+      return { error: "send_failed", message: error.message };
+    }
+
+    const now = new Date();
+    const changes: { emailSentAt: Date; status?: InvoiceStatus } = { emailSentAt: now };
+    if (existing.status === "draft") {
+      changes.status = "sent";
+    }
+
+    await this.deps.db.update(invoices).set(changes).where(eq(invoices.id, id));
+
+    const updated = await this.findInvoiceById(id);
+    if (!updated) return { error: "invoice_not_found" };
+    return { data: this.toDto(updated) };
+  }
+
   private prepareLineItems(items: InvoiceLineItemInput[]) {
     return items.map((item) => ({
       serviceType: item.serviceType as ServiceType,
@@ -453,6 +575,7 @@ export class InvoicesService {
       issueDate: row.issueDate.toISOString(),
       dueDate: toIso(row.dueDate),
       notes: row.notes,
+      emailSentAt: toIso(row.emailSentAt),
       lineItems: row.lineItems.map((line) => ({
         id: line.id,
         serviceType: line.serviceType as ServiceType,

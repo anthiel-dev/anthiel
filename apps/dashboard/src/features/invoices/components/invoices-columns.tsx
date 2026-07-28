@@ -41,6 +41,7 @@ type InvoiceColumnActions = {
   onDelete: (invoice: InvoiceRecord) => void;
   onStatusChange: (invoice: InvoiceRecord, status: InvoiceStatus) => void;
   onShare: (invoice: InvoiceRecord) => void;
+  onSendEmail: (invoice: InvoiceRecord) => void;
 };
 
 function statusVariant(status: InvoiceStatus) {
@@ -58,6 +59,7 @@ export function createInvoiceColumns({
   onDelete,
   onStatusChange,
   onShare,
+  onSendEmail,
 }: InvoiceColumnActions): ColumnDef<InvoiceRecord>[] {
   return [
     {
@@ -137,6 +139,32 @@ export function createInvoiceColumns({
           {formatDate(row.original.dueDate)}
         </span>
       ),
+    },
+    {
+      id: "email",
+      accessorFn: (row) => row.emailSentAt,
+      enableSorting: false,
+      meta: { label: "Email" },
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
+      cell: ({ row }) => {
+        const invoice = row.original;
+        if (invoice.emailSentAt) {
+          return <span className="text-muted-foreground text-sm">Email sent</span>;
+        }
+        if (!isAdmin || invoice.status === "cancelled") {
+          return <span className="text-muted-foreground text-sm">—</span>;
+        }
+        return (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onSendEmail(invoice)}
+            disabled={!invoice.business.email}
+          >
+            Send email
+          </Button>
+        );
+      },
     },
     {
       id: "actions",

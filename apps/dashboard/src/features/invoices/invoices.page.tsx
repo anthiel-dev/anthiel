@@ -31,6 +31,7 @@ import {
   useListInvoices,
   useListPaymentMethods,
   useListProjects,
+  useSendInvoiceEmail,
   useUpdateInvoice,
 } from "#/generated/api";
 import { canManageRole, isAdminRole } from "#/lib/roles";
@@ -40,6 +41,7 @@ import type { InvoiceFormValues, InvoiceRecord, InvoiceStatus } from "./types";
 import { InvoiceDetailDrawer, InvoiceFormDrawer } from "./components/invoice-drawers";
 import { InvoicePreviewDialog } from "./components/invoice-preview-dialog";
 import { createInvoiceColumns } from "./components/invoices-columns";
+import { SendInvoiceEmailDialog } from "./components/send-invoice-email-dialog";
 import { dueDateToIso } from "./types";
 
 const EMPTY_INVOICES: InvoiceRecord[] = [];
@@ -78,8 +80,10 @@ export function InvoicesPage() {
   const [detailOpen, setDetailOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [sendEmailOpen, setSendEmailOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceRecord | null>(null);
   const [invoiceToDelete, setInvoiceToDelete] = useState<InvoiceRecord | null>(null);
+  const [invoiceToEmail, setInvoiceToEmail] = useState<InvoiceRecord | null>(null);
   const [previewInvoice, setPreviewInvoice] = useState<InvoiceRecord | null>(null);
 
   const invoicesQuery = useListInvoices();
@@ -154,6 +158,15 @@ export function InvoicesPage() {
       },
     },
   });
+  const sendEmailMutation = useSendInvoiceEmail({
+    mutation: {
+      onSuccess: async () => {
+        await invalidateInvoices();
+        setSendEmailOpen(false);
+        setInvoiceToEmail(null);
+      },
+    },
+  });
 
   function openDetail(invoice: InvoiceRecord) {
     setSelectedInvoice(invoice);
@@ -180,6 +193,11 @@ export function InvoicesPage() {
     setDetailOpen(true);
   }
 
+  function openSendEmail(invoice: InvoiceRecord) {
+    setInvoiceToEmail(invoice);
+    setSendEmailOpen(true);
+  }
+
   function changeStatus(invoice: InvoiceRecord, status: InvoiceStatus) {
     updateMutation.mutate({
       id: invoice.id,
@@ -197,6 +215,7 @@ export function InvoicesPage() {
         onDelete: openDelete,
         onStatusChange: changeStatus,
         onShare: openShare,
+        onSendEmail: openSendEmail,
       }),
     [canManage],
   );
@@ -329,6 +348,31 @@ export function InvoicesPage() {
           if (!open) setPreviewInvoice(null);
         }}
         invoice={previewInvoice}
+      />
+
+      <SendInvoiceEmailDialog
+        open={sendEmailOpen}
+        onOpenChange={(open) => {
+          setSendEmailOpen(open);
+          if (!open) {
+            setInvoiceToEmail(null);
+            sendEmailMutation.reset();
+          }
+        }}
+        invoice={invoiceToEmail}
+        pending={sendEmailMutation.isPending}
+        error={
+          sendEmailMutation.error
+            ? getErrorMessage(sendEmailMutation.error, "Failed to send invoice email")
+            : null
+        }
+        onConfirm={(emails) => {
+          if (!invoiceToEmail) return;
+          sendEmailMutation.mutate({
+            id: invoiceToEmail.id,
+            data: { emails },
+          });
+        }}
       />
 
       <AlertDialog

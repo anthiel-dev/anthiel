@@ -36,6 +36,7 @@ export const invoices = pgTable(
     issueDate: timestamp("issue_date").notNull(),
     dueDate: timestamp("due_date"),
     notes: text("notes"),
+    emailSentAt: timestamp("email_sent_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
