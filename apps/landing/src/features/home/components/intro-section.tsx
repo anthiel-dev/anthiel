@@ -5,11 +5,16 @@ import { PageSection } from "./page-section";
 export function IntroSection() {
   return (
     <PageSection id="intro">
-      <p className="text-xs text-white/90" data-reveal-item data-stagger="1">
+      <p className="text-xs text-white/90" data-reveal-item data-revealed="true" data-stagger="1">
         A collective of software engineers based in Batam{" "}
         <span className="font-semibold text-orange-500">&</span> Jakarta, Indonesia.
       </p>
-      <p className="mt-2 text-xs text-white/90" data-reveal-item data-stagger="2">
+      <p
+        className="mt-2 text-xs text-white/90"
+        data-reveal-item
+        data-revealed="true"
+        data-stagger="2"
+      >
         We help founders go from <span className="font-semibold text-orange-500">0</span> →{" "}
         <span className="font-semibold text-orange-500">1</span> with a small, senior engineering
         team.
@@ -17,6 +22,7 @@ export function IntroSection() {
       <p
         className="mt-10 text-xxs text-white/50 flex items-end gap-2"
         data-reveal-item
+        data-revealed="true"
         data-stagger="3"
       >
         Say hi to us{" "}

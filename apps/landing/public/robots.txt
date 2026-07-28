@@ -1,3 +1,11 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+# Experiment / design-variant routes — keep crawl budget on the homepage
+Disallow: /faq/
+Disallow: /team/
+Disallow: /built
+Disallow: /about
+
+Sitemap: https://an-thiel.com/sitemap.xml

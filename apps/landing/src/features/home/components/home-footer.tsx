@@ -3,7 +3,12 @@ import { Mail } from "lucide-react";
 import { ProgressiveImage } from "#components/progressive-image";
 
 import { SignatureMark } from "../signature/signature-mark";
-import { TEAM_IMAGE_PLACEHOLDER_SRC, TEAM_IMAGE_SRC } from "../team/constants";
+import {
+  TEAM_IMAGE_HEIGHT,
+  TEAM_IMAGE_PLACEHOLDER_SRC,
+  TEAM_IMAGE_SRC,
+  TEAM_IMAGE_WIDTH,
+} from "../team/constants";
 
 export function HomeFooter({ showTeamPhoto = false }: { showTeamPhoto?: boolean }) {
   return (
@@ -22,6 +27,10 @@ export function HomeFooter({ showTeamPhoto = false }: { showTeamPhoto?: boolean 
             placeholderSrc={TEAM_IMAGE_PLACEHOLDER_SRC}
             alt="Anthiel team illustration"
             className="h-full w-full object-cover object-center grayscale"
+            width={TEAM_IMAGE_WIDTH}
+            height={TEAM_IMAGE_HEIGHT}
+            loading="lazy"
+            fetchPriority="low"
             draggable={false}
           />
         </figure>

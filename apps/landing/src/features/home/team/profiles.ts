@@ -5,7 +5,7 @@ export type TeamProfile = {
   years: number;
   focus: string;
   bio: string;
-  /** `object-position` into `/team.png` for a face crop */
+  /** `object-position` into `/team.webp` for a face crop */
   portraitPosition: string;
 };
 

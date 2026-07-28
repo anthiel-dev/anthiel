@@ -33,6 +33,8 @@ export function TeamSection() {
           placeholderSrc={TEAM_IMAGE_PLACEHOLDER_SRC}
           alt="Anthiel team illustration"
           className="rounded-2xl grayscale-75"
+          width={TEAM_IMAGE_WIDTH}
+          height={TEAM_IMAGE_HEIGHT}
           draggable={false}
           fetchPriority="high"
           onLoadingComplete={() => setImageReady(true)}

@@ -5,14 +5,24 @@ import { FaqSection } from "#features/home/components/faq-section";
 import { IntroSection } from "#features/home/components/intro-section";
 import { PageLayout } from "#features/home/components/page-layout";
 import { WorkSection } from "#features/home/components/work-section";
+import { faqPageJsonLd } from "#lib/faq-json-ld";
 import { pageMeta } from "#lib/page-meta";
+import { SITE_DESCRIPTION, SITE_NAME } from "#lib/site";
 
 export const Route = createFileRoute("/")({
-  head: () =>
-    pageMeta(
-      "Anthiel",
-      "A collective of software engineers in Jakarta. We help founders go from 0 → 1.",
-    ),
+  head: () => ({
+    ...pageMeta({
+      title: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      path: "/",
+    }),
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(faqPageJsonLd()),
+      },
+    ],
+  }),
   component: HomePage,
 });
 

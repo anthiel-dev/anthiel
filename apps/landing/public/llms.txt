@@ -1,0 +1,11 @@
+# Anthiel
+
+> A collective of software engineers based in Batam & Jakarta, Indonesia. We help founders go from 0 → 1 with a small, senior engineering team.
+
+- Site: https://an-thiel.com/
+- Contact: hi@an-thiel.com
+- Location: Batam & Jakarta, Indonesia
+
+## Pages
+
+- [Home](https://an-thiel.com/): Intro, selected work, FAQ, and contact

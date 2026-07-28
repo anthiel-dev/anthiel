@@ -6,10 +6,12 @@ import { pageMeta } from "#lib/page-meta";
 
 export const Route = createFileRoute("/faq/2")({
   head: () =>
-    pageMeta(
-      "FAQ — Split — Anthiel",
-      "Browse Anthiel questions in a split list and answer layout.",
-    ),
+    pageMeta({
+      title: "FAQ — Split — Anthiel",
+      description: "Browse Anthiel questions in a split list and answer layout.",
+      path: "/faq/2",
+      noIndex: true,
+    }),
   component: FaqSplitPage,
 });
 

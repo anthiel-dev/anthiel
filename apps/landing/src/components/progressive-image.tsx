@@ -8,18 +8,28 @@ type ProgressiveImageProps = Omit<React.ComponentProps<"img">, "src" | "placehol
   onLoadingComplete?: () => void;
 };
 
-export function ProgressiveImage({
+export function ProgressiveImage(props: ProgressiveImageProps) {
+  // Remount on src change so load state resets without an effect syncing props → state.
+  return <ProgressiveImageInner key={props.src} {...props} />;
+}
+
+function ProgressiveImageInner({
   src,
   placeholderSrc,
   alt,
   className,
   onLoad,
   onLoadingComplete,
+  loading,
+  fetchPriority,
+  width,
+  height,
   ...props
 }: ProgressiveImageProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const hasNotifiedRef = useRef(false);
   const [loaded, setLoaded] = useState(false);
+  const resolvedLoading = loading ?? (fetchPriority === "high" ? "eager" : "lazy");
 
   const markLoaded = useCallback(() => {
     setLoaded(true);
@@ -29,14 +39,11 @@ export function ProgressiveImage({
   }, [onLoadingComplete]);
 
   useEffect(() => {
-    hasNotifiedRef.current = false;
-    setLoaded(false);
-
     const img = imgRef.current;
     if (img?.complete && img.naturalWidth > 0) {
       markLoaded();
     }
-  }, [src, markLoaded]);
+  }, [markLoaded]);
 
   return (
     <div className={cn("relative h-full w-full overflow-hidden", className)}>
@@ -47,11 +54,16 @@ export function ProgressiveImage({
         className="absolute inset-0 h-full w-full scale-105 object-cover blur-xl saturate-50"
         draggable={false}
         decoding="async"
+        loading={resolvedLoading}
       />
       <img
         ref={imgRef}
         src={src}
         alt={alt}
+        width={width}
+        height={height}
+        loading={resolvedLoading}
+        fetchPriority={fetchPriority}
         decoding="async"
         onLoad={(event) => {
           markLoaded();

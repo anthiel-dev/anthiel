@@ -6,7 +6,12 @@ import { pageMeta } from "#lib/page-meta";
 
 export const Route = createFileRoute("/faq/4")({
   head: () =>
-    pageMeta("FAQ — Stack — Anthiel", "Stacked FAQ rows that expand in place for Anthiel."),
+    pageMeta({
+      title: "FAQ — Stack — Anthiel",
+      description: "Stacked FAQ rows that expand in place for Anthiel.",
+      path: "/faq/4",
+      noIndex: true,
+    }),
   component: FaqStackPage,
 });
 

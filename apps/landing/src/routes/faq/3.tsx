@@ -6,10 +6,12 @@ import { pageMeta } from "#lib/page-meta";
 
 export const Route = createFileRoute("/faq/3")({
   head: () =>
-    pageMeta(
-      "FAQ — Editorial — Anthiel",
-      "An editorial take on Anthiel questions — numbered, display-led.",
-    ),
+    pageMeta({
+      title: "FAQ — Editorial — Anthiel",
+      description: "An editorial take on Anthiel questions — numbered, display-led.",
+      path: "/faq/3",
+      noIndex: true,
+    }),
   component: FaqEditorialPage,
 });
 

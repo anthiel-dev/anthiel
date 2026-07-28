@@ -6,7 +6,12 @@ import { pageMeta } from "#lib/page-meta";
 
 export const Route = createFileRoute("/team/4")({
   head: () =>
-    pageMeta("Team — Anthiel", "The people behind Anthiel. A small senior team in Jakarta."),
+    pageMeta({
+      title: "Team — Anthiel",
+      description: "The people behind Anthiel. A small senior team in Jakarta.",
+      path: "/team/4",
+      noIndex: true,
+    }),
   component: TeamListPage,
 });
 

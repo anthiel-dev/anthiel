@@ -6,7 +6,12 @@ import { pageMeta } from "#lib/page-meta";
 
 export const Route = createFileRoute("/team/5")({
   head: () =>
-    pageMeta("Team — Anthiel", "Meet the Anthiel team — a small senior collective in Jakarta."),
+    pageMeta({
+      title: "Team — Anthiel",
+      description: "Meet the Anthiel team — a small senior collective in Jakarta.",
+      path: "/team/5",
+      noIndex: true,
+    }),
   component: TeamGridPage,
 });
 

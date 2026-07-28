@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "@anthiel/ui/styles.css";
-@import "@fontsource/sacramento";
+@import "@fontsource/sacramento/latin-400.css";
 
 @theme inline {
   --font-brand: "Sacramento", cursive;
