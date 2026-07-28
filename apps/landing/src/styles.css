@@ -17,23 +17,27 @@ body {
 
 @source "../../../packages/ui/src";
 
-/* Work list — dim siblings on hover */
-.work-project {
+/* Work / team lists — dim siblings on hover */
+.work-project,
+.team-member {
   transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .work-list:has(.work-project:hover) .work-project {
+  .work-list:has(.work-project:hover) .work-project,
+  .team-list:has(.team-member:hover) .team-member {
     opacity: 0.35;
   }
 
-  .work-list:has(.work-project:hover) .work-project:hover {
+  .work-list:has(.work-project:hover) .work-project:hover,
+  .team-list:has(.team-member:hover) .team-member:hover {
     opacity: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .work-project {
+  .work-project,
+  .team-member {
     transition: none;
   }
 }
@@ -96,6 +100,174 @@ body {
 
   .built-project:hover .built-project-image {
     transform: none;
+  }
+}
+
+/* Team studio — portrait settle + quiet sibling dim */
+.team-studio-portrait-img {
+  transition: opacity 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.team-studio-person {
+  transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .team-studio-list:has(.team-studio-person:hover) .team-studio-person {
+    opacity: 0.4;
+  }
+
+  .team-studio-list:has(.team-studio-person:hover) .team-studio-person:hover {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-studio-portrait-img,
+  .team-studio-person {
+    transition: none;
+  }
+}
+
+/* Team grid — portrait lift + sibling dim, no card chrome */
+.team-grid-person {
+  transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.team-grid-portrait {
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.team-grid-portrait .team-studio-portrait-img {
+  transition:
+    opacity 220ms cubic-bezier(0.23, 1, 0.32, 1),
+    filter 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .team-grid:has(.team-grid-person:hover) .team-grid-person {
+    opacity: 0.4;
+  }
+
+  .team-grid:has(.team-grid-person:hover) .team-grid-person:hover {
+    opacity: 1;
+  }
+
+  .team-grid-person:hover .team-grid-portrait {
+    transform: scale(1.02);
+  }
+
+  .team-grid-person:hover .team-grid-portrait .team-studio-portrait-img {
+    filter: grayscale(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-grid-person,
+  .team-grid-portrait {
+    transition: none;
+  }
+
+  .team-grid-person:hover .team-grid-portrait {
+    transform: none;
+  }
+}
+
+/* Team roster — dim siblings on hover, reveal role quietly */
+.team-roster-person {
+  transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.team-roster-detail {
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.team-roster-rule {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.team-roster-mark {
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.team-roster-name {
+  transition: color 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .team-roster:has(.team-roster-person:hover) .team-roster-person,
+  .team-roster:has(.team-roster-person:focus-within) .team-roster-person {
+    opacity: 0.28;
+  }
+
+  .team-roster:has(.team-roster-person:hover) .team-roster-person:hover,
+  .team-roster:has(.team-roster-person:focus-within) .team-roster-person:focus-within {
+    opacity: 1;
+  }
+
+  .team-roster-person:hover .team-roster-detail,
+  .team-roster-person:focus-within .team-roster-detail {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .team-roster-person:hover .team-roster-rule,
+  .team-roster-person:focus-within .team-roster-rule {
+    transform: scaleX(1);
+  }
+
+  .team-roster-person:hover .team-roster-mark,
+  .team-roster-person:focus-within .team-roster-mark {
+    color: #f97316;
+    border-color: rgba(249, 115, 22, 0.45);
+  }
+
+  .team-roster-person:hover .team-roster-name,
+  .team-roster-person:focus-within .team-roster-name {
+    color: #fff;
+  }
+
+  .team-roster-person:active .team-roster-mark {
+    transform: scale(0.97);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .team-roster-detail {
+    opacity: 1;
+    transform: none;
+  }
+
+  .team-roster-rule {
+    transform: scaleX(1);
+  }
+
+  .team-roster-mark {
+    color: #f97316;
+    border-color: rgba(249, 115, 22, 0.35);
+  }
+
+  .team-roster-name {
+    color: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-roster-person,
+  .team-roster-detail,
+  .team-roster-rule,
+  .team-roster-mark,
+  .team-roster-name {
+    transition: none;
   }
 }
 

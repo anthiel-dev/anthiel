@@ -13,7 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as BuiltRouteImport } from './routes/built'
 import { Route as FaqRouteImport } from './routes/faq'
-import { Route as TeamRouteImport } from './routes/team'
+import { Route as TeamIndexRouteImport } from './routes/team/index'
+import { Route as Team2RouteImport } from './routes/team/2'
+import { Route as Team3RouteImport } from './routes/team/3'
+import { Route as Team4RouteImport } from './routes/team/4'
+import { Route as Team5RouteImport } from './routes/team/5'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -35,9 +39,29 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TeamRoute = TeamRouteImport.update({
-  id: '/team',
-  path: '/team',
+const TeamIndexRoute = TeamIndexRouteImport.update({
+  id: '/team/',
+  path: '/team/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Team2Route = Team2RouteImport.update({
+  id: '/team/2',
+  path: '/team/2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Team3Route = Team3RouteImport.update({
+  id: '/team/3',
+  path: '/team/3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Team4Route = Team4RouteImport.update({
+  id: '/team/4',
+  path: '/team/4',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Team5Route = Team5RouteImport.update({
+  id: '/team/5',
+  path: '/team/5',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -46,14 +70,22 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
   '/faq': typeof FaqRoute
-  '/team': typeof TeamRoute
+  '/team/2': typeof Team2Route
+  '/team/3': typeof Team3Route
+  '/team/4': typeof Team4Route
+  '/team/5': typeof Team5Route
+  '/team/': typeof TeamIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
   '/faq': typeof FaqRoute
-  '/team': typeof TeamRoute
+  '/team/2': typeof Team2Route
+  '/team/3': typeof Team3Route
+  '/team/4': typeof Team4Route
+  '/team/5': typeof Team5Route
+  '/team': typeof TeamIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +93,46 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
   '/faq': typeof FaqRoute
-  '/team': typeof TeamRoute
+  '/team/2': typeof Team2Route
+  '/team/3': typeof Team3Route
+  '/team/4': typeof Team4Route
+  '/team/5': typeof Team5Route
+  '/team/': typeof TeamIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/built' | '/faq' | '/team'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/built'
+    | '/faq'
+    | '/team/2'
+    | '/team/3'
+    | '/team/4'
+    | '/team/5'
+    | '/team/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/built' | '/faq' | '/team'
-  id: '__root__' | '/' | '/about' | '/built' | '/faq' | '/team'
+  to:
+    | '/'
+    | '/about'
+    | '/built'
+    | '/faq'
+    | '/team/2'
+    | '/team/3'
+    | '/team/4'
+    | '/team/5'
+    | '/team'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/built'
+    | '/faq'
+    | '/team/2'
+    | '/team/3'
+    | '/team/4'
+    | '/team/5'
+    | '/team/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,7 +140,11 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BuiltRoute: typeof BuiltRoute
   FaqRoute: typeof FaqRoute
-  TeamRoute: typeof TeamRoute
+  Team2Route: typeof Team2Route
+  Team3Route: typeof Team3Route
+  Team4Route: typeof Team4Route
+  Team5Route: typeof Team5Route
+  TeamIndexRoute: typeof TeamIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -109,11 +177,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/team': {
-      id: '/team'
+    '/team/': {
+      id: '/team/'
       path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof TeamRouteImport
+      fullPath: '/team/'
+      preLoaderRoute: typeof TeamIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/2': {
+      id: '/team/2'
+      path: '/team/2'
+      fullPath: '/team/2'
+      preLoaderRoute: typeof Team2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/3': {
+      id: '/team/3'
+      path: '/team/3'
+      fullPath: '/team/3'
+      preLoaderRoute: typeof Team3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/4': {
+      id: '/team/4'
+      path: '/team/4'
+      fullPath: '/team/4'
+      preLoaderRoute: typeof Team4RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/5': {
+      id: '/team/5'
+      path: '/team/5'
+      fullPath: '/team/5'
+      preLoaderRoute: typeof Team5RouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -124,7 +220,11 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BuiltRoute: BuiltRoute,
   FaqRoute: FaqRoute,
-  TeamRoute: TeamRoute,
+  Team2Route: Team2Route,
+  Team3Route: Team3Route,
+  Team4Route: Team4Route,
+  Team5Route: Team5Route,
+  TeamIndexRoute: TeamIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
