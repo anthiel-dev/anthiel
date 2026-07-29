@@ -20,6 +20,7 @@ export function ContactEmailForm() {
 
   const isBusy = status === "submitting";
   const isDone = status === "success";
+  const emailValid = isValidEmail(email.trim());
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,7 +29,7 @@ export function ContactEmailForm() {
     const value = email.trim();
     if (!value) return;
 
-    if (!isValidEmail(value)) {
+    if (!emailValid) {
       setStatus("invalid");
       return;
     }
@@ -89,11 +90,24 @@ export function ContactEmailForm() {
           type="submit"
           size="icon-xl"
           loading={isBusy}
-          disabled={!email.trim() || isBusy}
+          disabled={!emailValid || isBusy}
           aria-label="Send email"
-          className="size-12 shrink-0 rounded-full active:scale-[0.97] sm:size-12"
+          className={cn(
+            "size-12 shrink-0 rounded-full text-white active:scale-[0.97] sm:size-12",
+            "motion-safe:transition-[background-color,border-color,opacity,box-shadow,transform] motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)]",
+            emailValid
+              ? "border-orange-500 bg-orange-500 opacity-100 hover:bg-orange-500 data-pressed:bg-orange-500"
+              : "border-primary/30 bg-primary/30 opacity-100 disabled:opacity-100",
+          )}
         >
-          <ArrowUpIcon strokeWidth={1.5} />
+          <ArrowUpIcon
+            strokeWidth={1.5}
+            className={cn(
+              "size-6 text-white opacity-100 motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)]",
+              emailValid && "rotate-90",
+            )}
+            aria-hidden
+          />
         </Button>
       </form>
 
