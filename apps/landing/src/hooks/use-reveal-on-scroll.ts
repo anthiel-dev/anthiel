@@ -20,10 +20,17 @@ function byDocumentOrder(a: HTMLElement, b: HTMLElement) {
   return 0;
 }
 
+function staggerIndex(el: HTMLElement) {
+  const raw = el.dataset.stagger;
+  if (raw == null || raw === "") return 0;
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : 0;
+}
+
 /**
  * Reveals `[data-reveal-item]` elements once as they enter the viewport.
- * Items already on screen at mount reveal immediately so mobile above-the-fold
- * content (e.g. work list) is not stuck hidden until the user scrolls.
+ * Above-the-fold items cascade after any pre-revealed intro; later scroll waves
+ * restart their own document-order stagger.
  */
 export function useRevealOnScroll(containerRef: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
@@ -40,7 +47,10 @@ export function useRevealOnScroll(containerRef: RefObject<HTMLElement | null>) {
       return;
     }
 
-    let sequence = 0;
+    const preRevealed = items.filter((el) => el.dataset.revealed === "true");
+    const maxPreStagger = preRevealed.reduce((max, el) => Math.max(max, staggerIndex(el)), -1);
+
+    let sequence = maxPreStagger + 1;
     let resetTimer: ReturnType<typeof setTimeout> | null = null;
 
     function reveal(el: HTMLElement) {
@@ -51,14 +61,14 @@ export function useRevealOnScroll(containerRef: RefObject<HTMLElement | null>) {
         sequence = 0;
       }, SEQUENCE_RESET_MS);
 
-      // Document-order cascade; zero CSS stagger so delays don't double up.
+      // Document-order cascade within a wave.
       el.style.setProperty("--reveal-start", `${sequence * REVEAL_STEP_MS}ms`);
       el.style.setProperty("--stagger", "0");
       sequence += 1;
       el.dataset.revealed = "true";
     }
 
-    // First paint: reveal anything already visible (strict IO rootMargin skips these).
+    // First paint: reveal anything already visible, continuing after intro stagger.
     for (const el of items.filter(isInViewport).sort(byDocumentOrder)) {
       reveal(el);
     }

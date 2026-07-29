@@ -33,7 +33,10 @@ export function WorkProjectRow({ number, title, year, description, href }: WorkP
   );
 
   return (
-    <li className="work-project group border-b border-white/[0.06] py-5 first:pt-0 last:border-b-0 last:pb-0">
+    <li
+      className="work-project group border-b border-white/[0.06] py-5 first:pt-0 last:border-b-0 last:pb-0"
+      data-reveal-item
+    >
       {href ? (
         <a
           href={href}

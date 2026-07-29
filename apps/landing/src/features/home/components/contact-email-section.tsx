@@ -9,9 +9,9 @@ export function ContactEmailSection() {
         title="Get in touch"
         description="You know what to do."
         className="mb-5"
-        revealStagger={1}
+        revealStagger={0}
       />
-      <div data-reveal-item data-stagger={2}>
+      <div data-reveal-item>
         <ContactEmailForm />
       </div>
     </PageSection>

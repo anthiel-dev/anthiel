@@ -9,7 +9,7 @@ export function FaqSection() {
         title="More about us"
         description="Select a question to see the answer."
         className="mb-8"
-        revealStagger={1}
+        revealStagger={0}
       />
       <FaqSplit />
     </PageSection>

@@ -14,11 +14,7 @@ type IndicatorGeo = {
   width: number;
 };
 
-function measureDotTop(
-  list: HTMLUListElement,
-  itemRefs: Map<string, HTMLLIElement>,
-  activeId: string,
-) {
+function measureDotTop(itemRefs: Map<string, HTMLLIElement>, activeId: string) {
   const item = itemRefs.get(activeId);
   const button = item?.querySelector("button");
   if (!item || !button) return null;
@@ -52,7 +48,7 @@ export function FaqSplit() {
     const list = listRef.current;
     if (!list) return;
 
-    const nextTop = measureDotTop(list, itemRefs.current, activeId);
+    const nextTop = measureDotTop(itemRefs.current, activeId);
     if (nextTop == null) return;
 
     const prevTop = prevTopRef.current;
@@ -106,7 +102,7 @@ export function FaqSplit() {
 
     function snap() {
       if (skipSnapRef.current) return;
-      const nextTop = measureDotTop(list, itemRefs.current, activeId);
+      const nextTop = measureDotTop(itemRefs.current, activeId);
       if (nextTop == null) return;
       setAnimateGeo(false);
       setGeo({ top: nextTop, height: DOT_SIZE_PX, width: DOT_SIZE_PX });
@@ -124,13 +120,7 @@ export function FaqSplit() {
 
   return (
     <div className="faq-split grid gap-8 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:gap-10">
-      <ul
-        ref={listRef}
-        className="relative m-0 list-none p-0"
-        role="list"
-        data-reveal-item
-        data-stagger={2}
-      >
+      <ul ref={listRef} className="relative m-0 list-none p-0" role="list">
         <span
           className={cn(
             "pointer-events-none absolute top-0 left-0 z-10 hidden rounded-full bg-orange-500 sm:block",
@@ -158,6 +148,7 @@ export function FaqSplit() {
                 else itemRefs.current.delete(faq.id);
               }}
               className="border-b border-white/[0.05] last:border-b-0"
+              data-reveal-item
             >
               <button
                 type="button"
@@ -201,7 +192,6 @@ export function FaqSplit() {
       <div
         className="relative hidden min-h-[140px] overflow-hidden border-l border-white/[0.06] pl-10 sm:block"
         data-reveal-item
-        data-stagger={3}
       >
         {active ? (
           <div key={active.id} className="faq-answer-enter">
