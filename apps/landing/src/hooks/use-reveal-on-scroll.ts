@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from "react";
+import { useLayoutEffect, type RefObject } from "react";
 
 const REVEAL_SELECTOR = "[data-reveal-item]";
 /** Gap between items revealed in the same scroll wave. */
@@ -6,13 +6,27 @@ const REVEAL_STEP_MS = 175;
 /** Quiet period before the sequence counter resets for the next wave. */
 const SEQUENCE_RESET_MS = 700;
 
+function isInViewport(el: HTMLElement) {
+  const rect = el.getBoundingClientRect();
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  // Any overlap with the real viewport — used for first-paint above-the-fold reveals.
+  return rect.bottom > 0 && rect.top < vh;
+}
+
+function byDocumentOrder(a: HTMLElement, b: HTMLElement) {
+  const position = a.compareDocumentPosition(b);
+  if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+  if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+  return 0;
+}
+
 /**
  * Reveals `[data-reveal-item]` elements once as they enter the viewport.
- * Items that become visible together cascade in document order so above-the-fold
- * sections (intro → work) don't all start at once.
+ * Items already on screen at mount reveal immediately so mobile above-the-fold
+ * content (e.g. work list) is not stuck hidden until the user scrolls.
  */
 export function useRevealOnScroll(containerRef: RefObject<HTMLElement | null>) {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = containerRef.current;
     if (!root) return;
 
@@ -30,6 +44,8 @@ export function useRevealOnScroll(containerRef: RefObject<HTMLElement | null>) {
     let resetTimer: ReturnType<typeof setTimeout> | null = null;
 
     function reveal(el: HTMLElement) {
+      if (el.dataset.revealed === "true") return;
+
       if (resetTimer) clearTimeout(resetTimer);
       resetTimer = setTimeout(() => {
         sequence = 0;
@@ -42,27 +58,26 @@ export function useRevealOnScroll(containerRef: RefObject<HTMLElement | null>) {
       el.dataset.revealed = "true";
     }
 
+    // First paint: reveal anything already visible (strict IO rootMargin skips these).
+    for (const el of items.filter(isInViewport).sort(byDocumentOrder)) {
+      reveal(el);
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const toReveal = entries
           .filter((entry) => entry.isIntersecting)
           .map((entry) => entry.target as HTMLElement)
-          .sort((a, b) => {
-            const position = a.compareDocumentPosition(b);
-            if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
-            if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
-            return 0;
-          });
+          .sort(byDocumentOrder);
 
         for (const el of toReveal) {
-          if (el.dataset.revealed === "true") continue;
           reveal(el);
           observer.unobserve(el);
         }
       },
       {
-        threshold: 0.18,
-        rootMargin: "0px 0px -18% 0px",
+        threshold: 0.08,
+        rootMargin: "0px 0px -8% 0px",
       },
     );
 

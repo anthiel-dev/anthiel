@@ -5,12 +5,12 @@ import { PageSection } from "./page-section";
 export function IntroSection() {
   return (
     <PageSection id="intro">
-      <p className="text-xs text-white/90" data-reveal-item data-revealed="true" data-stagger="1">
+      <p className="text-sm text-white/90" data-reveal-item data-revealed="true" data-stagger="1">
         A collective of software engineers based in Batam{" "}
         <span className="font-semibold text-orange-500">&</span> Jakarta, Indonesia.
       </p>
       <p
-        className="mt-2 text-xs text-white/90"
+        className="mt-2 text-sm text-white/90"
         data-reveal-item
         data-revealed="true"
         data-stagger="2"
@@ -20,7 +20,7 @@ export function IntroSection() {
         team.
       </p>
       <p
-        className="mt-10 text-xxs text-white/50 flex items-end gap-2"
+        className="mt-10 text-xs text-white/50 flex items-end gap-2"
         data-reveal-item
         data-revealed="true"
         data-stagger="3"

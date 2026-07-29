@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 
+import { useMediaQuery } from "#hooks/use-media-query";
 import { cn } from "#lib/utils";
 
 import { faqs } from "./data";
@@ -27,6 +28,7 @@ function measureDotTop(
 export function FaqSplit() {
   const [activeId, setActiveId] = useState(faqs[0]?.id ?? "");
   const active = faqs.find((faq) => faq.id === activeId) ?? faqs[0];
+  const isMobile = useMediaQuery("max-sm");
   const listRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef(new Map<string, HTMLLIElement>());
   const prevTopRef = useRef<number | null>(null);
@@ -40,6 +42,13 @@ export function FaqSplit() {
   const [indicatorReady, setIndicatorReady] = useState(false);
 
   useLayoutEffect(() => {
+    // Mobile uses a static active-dot color — skip the traveling indicator.
+    if (isMobile) {
+      prevTopRef.current = null;
+      setIndicatorReady(false);
+      return;
+    }
+
     const list = listRef.current;
     if (!list) return;
 
@@ -87,9 +96,11 @@ export function FaqSplit() {
       window.clearTimeout(unlock);
       skipSnapRef.current = false;
     };
-  }, [activeId]);
+  }, [activeId, isMobile]);
 
   useLayoutEffect(() => {
+    if (isMobile) return;
+
     const list = listRef.current;
     if (!list) return;
 
@@ -109,7 +120,7 @@ export function FaqSplit() {
     if (item) observer.observe(item);
 
     return () => observer.disconnect();
-  }, [activeId]);
+  }, [activeId, isMobile]);
 
   return (
     <div className="faq-split grid gap-8 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:gap-10">
@@ -122,7 +133,7 @@ export function FaqSplit() {
       >
         <span
           className={cn(
-            "pointer-events-none absolute top-0 left-0 z-10 rounded-full bg-orange-500",
+            "pointer-events-none absolute top-0 left-0 z-10 hidden rounded-full bg-orange-500 sm:block",
             indicatorReady &&
               animateGeo &&
               "motion-safe:transition-[transform,width,height,opacity] motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)]",
@@ -161,7 +172,11 @@ export function FaqSplit() {
                 onClick={() => setActiveId(faq.id)}
               >
                 <span
-                  className="faq-split-dot size-1.5 shrink-0 rounded-full bg-white/20"
+                  className={cn(
+                    "faq-split-dot size-1.5 shrink-0 rounded-full bg-white/20 transition-[background-color,transform] duration-200 ease-out",
+                    "max-sm:scale-90",
+                    isActive && "max-sm:scale-100 max-sm:bg-orange-500",
+                  )}
                   aria-hidden
                 />
                 <span className="text-sm tracking-tight transition-colors duration-150 ease-out">
