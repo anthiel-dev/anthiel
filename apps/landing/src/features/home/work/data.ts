@@ -21,17 +21,17 @@ export const workGroups: WorkGroup[] = [
     projects: [
       {
         number: 2,
-        title: "DNI Skincenter",
-        year: "2022",
-        description:
-          "E-commerce web for a beauty clinic in Bali. Online catalog and checkout for skincare treatments and products.",
-      },
-      {
-        number: 3,
         title: "Arta Samudra",
         year: "2023",
         description:
           "An online auction platform for selling pearls that also works offline. Supports live bidding alongside in-person sales so auctions can run with or without a reliable connection.",
+      },
+      {
+        number: 3,
+        title: "DNI Skincenter",
+        year: "2022",
+        description:
+          "E-commerce web for a beauty clinic in Bali. Online catalog and checkout for skincare treatments and products.",
       },
       {
         number: 4,

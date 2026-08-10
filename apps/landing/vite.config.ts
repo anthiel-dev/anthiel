@@ -14,6 +14,7 @@ const config = defineConfig({
         enabled: true,
         crawlLinks: true,
         autoStaticPathsDiscovery: true,
+        concurrency: 1,
       },
     }),
     viteReact(),

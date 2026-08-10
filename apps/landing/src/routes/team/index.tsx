@@ -2,6 +2,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/team/")({
   beforeLoad: () => {
-    throw redirect({ to: "/", hash: "team" });
+    throw redirect({ to: "/{-$locale}", hash: "team" });
   },
 });

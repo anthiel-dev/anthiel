@@ -1,13 +1,17 @@
+import { useMessages } from "#i18n";
+
 import { ContactEmailForm } from "../contact/contact-email-form";
 import { PageSection } from "./page-section";
 import { SectionHeader } from "./section-header";
 
 export function ContactEmailSection() {
+  const { contact } = useMessages();
+
   return (
     <PageSection id="contact">
       <SectionHeader
-        title="Get in touch"
-        description="You know what to do."
+        title={contact.title}
+        description={contact.description}
         className="mb-5"
         revealStagger={0}
       />

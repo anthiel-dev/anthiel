@@ -5,7 +5,14 @@
 - Site: https://an-thiel.com/
 - Contact: hi@an-thiel.com
 - Location: Batam & Jakarta, Indonesia
+- Languages: English (/), Bahasa Indonesia (/id), Simplified Chinese (/zh)
 
 ## Pages
 
-- [Home](https://an-thiel.com/): Intro, selected work, FAQ, and contact
+- [Home (EN)](https://an-thiel.com/): Intro, selected work, FAQ, and contact
+- [Home (ID)](https://an-thiel.com/id): Beranda dalam Bahasa Indonesia
+- [Home (ZH)](https://an-thiel.com/zh): 简体中文首页
+
+## Local focus
+
+Anthiel serves founders and teams in Batam and Jakarta, Indonesia — including software development for local products such as Batam Today (batamtoday.com).

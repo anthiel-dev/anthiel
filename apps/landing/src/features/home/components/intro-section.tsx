@@ -1,13 +1,16 @@
 import { Mail } from "lucide-react";
 
+import { useMessages } from "#i18n";
+
 import { PageSection } from "./page-section";
 
 export function IntroSection() {
+  const { intro } = useMessages();
+
   return (
     <PageSection id="intro">
       <p className="text-sm text-white/90" data-reveal-item data-revealed="true" data-stagger="1">
-        A collective of software engineers based in Batam{" "}
-        <span className="font-semibold text-orange-500">&</span> Jakarta, Indonesia.
+        {intro.p1Prefix} <span className="font-semibold text-orange-500">&</span> {intro.p1Suffix}
       </p>
       <p
         className="mt-2 text-sm text-white/90"
@@ -15,9 +18,8 @@ export function IntroSection() {
         data-revealed="true"
         data-stagger="2"
       >
-        We help founders go from <span className="font-semibold text-orange-500">0</span> →{" "}
-        <span className="font-semibold text-orange-500">1</span> with a small, senior engineering
-        team.
+        {intro.p2Before} <span className="font-semibold text-orange-500">0</span> →{" "}
+        <span className="font-semibold text-orange-500">1</span> {intro.p2After}
       </p>
       <p
         className="mt-10 text-xs text-white/50 flex items-end gap-2"
@@ -25,7 +27,7 @@ export function IntroSection() {
         data-revealed="true"
         data-stagger="3"
       >
-        Say hi to us{" "}
+        {intro.sayHi}{" "}
         <a
           href="mailto:hi@an-thiel.com"
           className="group inline-flex items-center text-white/70 transition-colors duration-150 ease-out hover:text-orange-500 active:scale-[0.97]"

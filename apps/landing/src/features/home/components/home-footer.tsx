@@ -1,6 +1,7 @@
 import { Mail } from "lucide-react";
 
 import { ProgressiveImage } from "#components/progressive-image";
+import { useMessages } from "#i18n";
 
 import { SignatureMark } from "../signature/signature-mark";
 import {
@@ -11,6 +12,8 @@ import {
 } from "../team/constants";
 
 export function HomeFooter({ showTeamPhoto = false }: { showTeamPhoto?: boolean }) {
+  const { a11y } = useMessages();
+
   return (
     <footer
       className={showTeamPhoto ? "mt-12 px-6 sm:mt-16 sm:px-10" : "mt-20 px-6 sm:mt-28 sm:px-10"}
@@ -25,7 +28,7 @@ export function HomeFooter({ showTeamPhoto = false }: { showTeamPhoto?: boolean 
           <ProgressiveImage
             src={TEAM_IMAGE_SRC}
             placeholderSrc={TEAM_IMAGE_PLACEHOLDER_SRC}
-            alt="Anthiel team illustration"
+            alt={a11y.teamIllustration}
             className="h-full w-full object-cover object-center grayscale"
             width={TEAM_IMAGE_WIDTH}
             height={TEAM_IMAGE_HEIGHT}

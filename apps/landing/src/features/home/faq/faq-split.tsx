@@ -1,10 +1,12 @@
 import { useState } from "react";
 
+import { getFaqs, useLocale, useMessages } from "#i18n";
 import { cn } from "#lib/utils";
 
-import { faqs } from "./data";
-
 export function FaqSplit() {
+  const { locale } = useLocale();
+  const { faq: faqCopy } = useMessages();
+  const faqs = getFaqs(locale);
   const [activeId, setActiveId] = useState(faqs[0]?.id ?? "");
   const active = faqs.find((faq) => faq.id === activeId) ?? faqs[0];
 
@@ -64,7 +66,7 @@ export function FaqSplit() {
       >
         {active ? (
           <div key={active.id} className="faq-answer-enter">
-            <p className="text-xxs tracking-wide text-white/40">Answer</p>
+            <p className="text-xxs tracking-wide text-white/40">{faqCopy.answerLabel}</p>
             <p className="mt-3 font-mono text-[22px] leading-snug tracking-tight text-white/90 sm:text-[26px]">
               {active.question}
             </p>

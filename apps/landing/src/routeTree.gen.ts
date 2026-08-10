@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as BuiltRouteImport } from './routes/built'
 import { Route as FaqIndexRouteImport } from './routes/faq/index'
@@ -23,12 +22,8 @@ import { Route as Team2RouteImport } from './routes/team/2'
 import { Route as Team3RouteImport } from './routes/team/3'
 import { Route as Team4RouteImport } from './routes/team/4'
 import { Route as Team5RouteImport } from './routes/team/5'
+import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -94,9 +89,14 @@ const Team5Route = Team5RouteImport.update({
   path: '/team/5',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char123LocaleChar125IndexRoute =
+  Char123LocaleChar125IndexRouteImport.update({
+    id: '/{-$locale}/',
+    path: '/{-$locale}/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
   '/faq/1': typeof Faq1Route
@@ -110,9 +110,9 @@ export interface FileRoutesByFullPath {
   '/team/5': typeof Team5Route
   '/faq/': typeof FaqIndexRoute
   '/team/': typeof TeamIndexRoute
+  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
   '/faq/1': typeof Faq1Route
@@ -126,10 +126,10 @@ export interface FileRoutesByTo {
   '/team/5': typeof Team5Route
   '/faq': typeof FaqIndexRoute
   '/team': typeof TeamIndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/built': typeof BuiltRoute
   '/faq/1': typeof Faq1Route
@@ -143,11 +143,11 @@ export interface FileRoutesById {
   '/team/5': typeof Team5Route
   '/faq/': typeof FaqIndexRoute
   '/team/': typeof TeamIndexRoute
+  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/about'
     | '/built'
     | '/faq/1'
@@ -161,9 +161,9 @@ export interface FileRouteTypes {
     | '/team/5'
     | '/faq/'
     | '/team/'
+    | '/{-$locale}/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/about'
     | '/built'
     | '/faq/1'
@@ -177,9 +177,9 @@ export interface FileRouteTypes {
     | '/team/5'
     | '/faq'
     | '/team'
+    | '/{-$locale}'
   id:
     | '__root__'
-    | '/'
     | '/about'
     | '/built'
     | '/faq/1'
@@ -193,10 +193,10 @@ export interface FileRouteTypes {
     | '/team/5'
     | '/faq/'
     | '/team/'
+    | '/{-$locale}/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BuiltRoute: typeof BuiltRoute
   Faq1Route: typeof Faq1Route
@@ -210,17 +210,11 @@ export interface RootRouteChildren {
   Team5Route: typeof Team5Route
   FaqIndexRoute: typeof FaqIndexRoute
   TeamIndexRoute: typeof TeamIndexRoute
+  Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -312,11 +306,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Team5RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/{-$locale}/': {
+      id: '/{-$locale}/'
+      path: '/{-$locale}'
+      fullPath: '/{-$locale}/'
+      preLoaderRoute: typeof Char123LocaleChar125IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BuiltRoute: BuiltRoute,
   Faq1Route: Faq1Route,
@@ -330,6 +330,7 @@ const rootRouteChildren: RootRouteChildren = {
   Team5Route: Team5Route,
   FaqIndexRoute: FaqIndexRoute,
   TeamIndexRoute: TeamIndexRoute,
+  Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
