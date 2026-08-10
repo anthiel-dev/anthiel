@@ -626,7 +626,161 @@ body {
   --stagger: 12;
 }
 
+/* Atmosphere — soft rain + occasional orange comets */
+.atmosphere {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.rain-field,
+.rain-splash-field,
+.comet-sky {
+  position: absolute;
+  inset: 0;
+}
+
+.raindrop {
+  position: absolute;
+  top: -12vh;
+  left: var(--rain-left, 50%);
+  width: 1px;
+  height: var(--rain-len, 14px);
+  border-radius: 999px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(255 255 255 / 0.08) 35%,
+    rgb(255 255 255 / 0.45) 100%
+  );
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: rain-fall var(--rain-dur, 1.1s) linear infinite;
+  animation-delay: var(--rain-delay, 0s);
+}
+
+@keyframes rain-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(12deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--rain-op, 0.2);
+  }
+  90% {
+    opacity: var(--rain-op, 0.2);
+  }
+  100% {
+    transform: translate3d(var(--rain-drift, 0px), 120vh, 0) rotate(12deg);
+    opacity: 0;
+  }
+}
+
+/* Tiny ripples when drops "hit" the bottom edge */
+.rain-splash {
+  position: absolute;
+  bottom: 10px;
+  left: var(--rain-left, 50%);
+  width: 5px;
+  height: 2.5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background: rgb(255 255 255 / 0.08);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: rain-splash var(--rain-dur, 1.1s) linear infinite;
+  animation-delay: var(--rain-delay, 0s);
+}
+
+@keyframes rain-splash {
+  0%,
+  86% {
+    transform: translate3d(var(--rain-drift, 0px), 0, 0) scale(0.25);
+    opacity: 0;
+  }
+  90% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate3d(var(--rain-drift, 0px), 0, 0) scale(2.4);
+    opacity: 0;
+  }
+}
+
+.comet {
+  position: absolute;
+  top: 0;
+  left: var(--comet-left, 50%);
+  width: var(--comet-len, 7rem);
+  height: 1.5px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(251 146 60 / 0.15) 45%,
+    rgb(251 146 60 / 0.75) 78%,
+    rgb(255 255 255 / 0.95) 100%
+  );
+  box-shadow:
+    0 0 6px rgb(251 146 60 / 0.35),
+    0 0 1px rgb(255 255 255 / 0.8);
+  opacity: 0;
+  will-change: transform, opacity;
+  /* Long cycle: brief fall, then idle — keeps it occasional */
+  animation: comet-fall var(--comet-cycle, 16s) linear infinite;
+  animation-delay: var(--comet-delay, 0s);
+}
+
+.comet--a {
+  --comet-left: 18%;
+  --comet-len: 6.5rem;
+  --comet-cycle: 15s;
+  --comet-delay: 1.4s;
+}
+
+.comet--b {
+  --comet-left: 62%;
+  --comet-len: 5rem;
+  --comet-cycle: 19s;
+  --comet-delay: 8s;
+}
+
+.comet--c {
+  --comet-left: 88%;
+  --comet-len: 7.5rem;
+  --comet-cycle: 22s;
+  --comet-delay: 13s;
+}
+
+@keyframes comet-fall {
+  0% {
+    transform: translate3d(8vw, -8vh, 0) rotate(118deg) scaleX(0.35);
+    opacity: 0;
+  }
+  2% {
+    opacity: 0.85;
+  }
+  14% {
+    opacity: 0.65;
+  }
+  18% {
+    transform: translate3d(-28vw, 112vh, 0) rotate(118deg) scaleX(1);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(-28vw, 112vh, 0) rotate(118deg) scaleX(1);
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .atmosphere {
+    display: none;
+  }
+
   [data-reveal-item] {
     animation: none;
     opacity: 1;
