@@ -1,0 +1,17 @@
+---
+title: Hello World
+date: "2026-08-12"
+description: First post on the Anthiel blog — a smoke test for the MDX SSG pipeline.
+---
+
+# Hello World
+
+Welcome to the Anthiel blog. This sample post confirms that local MDX content is loaded at build time and prerendered to static HTML.
+
+## What this stack does
+
+- Posts live as `.mdx` files under `src/content/blog/<locale>/`
+- Frontmatter is validated with Zod
+- TanStack Start prerenders linked routes at `vite build`
+
+Add another `.mdx` file in the same folder and it will show up on the index after the next build.

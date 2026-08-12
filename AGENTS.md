@@ -8,7 +8,8 @@ One-page map for AI-assisted work in this monorepo. Prefer `@`-mentioning refere
 | ------------- | ---------------- | ------------------------------------------- | -------------------------------------------------- |
 | **API**       | `apps/backend`   | Elysia, Drizzle, Better Auth, Zod contracts | `src/modules/projects/` or `invoices/`             |
 | **Dashboard** | `apps/dashboard` | TanStack Start, React, Tailwind, Orval      | `src/features/projects/`, `src/features/invoices/` |
-| **Landing**   | `apps/landing`   | Marketing / public site                     | App `README.md`                                    |
+| **Landing**   | `apps/landing`   | Marketing / public site (SSG)               | App `README.md`                                    |
+| **Blog**      | `apps/blog`      | TanStack Start SSG, local MDX               | `src/content/blog/`, App `README.md`               |
 
 ## Packages
 
