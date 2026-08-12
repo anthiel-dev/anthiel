@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "anthiel-sync-rules": {
+      "source": "anthiel-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/anthiel-sync-rules/SKILL.md",
+      "computedHash": "22449abdb81bdc265cce9cf262a096931a0caa511fae0bb595ca8b04a5c3d56b"
+    },
+    "anthiel-task-boards": {
+      "source": "anthiel-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/anthiel-task-boards/SKILL.md",
+      "computedHash": "9fa39c25b4a1aca0d974099a3475ff0904afe7b8f644d4a2150456e942700ca3"
+    }
+  }
+}

@@ -1,9 +1,9 @@
 ---
-description: Monorepo-wide tooling, code style, and agent behavior for the Mira project
+description: Monorepo-wide tooling, code style, and agent behavior for the Anthiel project
 alwaysApply: true
 ---
 
-# Mira agent conventions
+# Anthiel agent conventions
 
 ## Tooling
 
@@ -30,22 +30,18 @@ alwaysApply: true
 
 Load automatically via glob rules — do not guess:
 
-- `apps/desktop` → `mira-desktop-feature-patterns.mdc`
-- `apps/web` → `mira-frontend-feature-patterns.mdc`, `mira-frontend-api-integration.mdc`
-- `apps/online-order` → `mira-frontend-feature-patterns.mdc`, `mira-frontend-api-integration.mdc`
-- `apps/backend` → `backend-modular-structure.mdc`
-- `apps/mobile` → `mira-mobile-feature-patterns.mdc`
+- `apps/dashboard` → `mira-frontend-feature-patterns.mdc`, `mira-frontend-api-integration.mdc`
+- `apps/landing` → `mira-frontend-feature-patterns.mdc` when applicable
+- `apps/backend` → `backend-modular-structure.mdc`, `mira-backend-routes-services.mdc`
 
-Skills in `.cursor/skills/` for deep task workflows (E2E, TanStack DB, transitions).
+Skills in `.cursor/skills/` for deep task workflows (task-boards, backend modular, transitions).
 
 ## Golden paths (quick)
 
 | Area | First step |
 |------|------------|
-| Desktop feature | `@apps/desktop/src/features/orders/` or `tables/` + `mira-desktop-feature-patterns.mdc` |
-| Web feature | `@apps/web/src/features/catalog/products/` + `mira-frontend-feature-patterns.mdc` |
-| Online order feature | `@apps/online-order/src/features/` + `mira-frontend-feature-patterns.mdc` |
-| Backend module | `@apps/backend/src/modules/customers/` + `backend-modular-structure.mdc` |
-| Mobile feature | `@apps/mobile/src/features/home/` + `mira-mobile-feature-patterns.mdc` |
-| E2E | `bun run e2e` + `e2e-desktop` skill |
+| Dashboard feature | `@apps/dashboard/src/features/projects/` or `invoices/` + `mira-frontend-feature-patterns.mdc` |
+| Backend module | `@apps/backend/src/modules/projects/` or `invoices/` + `backend-modular-structure.mdc` |
+| Landing | `@apps/landing/` |
+| Tracked work | Markdown task-board `tasks-management/<epic>/` — see `anthiel-task-boards.mdc` + skill `anthiel-task-boards` |
 | Stale `.cursor/plans/` | Read banner — treat as historical; trust `AGENTS.md` and live code |

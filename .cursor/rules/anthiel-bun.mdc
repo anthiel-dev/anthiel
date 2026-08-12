@@ -1,0 +1,20 @@
+---
+description: Prefer Bun over Node/npm/pnpm/yarn for package and script commands
+globs: "**/*.{ts,tsx,js,jsx,json}"
+alwaysApply: false
+---
+
+# Use Bun
+
+| Prefer | Avoid |
+| --- | --- |
+| `bun <file>` | `node` / `ts-node` for app scripts |
+| `bun test` | jest / vitest (unless app already standardized) |
+| `bun install` | npm / yarn / pnpm install |
+| `bun run <script>` | npm/yarn/pnpm run |
+| `bunx` | npx |
+
+- Bun loads `.env` — prefer that over adding dotenv for Bun scripts
+- Tests: `import { test, expect } from "bun:test"` when using Bun's runner
+
+Frontend bundlers already in the product (Vite / TanStack Start) stay as configured — do not force Bun.serve HTML imports onto existing apps.

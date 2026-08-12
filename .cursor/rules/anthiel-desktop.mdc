@@ -1,0 +1,34 @@
+---
+description: Desktop POS feature layout, TanStack DB, Orval fetch client, E2E testids
+globs: "apps/desktop/**/*.{ts,tsx},packages/e2e/**/*.{ts,tsx,feature}"
+alwaysApply: false
+---
+
+# Anthiel desktop
+
+Use skill **`anthiel-desktop`** for full procedures. This rule is ambient law.
+
+## Feature layout
+
+```
+features/<feature>/
+  data/schemas/  data/collections/  types/  actions/  mappers/  hooks/  components/
+```
+
+- Zod only in `data/schemas/` — inferred types in `types/`
+- Named exports; `function Foo()`; no hand-roll `fetch` for collection-backed entities
+
+## Collections
+
+- Device-only → `localStorageCollectionOptions`
+- Server-backed → `queryCollectionOptions` + Orval; session fields → `writeUpdate`
+- After API change: `cd apps/desktop && bun run api:generate`
+
+## E2E testids
+
+```
+pos-{area}-{element}[-{id}]
+```
+
+Prefer roles/labels; testids when fragile. Page objects use `getByTestId` — never CSS classes.
+E2E package: `packages/e2e` (Playwright BDD, mock API via `page.route`).

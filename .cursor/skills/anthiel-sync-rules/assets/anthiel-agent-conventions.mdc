@@ -1,0 +1,40 @@
+---
+description: Core Anthiel agent conventions — Bun tooling, minimal diffs, named exports, git safety
+alwaysApply: true
+---
+
+# Anthiel agent conventions
+
+## Tooling
+
+- Package manager: **Bun** (`bun install`, `bun run <script>`, `bunx`)
+- Lint: `bun run lint` (oxlint). Format: `bun run format` (oxfmt).
+- Typecheck: `bun run typecheck` from root or per app.
+- Project map: consumer repo `AGENTS.md` when present.
+
+## Code changes
+
+- Minimize scope — smallest correct diff; do not change unrelated code.
+- Match existing conventions in the file and feature you touch.
+- Named exports; function declarations for components (`function Foo()`).
+- Use `type` for type-only exports.
+- Comments only for non-obvious business logic — not on every line.
+
+## Git
+
+- **Do not commit** unless the user explicitly asks.
+- **Do not push** unless the user explicitly asks.
+- No force push to main, no `--no-verify`, no amending pushed commits.
+
+## Stack skills
+
+Deep workflows live in installed Anthiel skills (load on demand):
+
+| Area | Skill |
+| --- | --- |
+| Frontend / backoffice | `anthiel-frontend` |
+| Backend | `anthiel-backend` |
+| Desktop POS | `anthiel-desktop` |
+| Tracked multi-step work | `anthiel-task-boards` |
+
+Companion rules: `anthiel-frontend.mdc`, `anthiel-backend.mdc`, `anthiel-desktop.mdc`, `anthiel-task-boards.mdc`, `anthiel-bun.mdc`, `anthiel-copy.mdc`.

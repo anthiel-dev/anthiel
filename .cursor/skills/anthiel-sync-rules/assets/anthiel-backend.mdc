@@ -1,0 +1,37 @@
+---
+description: Backend modular modules, thin routes, Result/ApiError services, DB helpers
+globs: "apps/backend/**/*.ts"
+alwaysApply: false
+---
+
+# Anthiel backend
+
+Use skill **`anthiel-backend`** for full procedures. This rule is ambient law.
+
+## Module shape
+
+Copy `apps/backend/src/modules/customers/`:
+
+```
+contracts/  routes/  services/  index.ts
+```
+
+Mount via `app.ts` → `.use(<domain>Routes(db))`.
+
+## Routes
+
+- Factory `(db: AppDb) => new Elysia({ prefix, name, tags })`
+- Zod from contracts on query/body/response
+- Thin handlers: `return unwrap(await service.method(...))`
+- No Drizzle / domain txn logic in routes
+
+## Services
+
+- Constructor deps (`AppDb` + ports); `Promise<Result<T, ApiError>>`
+- DB via `tryDb`; lists via `paginate` / `resolveOrderBy` / `ilikeContains`
+- PATCH via `requireNonEmptyPatch`; prefer `.returning()` + NotFound
+- No Elysia Context / Request types in public methods
+
+## After API change
+
+Regenerate Orval in `apps/web`, `apps/online-order`, `apps/desktop` as needed.

@@ -1,0 +1,45 @@
+---
+description: Copy dictionaries and t() for user-facing strings; API error message mapping
+globs: "apps/**/src/features/**/*.{ts,tsx},apps/**/src/lib/copy/**/*.{ts,tsx},apps/desktop/**/*.{ts,tsx},apps/backend/**/*error*"
+alwaysApply: false
+---
+
+# Anthiel copy management
+
+No i18n library required yet — keep a `t()` shim for `{name}` interpolation.
+
+## Layout
+
+```
+apps/<app>/src/lib/copy/
+  t.ts
+  common.ts
+  api-errors.ts          # code → copy + messageForApiError()
+
+apps/<app>/src/features/<feature>/copy.ts
+```
+
+Cross-app labels → `packages/constants` when shared.
+
+## Dict shape
+
+```ts
+const cartCopy = {
+  title: "…",
+  itemCount: "{count} item",
+  empty: { title: "…", description: "…" },
+} as const;
+```
+
+Usage: `cartCopy.title`, `t(cartCopy.itemCount, { count: 3 })`, `commonCopy.cancel`.
+
+## Rules
+
+- New features **must** use dicts; migrate old strings opportunistically
+- API toasts: `toast.error(messageForApiError(error.code, error.message))`
+- Zod API messages stay English; UI form validation → frontend copy
+- Prefer finishing partial migrations before new copy work (`migration.yml` / `MIGRATION.md` when present)
+
+## Enforcement
+
+When the repo has ast-grep rules for JSX text literals: `bun run sg:scan`.

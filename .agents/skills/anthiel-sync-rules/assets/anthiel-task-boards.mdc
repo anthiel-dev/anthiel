@@ -1,0 +1,82 @@
+---
+description: Markdown task-boards are the source of truth for Anthiel agentic work
+alwaysApply: true
+---
+
+# Markdown task-board agentic work
+
+Product plans, roadmaps, audits, ADRs, and tracked multi-step work live in **markdown task-boards** under `tasks-management/<epic_name>/` — not in Plane, and not under `docs/` or `.cursor/plans/`.
+
+> Plane is not used for Anthiel project management. Do not create or update Plane work items unless the user explicitly asks.
+
+## Layout
+
+```
+tasks-management/<epic_name>/
+├── README.md          # Kanban board: Backlog / Todo / In Progress / Done
+├── ADR.md             # Analysis + decisions (ADR-1..N)
+└── tasks/
+    └── <ID>-<slug>.md # One small, runnable task card per file
+```
+
+- `<epic_name>` is `snake_case` (e.g. `invoice_sharing`).
+- Task IDs are a short epic prefix + number (e.g. `IS-01`). Keep each card **small enough to run in one session**.
+- Deep workflow / templates: skill `anthiel-task-boards`.
+
+## When to use a task-board
+
+| Situation | Action |
+| --------- | ------ |
+| Multi-step product work user wants tracked | Create/extend an epic folder + task cards |
+| User names a task ID (e.g. `IS-03`) | Open that card; work against it |
+| Planning / “what’s next” | Read the epic `README.md` board (open columns) — don’t invent from memory |
+| Spike / one-liner / pure Q&A | Skip the board unless the user asks to track |
+| Design decision / ADR-like note | Add/append to the epic `ADR.md` — not a scattered new doc |
+
+Prefer the task-board over ad-hoc todo lists for anything that should survive the chat.
+
+## Board & card format
+
+**Board (`README.md`)** — status columns as tables; each row links to its card. Move a card by editing its `Status:` field and shifting its row between columns.
+
+Columns: `Backlog` → `Todo` → `In Progress` → `Done` (plus `Cancelled` if needed).
+
+**Card (`tasks/<ID>-<slug>.md`)** — front-matter-style header then acceptance criteria:
+
+```md
+# <ID> — <title>
+
+- **Status:** Todo
+- **Labels:** backend, feature
+- **Priority:** High
+- **Depends on:** <ID or —>
+
+## Context
+<files touched, links, relevant ADR decision inline>
+
+## Acceptance criteria
+- [ ] ...
+```
+
+## Labels
+
+`agent` · app surface (`backend`, `frontend` / `dashboard` / `web` / `desktop` / `landing` / `mobile`, …) · `chore` · `bug` · `feature`.
+
+## Session workflow
+
+1. **Resolve** — If the user named a task ID, open its card. Else read the epic board; create a card if none fits (create the epic folder if new).
+2. **Start** — Set the card `Status: In Progress` and move its row to the In Progress column.
+3. **Scope** — Acceptance criteria live in the card. Large work → split into more small cards with `Depends on` / `Blocks`.
+4. **Progress** — Check off acceptance-criteria boxes; keep the card current. Record decisions in `ADR.md`.
+5. **Done** — Set `Status: Done` and move the row only when acceptance criteria are met (or the user says done). `Cancelled` if abandoned.
+6. **Decisions** — ADR-like notes go in the epic `ADR.md`, not scattered new files.
+
+## What still lives elsewhere in git
+
+Keep (not task-board substitutes):
+
+- `AGENTS.md` + `.cursor/rules/` + skills — how agents operate
+- App/package `README.md` — how to run that package
+- Code comments only for non-obvious business logic
+
+Do **not** add product roadmaps, phase plans, ADRs, or audit matrices under `docs/`.

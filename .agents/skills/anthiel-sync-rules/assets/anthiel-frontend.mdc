@@ -1,0 +1,33 @@
+---
+description: Frontend/backoffice feature structure, Orval API, DataTable, and dialog conventions
+globs: "apps/*/src/features/**/*.{ts,tsx},apps/*/src/routes/**/*.{ts,tsx},apps/web/**/*.{ts,tsx},apps/backoffice/**/*.{ts,tsx},apps/online-order/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Anthiel frontend
+
+Use skill **`anthiel-frontend`** for full procedures. This rule is ambient law.
+
+## Structure
+
+Features under `apps/<web|backoffice|online-order>/src/features/<feature>/`.
+
+- **Orval (preferred):** `components/`, `validators/`, page, `index.ts` — hooks from `@/generated/api`
+- **Hand-written:** `data/{api,hooks,models}.ts`, components, page
+
+## Golden paths
+
+| Task | Do |
+| --- | --- |
+| New CRUD page | Skill `anthiel-frontend` → `references/feature-module.md` |
+| Data table | Skill → `references/data-table.md` |
+| API change | `cd apps/<app> && bun run api:generate` — never hand-edit `src/generated/api/**` |
+| Dialog/drawer | Skill → `references/ui-dialogs.md` (Header → Panel → Footer) |
+
+## Style
+
+- Named exports; `function Foo()`; `type` for types
+- Lists: TanStack Table + shared `DataTable` — no raw `<table>`
+- Columns in dedicated `*-columns.tsx` file
+- Toasts: sonner; icons: lucide-react
+- Copy dicts for user-facing strings (`anthiel-copy.mdc`)
