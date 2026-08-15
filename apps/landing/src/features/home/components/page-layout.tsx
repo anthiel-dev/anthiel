@@ -2,7 +2,6 @@ import { useLayoutEffect, useRef } from "react";
 
 import { useRevealOnScroll } from "#hooks/use-reveal-on-scroll";
 
-import { Atmosphere } from "./atmosphere";
 import { HomeFooter } from "./home-footer";
 import { HomeHeader } from "./home-header";
 import { PremiumScrollbar } from "./premium-scrollbar";
@@ -36,7 +35,6 @@ export function PageLayout({
 
   return (
     <div ref={rootRef} className="mx-auto flex max-w-3xl flex-col pt-32 pb-4" data-reveal="true">
-      <Atmosphere />
       <ScrollEdgeFades />
       <PremiumScrollbar />
       <HomeHeader />
