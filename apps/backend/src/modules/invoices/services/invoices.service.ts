@@ -12,7 +12,7 @@ import {
   projects,
 } from "@/database/schema";
 import { env } from "@/env";
-import { getResendClient } from "@/lib/resend";
+import { sendResendEmail } from "@/lib/resend";
 
 import type {
   CreateInvoiceBody,
@@ -421,10 +421,6 @@ export class InvoicesService {
       return { error: "invalid_primary_email" };
     }
 
-    const resend = getResendClient();
-    const from = env.RESEND_FROM_EMAIL;
-    if (!resend || !from) return { error: "email_not_configured" };
-
     const dto = this.toDto(existing);
     const dashboardUrl = env.DASHBOARD_URL.replace(/\/$/, "");
     const invoiceUrl = `${dashboardUrl}/invoice/${encodeURIComponent(dto.shareToken)}`;
@@ -434,10 +430,9 @@ export class InvoicesService {
       maximumFractionDigits: 0,
     }).format(dto.totalAmount);
 
-    const { error } = await resend.emails.send({
-      from,
+    const sent = await sendResendEmail({
+      kind: "invoice",
       to: emails,
-      ...(env.RESEND_REPLY_TO ? { replyTo: env.RESEND_REPLY_TO } : {}),
       subject: `Invoice ${dto.number} — ${dto.project.name}`,
       html: buildInvoiceEmailHtml({
         invoiceNumber: dto.number,
@@ -449,8 +444,10 @@ export class InvoicesService {
       }),
     });
 
-    if (error) {
-      return { error: "send_failed", message: error.message };
+    if (!sent.ok) {
+      return sent.error === "email_not_configured"
+        ? { error: "email_not_configured" }
+        : { error: "send_failed", message: sent.message };
     }
 
     const now = new Date();

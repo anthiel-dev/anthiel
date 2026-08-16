@@ -8,311 +8,310 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as BuiltRouteImport } from './routes/built'
-import { Route as FaqIndexRouteImport } from './routes/faq/index'
-import { Route as Faq1RouteImport } from './routes/faq/1'
-import { Route as Faq2RouteImport } from './routes/faq/2'
-import { Route as Faq3RouteImport } from './routes/faq/3'
-import { Route as Faq4RouteImport } from './routes/faq/4'
-import { Route as Faq5RouteImport } from './routes/faq/5'
-import { Route as TeamIndexRouteImport } from './routes/team/index'
-import { Route as Team2RouteImport } from './routes/team/2'
-import { Route as Team3RouteImport } from './routes/team/3'
-import { Route as Team4RouteImport } from './routes/team/4'
-import { Route as Team5RouteImport } from './routes/team/5'
-import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as AboutRouteImport } from "./routes/about";
+import { Route as BuiltRouteImport } from "./routes/built";
+import { Route as Faq1RouteImport } from "./routes/faq/1";
+import { Route as Faq2RouteImport } from "./routes/faq/2";
+import { Route as Faq3RouteImport } from "./routes/faq/3";
+import { Route as Faq4RouteImport } from "./routes/faq/4";
+import { Route as Faq5RouteImport } from "./routes/faq/5";
+import { Route as FaqIndexRouteImport } from "./routes/faq/index";
+import { Route as Team2RouteImport } from "./routes/team/2";
+import { Route as Team3RouteImport } from "./routes/team/3";
+import { Route as Team4RouteImport } from "./routes/team/4";
+import { Route as Team5RouteImport } from "./routes/team/5";
+import { Route as TeamIndexRouteImport } from "./routes/team/index";
+import { Route as Char123LocaleChar125IndexRouteImport } from "./routes/{-$locale}/index";
 
 const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+  id: "/about",
+  path: "/about",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const BuiltRoute = BuiltRouteImport.update({
-  id: '/built',
-  path: '/built',
+  id: "/built",
+  path: "/built",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const FaqIndexRoute = FaqIndexRouteImport.update({
-  id: '/faq/',
-  path: '/faq/',
+  id: "/faq/",
+  path: "/faq/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Faq1Route = Faq1RouteImport.update({
-  id: '/faq/1',
-  path: '/faq/1',
+  id: "/faq/1",
+  path: "/faq/1",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Faq2Route = Faq2RouteImport.update({
-  id: '/faq/2',
-  path: '/faq/2',
+  id: "/faq/2",
+  path: "/faq/2",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Faq3Route = Faq3RouteImport.update({
-  id: '/faq/3',
-  path: '/faq/3',
+  id: "/faq/3",
+  path: "/faq/3",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Faq4Route = Faq4RouteImport.update({
-  id: '/faq/4',
-  path: '/faq/4',
+  id: "/faq/4",
+  path: "/faq/4",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Faq5Route = Faq5RouteImport.update({
-  id: '/faq/5',
-  path: '/faq/5',
+  id: "/faq/5",
+  path: "/faq/5",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const TeamIndexRoute = TeamIndexRouteImport.update({
-  id: '/team/',
-  path: '/team/',
+  id: "/team/",
+  path: "/team/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Team2Route = Team2RouteImport.update({
-  id: '/team/2',
-  path: '/team/2',
+  id: "/team/2",
+  path: "/team/2",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Team3Route = Team3RouteImport.update({
-  id: '/team/3',
-  path: '/team/3',
+  id: "/team/3",
+  path: "/team/3",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Team4Route = Team4RouteImport.update({
-  id: '/team/4',
-  path: '/team/4',
+  id: "/team/4",
+  path: "/team/4",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Team5Route = Team5RouteImport.update({
-  id: '/team/5',
-  path: '/team/5',
+  id: "/team/5",
+  path: "/team/5",
   getParentRoute: () => rootRouteImport,
-} as any)
-const Char123LocaleChar125IndexRoute =
-  Char123LocaleChar125IndexRouteImport.update({
-    id: '/{-$locale}/',
-    path: '/{-$locale}/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+} as any);
+const Char123LocaleChar125IndexRoute = Char123LocaleChar125IndexRouteImport.update({
+  id: "/{-$locale}/",
+  path: "/{-$locale}/",
+  getParentRoute: () => rootRouteImport,
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/about': typeof AboutRoute
-  '/built': typeof BuiltRoute
-  '/faq/1': typeof Faq1Route
-  '/faq/2': typeof Faq2Route
-  '/faq/3': typeof Faq3Route
-  '/faq/4': typeof Faq4Route
-  '/faq/5': typeof Faq5Route
-  '/team/2': typeof Team2Route
-  '/team/3': typeof Team3Route
-  '/team/4': typeof Team4Route
-  '/team/5': typeof Team5Route
-  '/faq/': typeof FaqIndexRoute
-  '/team/': typeof TeamIndexRoute
-  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  "/about": typeof AboutRoute;
+  "/built": typeof BuiltRoute;
+  "/faq/1": typeof Faq1Route;
+  "/faq/2": typeof Faq2Route;
+  "/faq/3": typeof Faq3Route;
+  "/faq/4": typeof Faq4Route;
+  "/faq/5": typeof Faq5Route;
+  "/team/2": typeof Team2Route;
+  "/team/3": typeof Team3Route;
+  "/team/4": typeof Team4Route;
+  "/team/5": typeof Team5Route;
+  "/faq/": typeof FaqIndexRoute;
+  "/team/": typeof TeamIndexRoute;
+  "/{-$locale}/": typeof Char123LocaleChar125IndexRoute;
 }
 export interface FileRoutesByTo {
-  '/about': typeof AboutRoute
-  '/built': typeof BuiltRoute
-  '/faq/1': typeof Faq1Route
-  '/faq/2': typeof Faq2Route
-  '/faq/3': typeof Faq3Route
-  '/faq/4': typeof Faq4Route
-  '/faq/5': typeof Faq5Route
-  '/team/2': typeof Team2Route
-  '/team/3': typeof Team3Route
-  '/team/4': typeof Team4Route
-  '/team/5': typeof Team5Route
-  '/faq': typeof FaqIndexRoute
-  '/team': typeof TeamIndexRoute
-  '/{-$locale}': typeof Char123LocaleChar125IndexRoute
+  "/about": typeof AboutRoute;
+  "/built": typeof BuiltRoute;
+  "/faq/1": typeof Faq1Route;
+  "/faq/2": typeof Faq2Route;
+  "/faq/3": typeof Faq3Route;
+  "/faq/4": typeof Faq4Route;
+  "/faq/5": typeof Faq5Route;
+  "/team/2": typeof Team2Route;
+  "/team/3": typeof Team3Route;
+  "/team/4": typeof Team4Route;
+  "/team/5": typeof Team5Route;
+  "/faq": typeof FaqIndexRoute;
+  "/team": typeof TeamIndexRoute;
+  "/{-$locale}": typeof Char123LocaleChar125IndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/about': typeof AboutRoute
-  '/built': typeof BuiltRoute
-  '/faq/1': typeof Faq1Route
-  '/faq/2': typeof Faq2Route
-  '/faq/3': typeof Faq3Route
-  '/faq/4': typeof Faq4Route
-  '/faq/5': typeof Faq5Route
-  '/team/2': typeof Team2Route
-  '/team/3': typeof Team3Route
-  '/team/4': typeof Team4Route
-  '/team/5': typeof Team5Route
-  '/faq/': typeof FaqIndexRoute
-  '/team/': typeof TeamIndexRoute
-  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  __root__: typeof rootRouteImport;
+  "/about": typeof AboutRoute;
+  "/built": typeof BuiltRoute;
+  "/faq/1": typeof Faq1Route;
+  "/faq/2": typeof Faq2Route;
+  "/faq/3": typeof Faq3Route;
+  "/faq/4": typeof Faq4Route;
+  "/faq/5": typeof Faq5Route;
+  "/team/2": typeof Team2Route;
+  "/team/3": typeof Team3Route;
+  "/team/4": typeof Team4Route;
+  "/team/5": typeof Team5Route;
+  "/faq/": typeof FaqIndexRoute;
+  "/team/": typeof TeamIndexRoute;
+  "/{-$locale}/": typeof Char123LocaleChar125IndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/about'
-    | '/built'
-    | '/faq/1'
-    | '/faq/2'
-    | '/faq/3'
-    | '/faq/4'
-    | '/faq/5'
-    | '/team/2'
-    | '/team/3'
-    | '/team/4'
-    | '/team/5'
-    | '/faq/'
-    | '/team/'
-    | '/{-$locale}/'
-  fileRoutesByTo: FileRoutesByTo
+    | "/about"
+    | "/built"
+    | "/faq/1"
+    | "/faq/2"
+    | "/faq/3"
+    | "/faq/4"
+    | "/faq/5"
+    | "/team/2"
+    | "/team/3"
+    | "/team/4"
+    | "/team/5"
+    | "/faq/"
+    | "/team/"
+    | "/{-$locale}/";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/about'
-    | '/built'
-    | '/faq/1'
-    | '/faq/2'
-    | '/faq/3'
-    | '/faq/4'
-    | '/faq/5'
-    | '/team/2'
-    | '/team/3'
-    | '/team/4'
-    | '/team/5'
-    | '/faq'
-    | '/team'
-    | '/{-$locale}'
+    | "/about"
+    | "/built"
+    | "/faq/1"
+    | "/faq/2"
+    | "/faq/3"
+    | "/faq/4"
+    | "/faq/5"
+    | "/team/2"
+    | "/team/3"
+    | "/team/4"
+    | "/team/5"
+    | "/faq"
+    | "/team"
+    | "/{-$locale}";
   id:
-    | '__root__'
-    | '/about'
-    | '/built'
-    | '/faq/1'
-    | '/faq/2'
-    | '/faq/3'
-    | '/faq/4'
-    | '/faq/5'
-    | '/team/2'
-    | '/team/3'
-    | '/team/4'
-    | '/team/5'
-    | '/faq/'
-    | '/team/'
-    | '/{-$locale}/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/about"
+    | "/built"
+    | "/faq/1"
+    | "/faq/2"
+    | "/faq/3"
+    | "/faq/4"
+    | "/faq/5"
+    | "/team/2"
+    | "/team/3"
+    | "/team/4"
+    | "/team/5"
+    | "/faq/"
+    | "/team/"
+    | "/{-$locale}/";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  AboutRoute: typeof AboutRoute
-  BuiltRoute: typeof BuiltRoute
-  Faq1Route: typeof Faq1Route
-  Faq2Route: typeof Faq2Route
-  Faq3Route: typeof Faq3Route
-  Faq4Route: typeof Faq4Route
-  Faq5Route: typeof Faq5Route
-  Team2Route: typeof Team2Route
-  Team3Route: typeof Team3Route
-  Team4Route: typeof Team4Route
-  Team5Route: typeof Team5Route
-  FaqIndexRoute: typeof FaqIndexRoute
-  TeamIndexRoute: typeof TeamIndexRoute
-  Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
+  AboutRoute: typeof AboutRoute;
+  BuiltRoute: typeof BuiltRoute;
+  Faq1Route: typeof Faq1Route;
+  Faq2Route: typeof Faq2Route;
+  Faq3Route: typeof Faq3Route;
+  Faq4Route: typeof Faq4Route;
+  Faq5Route: typeof Faq5Route;
+  Team2Route: typeof Team2Route;
+  Team3Route: typeof Team3Route;
+  Team4Route: typeof Team4Route;
+  Team5Route: typeof Team5Route;
+  FaqIndexRoute: typeof FaqIndexRoute;
+  TeamIndexRoute: typeof TeamIndexRoute;
+  Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/built': {
-      id: '/built'
-      path: '/built'
-      fullPath: '/built'
-      preLoaderRoute: typeof BuiltRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq/': {
-      id: '/faq/'
-      path: '/faq'
-      fullPath: '/faq/'
-      preLoaderRoute: typeof FaqIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq/1': {
-      id: '/faq/1'
-      path: '/faq/1'
-      fullPath: '/faq/1'
-      preLoaderRoute: typeof Faq1RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq/2': {
-      id: '/faq/2'
-      path: '/faq/2'
-      fullPath: '/faq/2'
-      preLoaderRoute: typeof Faq2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq/3': {
-      id: '/faq/3'
-      path: '/faq/3'
-      fullPath: '/faq/3'
-      preLoaderRoute: typeof Faq3RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq/4': {
-      id: '/faq/4'
-      path: '/faq/4'
-      fullPath: '/faq/4'
-      preLoaderRoute: typeof Faq4RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq/5': {
-      id: '/faq/5'
-      path: '/faq/5'
-      fullPath: '/faq/5'
-      preLoaderRoute: typeof Faq5RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/': {
-      id: '/team/'
-      path: '/team'
-      fullPath: '/team/'
-      preLoaderRoute: typeof TeamIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/2': {
-      id: '/team/2'
-      path: '/team/2'
-      fullPath: '/team/2'
-      preLoaderRoute: typeof Team2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/3': {
-      id: '/team/3'
-      path: '/team/3'
-      fullPath: '/team/3'
-      preLoaderRoute: typeof Team3RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/4': {
-      id: '/team/4'
-      path: '/team/4'
-      fullPath: '/team/4'
-      preLoaderRoute: typeof Team4RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/5': {
-      id: '/team/5'
-      path: '/team/5'
-      fullPath: '/team/5'
-      preLoaderRoute: typeof Team5RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/{-$locale}/': {
-      id: '/{-$locale}/'
-      path: '/{-$locale}'
-      fullPath: '/{-$locale}/'
-      preLoaderRoute: typeof Char123LocaleChar125IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/about": {
+      id: "/about";
+      path: "/about";
+      fullPath: "/about";
+      preLoaderRoute: typeof AboutRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/built": {
+      id: "/built";
+      path: "/built";
+      fullPath: "/built";
+      preLoaderRoute: typeof BuiltRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/faq/": {
+      id: "/faq/";
+      path: "/faq";
+      fullPath: "/faq/";
+      preLoaderRoute: typeof FaqIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/faq/1": {
+      id: "/faq/1";
+      path: "/faq/1";
+      fullPath: "/faq/1";
+      preLoaderRoute: typeof Faq1RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/faq/2": {
+      id: "/faq/2";
+      path: "/faq/2";
+      fullPath: "/faq/2";
+      preLoaderRoute: typeof Faq2RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/faq/3": {
+      id: "/faq/3";
+      path: "/faq/3";
+      fullPath: "/faq/3";
+      preLoaderRoute: typeof Faq3RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/faq/4": {
+      id: "/faq/4";
+      path: "/faq/4";
+      fullPath: "/faq/4";
+      preLoaderRoute: typeof Faq4RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/faq/5": {
+      id: "/faq/5";
+      path: "/faq/5";
+      fullPath: "/faq/5";
+      preLoaderRoute: typeof Faq5RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/team/": {
+      id: "/team/";
+      path: "/team";
+      fullPath: "/team/";
+      preLoaderRoute: typeof TeamIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/team/2": {
+      id: "/team/2";
+      path: "/team/2";
+      fullPath: "/team/2";
+      preLoaderRoute: typeof Team2RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/team/3": {
+      id: "/team/3";
+      path: "/team/3";
+      fullPath: "/team/3";
+      preLoaderRoute: typeof Team3RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/team/4": {
+      id: "/team/4";
+      path: "/team/4";
+      fullPath: "/team/4";
+      preLoaderRoute: typeof Team4RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/team/5": {
+      id: "/team/5";
+      path: "/team/5";
+      fullPath: "/team/5";
+      preLoaderRoute: typeof Team5RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/{-$locale}/": {
+      id: "/{-$locale}/";
+      path: "/{-$locale}";
+      fullPath: "/{-$locale}/";
+      preLoaderRoute: typeof Char123LocaleChar125IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
@@ -331,16 +330,17 @@ const rootRouteChildren: RootRouteChildren = {
   FaqIndexRoute: FaqIndexRoute,
   TeamIndexRoute: TeamIndexRoute,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { createStart } from "@tanstack/react-start";
+
+import type { getRouter } from "./router.tsx";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }

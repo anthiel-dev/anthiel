@@ -1,12 +1,13 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin as adminPlugin, username } from "better-auth/plugins";
+import { admin as adminPlugin, magicLink, username } from "better-auth/plugins";
 
 import { CORS_ORIGINS } from "../constants";
 import { db } from "../database";
 import * as schema from "../database/schema";
 import { env } from "../env";
 import { ROLE } from "../modules/rbac/catalog";
+import { sendClientMagicLink } from "./magic-link-email";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -33,6 +34,14 @@ export const auth = betterAuth({
     adminPlugin({
       defaultRole: ROLE.client,
       adminRoles: [ROLE.admin],
+    }),
+    magicLink({
+      disableSignUp: true,
+      expiresIn: 60 * 10,
+      storeToken: "hashed",
+      sendMagicLink: async ({ email, url }) => {
+        await sendClientMagicLink({ email, url });
+      },
     }),
   ],
 });
